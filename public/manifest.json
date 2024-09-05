@@ -1,10 +1,40 @@
 {
   "manifest_version": 3,
-  "name": "TG Farmer",
-  "description": "Telegram airdrops farmer",
+  "name": "Blum Farmer",
+  "description": "Blum airdrop farmer",
   "version": "1.0",
+  "icons": {
+    "16": "icon-16.png",
+    "32": "icon-32.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "permissions": [
+    "sidePanel",
+    "webRequest",
+    "declarativeNetRequest",
+    "notifications"
+  ],
   "action": {
-    "default_popup": "index.html",
-    "default_icon": "icon.png"
+    "default_icon": "icon-48.png",
+    "default_title": "Open Blum Farmer",
+    "default_popup": "index.html"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "host_permissions": ["*://*.blum.codes/*"],
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "blum_ruleset",
+        "enabled": true,
+        "path": "blum_rules.json"
+      }
+    ]
   }
 }

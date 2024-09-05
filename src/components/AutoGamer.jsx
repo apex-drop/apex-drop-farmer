@@ -82,13 +82,13 @@ export default function () {
       {tickets > 0 ? (
         <>
           <Input
-            disabled={autoPlaying}
+            disabled={autoPlaying || !tickets}
             value={desiredPoint}
             onInput={(ev) => setDesiredPoint(ev.target.value)}
             type="number"
-            min="100"
-            max="280"
-            placeholder="Range (100 - 280)"
+            min={MIN_POINT}
+            max={MAX_POINT}
+            placeholder={`Range (${MIN_POINT} - ${MAX_POINT})`}
           />
           <p className="text-gray-400">
             Minimum Point (automatically adds extra 1-20 points.)

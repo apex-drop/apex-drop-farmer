@@ -26,10 +26,10 @@ export default function () {
 
   const [autoPlaying, setAutoPlaying] = useState(false);
   const [countdown, setCountdown] = useState(null);
-  const [minPoint, setMinPoint] = useState(INITIAL_POINT);
+  const [desiredPoint, setDesiredPoint] = useState(INITIAL_POINT);
 
   const tickets = query.data?.playPasses || 0;
-  const points = Math.max(MIN_POINT, Math.min(MAX_POINT, minPoint));
+  const points = Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint));
 
   const startGameMutation = useStartGameMutation();
   const claimGameMutation = useClaimGameMutation(points);
@@ -41,7 +41,7 @@ export default function () {
 
   /** Handle button click */
   const handleAutoPlayClick = () => {
-    setMinPoint(points);
+    setDesiredPoint(points);
     setAutoPlaying((previous) => !previous);
   };
 
@@ -83,8 +83,8 @@ export default function () {
         <>
           <Input
             disabled={autoPlaying}
-            value={minPoint}
-            onInput={(ev) => setMinPoint(ev.target.value)}
+            value={desiredPoint}
+            onInput={(ev) => setDesiredPoint(ev.target.value)}
             type="number"
             min="100"
             max="280"

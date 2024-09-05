@@ -10,7 +10,7 @@ export default function useAuthorizationHeader() {
         (item) => item.name === "Authorization"
       );
 
-      if (header && header.value !== authorizationHeader) {
+      if (header && header.value && header.value !== authorizationHeader) {
         setAuthorizationHeader(header.value);
         chrome.notifications.create("blum-auth", {
           iconUrl: "/icon.png",

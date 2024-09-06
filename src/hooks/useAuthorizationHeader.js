@@ -31,7 +31,7 @@ export default function useAuthorizationHeader() {
 
     return () =>
       chrome.webRequest.onSendHeaders.removeListener(handleWebRequest);
-  }, []);
+  }, [authorizationHeader]);
 
   return authorizationHeader;
 }

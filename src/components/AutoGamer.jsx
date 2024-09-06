@@ -36,7 +36,7 @@ export default function () {
 
   /** Countdown renderer */
   const countdownRenderer = ({ seconds }) => (
-    <span className="font-bold text-xl">{seconds}</span>
+    <span className="text-xl font-bold">{seconds}</span>
   );
 
   /** Handle button click */
@@ -106,15 +106,15 @@ export default function () {
       </Button>
 
       {autoPlaying ? (
-        <div className="p-4 bg-neutral-800 rounded-lg flex flex-col gap-2">
+        <div className="flex flex-col gap-2 p-4 rounded-lg bg-neutral-800">
           {/* Game Start */}
           {startGameMutation.isPending ? (
-            <p className="text-yellow-500 font-bold">Starting Game...</p>
+            <p className="font-bold text-yellow-500">Starting Game...</p>
           ) : startGameMutation.isError ? (
-            <p className="text-red-500 font-bold">Failed to start game...</p>
+            <p className="font-bold text-red-500">Failed to start game...</p>
           ) : startGameMutation.isSuccess ? (
             <>
-              <p className="text-green-500 font-bold">
+              <p className="font-bold text-green-500">
                 GAME ID: {startGameMutation.data?.gameId}
               </p>
               <p>
@@ -125,7 +125,7 @@ export default function () {
                     Failed to claim points...
                   </span>
                 ) : claimGameMutation.isSuccess ? (
-                  <span className="text-green-500 font-bold">
+                  <span className="font-bold text-green-500">
                     Points claimed. (Refreshing...)
                   </span>
                 ) : (

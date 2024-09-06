@@ -4,7 +4,7 @@ export default function UsernameDisplay() {
   const query = useUserQuery();
 
   return (
-    <div className="py-4">
+    <div className="py-2">
       <h4 className="text-center">
         {query.isPending
           ? "Fetching username..."

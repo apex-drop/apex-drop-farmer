@@ -72,6 +72,8 @@ export default function AutoTasks() {
         await client.refetchQueries({
           queryKey: ["tasks"],
         });
+
+        setCurrentTask(null);
         setAction("claim");
 
         /** End of Start Action */
@@ -92,6 +94,7 @@ export default function AutoTasks() {
         });
         setAutoClaiming(false);
         setAction(null);
+        setCurrentTask(null);
       }
     })();
   }, [action, autoClaiming]);

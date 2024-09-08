@@ -14,7 +14,11 @@ export default function AutoTasks() {
   const query = useTasksQuery();
 
   const tasks = useMemo(
-    () => query.data?.reduce((all, group) => all.concat(group.tasks), []) || [],
+    () =>
+      query.data?.[0].subSections.reduce(
+        (all, group) => all.concat(group.tasks),
+        []
+      ) || [],
     [query.data]
   );
 

@@ -23,7 +23,11 @@
   "side_panel": {
     "default_path": "index.html"
   },
-  "host_permissions": ["*://*.blum.codes/*", "*://*.pumpad.io/*"],
+  "host_permissions": [
+    "*://*.blum.codes/*",
+    "*://*.pumpad.io/*",
+    "*://*.agent301.org/*"
+  ],
   "content_scripts": [
     {
       "matches": ["*://*.tomarket.ai/*"],

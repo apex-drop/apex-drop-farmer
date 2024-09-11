@@ -1,6 +1,7 @@
 import AppIcon from "@/assets/images/icon.png";
 import BlumIcon from "@/drops/blum/assets/images/icon.png";
 import PumpadIcon from "@/drops/pumpad/assets/images/icon.png";
+import Agent301Icon from "@/drops/agent301/assets/images/icon.png";
 import { Link } from "react-router-dom";
 
 const drops = [
@@ -13,6 +14,11 @@ const drops = [
     title: "Pumpad",
     path: "/pumpad",
     icon: PumpadIcon,
+  },
+  {
+    title: "Agent 301",
+    path: "/agent301",
+    icon: Agent301Icon,
   },
 ];
 

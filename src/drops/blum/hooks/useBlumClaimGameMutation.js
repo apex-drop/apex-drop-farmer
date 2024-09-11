@@ -6,7 +6,7 @@ import useBlumAuth from "./useBlumAuth";
 export default function useBlumClaimGameMutation(points) {
   const auth = useBlumAuth();
   return useMutation({
-    mutationKey: ["game", "claim", points],
+    mutationKey: ["blum", "game", "claim", points],
     mutationFn: (id) =>
       axios
         .post(

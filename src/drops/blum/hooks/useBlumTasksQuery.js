@@ -6,7 +6,7 @@ import useBlumAuth from "./useBlumAuth";
 export default function useBlumTasksQuery() {
   const auth = useBlumAuth();
   return useQuery({
-    queryKey: ["tasks"],
+    queryKey: ["blum", "tasks"],
     queryFn: () =>
       axios
         .get("https://game-domain.blum.codes/api/v1/tasks", {

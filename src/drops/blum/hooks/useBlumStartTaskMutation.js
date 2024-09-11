@@ -6,7 +6,7 @@ import useBlumAuth from "./useBlumAuth";
 export default function useBlumStartTaskMutation() {
   const auth = useBlumAuth();
   return useMutation({
-    mutationKey: ["task", "start"],
+    mutationKey: ["blum", "task", "start"],
     mutationFn: (id) =>
       axios
         .post(`https://game-domain.blum.codes/api/v1/tasks/${id}/start`, null, {

@@ -70,7 +70,7 @@ export default function Blum() {
 
       /** Reset Mutation */
       await client.refetchQueries({
-        queryKey: ["balance"],
+        queryKey: ["blum", "balance"],
       });
       await startGameMutation.reset();
       await claimGameMutation.reset();

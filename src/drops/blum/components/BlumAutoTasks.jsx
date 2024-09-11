@@ -74,7 +74,7 @@ export default function BlumAutoTasks() {
           await startTaskMutation.reset();
         }
         await client.refetchQueries({
-          queryKey: ["tasks"],
+          queryKey: ["blum", "tasks"],
         });
 
         setCurrentTask(null);
@@ -94,10 +94,10 @@ export default function BlumAutoTasks() {
         }
 
         await client.refetchQueries({
-          queryKey: ["tasks"],
+          queryKey: ["blum", "tasks"],
         });
         await client.refetchQueries({
-          queryKey: ["balance"],
+          queryKey: ["blum", "balance"],
         });
         setAutoClaiming(false);
         setAction(null);

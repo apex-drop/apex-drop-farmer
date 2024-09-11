@@ -9,7 +9,7 @@ export default {
         sans: ["Product Sans", ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        green: {
+        "blum-green": {
           DEFAULT: "#BAEE52",
           50: "#FDFEF9",
           100: "#F5FDE7",
@@ -22,6 +22,21 @@ export default {
           800: "#618A0E",
           900: "#3D5709",
           950: "#2B3E06",
+        },
+
+        "pumpad-green": {
+          DEFAULT: "#71FF45",
+          50: "#FDFFFD",
+          100: "#EEFFE8",
+          200: "#CEFFBF",
+          300: "#AFFF97",
+          400: "#90FF6E",
+          500: "#71FF45",
+          600: "#46FF0D",
+          700: "#32D400",
+          800: "#259C00",
+          900: "#186400",
+          950: "#114800",
         },
       },
     },

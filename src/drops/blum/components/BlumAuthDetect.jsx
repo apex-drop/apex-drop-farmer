@@ -1,4 +1,4 @@
-import BlumIcon from "../assets/icon.png";
+import BlumIcon from "../assets/images/icon.png";
 
 export default function BlumAuthDetect() {
   return (

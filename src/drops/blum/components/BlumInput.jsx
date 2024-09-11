@@ -8,7 +8,7 @@ export default function BlumInput({ ...props }) {
         "rounded-lg",
         "bg-neutral-800",
         "outline-0 ring-1 ring-transparent",
-        "focus:ring-green-500",
+        "focus:ring-blum-green-500",
         props.disabled && "opacity-50",
         props.className
       )}

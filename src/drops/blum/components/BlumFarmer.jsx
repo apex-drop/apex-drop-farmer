@@ -23,7 +23,7 @@ export default function BlumFarmer() {
               className={cn(
                 "p-2",
                 "border-b border-transparent",
-                "data-[state=active]:border-green-500"
+                "data-[state=active]:border-blum-green-500"
               )}
             >
               {value.toUpperCase()}

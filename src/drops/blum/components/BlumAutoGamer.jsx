@@ -114,7 +114,7 @@ export default function Blum() {
             <p className="font-bold text-red-500">Failed to start game...</p>
           ) : startGameMutation.isSuccess ? (
             <>
-              <p className="font-bold text-green-500">
+              <p className="font-bold text-blum-green-500">
                 GAME ID: {startGameMutation.data?.gameId}
               </p>
               <p>
@@ -125,7 +125,7 @@ export default function Blum() {
                     Failed to claim points...
                   </span>
                 ) : claimGameMutation.isSuccess ? (
-                  <span className="font-bold text-green-500">
+                  <span className="font-bold text-blum-green-500">
                     Points claimed. (Refreshing...)
                   </span>
                 ) : (

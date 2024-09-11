@@ -1,0 +1,21 @@
+import PumpadIcon from "../assets/images/icon.png";
+import PumpadLottery from "./PumpadLottery";
+import PumpadUsernameDisplay from "./PumpadUsernameDisplay";
+
+export default function PumpadFarmer() {
+  return (
+    <div className="flex flex-col gap-2">
+      {/* Header */}
+      <div className="flex items-center justify-center gap-2">
+        <img src={PumpadIcon} alt="Pumpad Farmer" className="w-8 h-8" />
+        <h1 className="font-bold">Pumpad Farmer</h1>
+      </div>
+
+      {/* Username */}
+      <PumpadUsernameDisplay />
+
+      {/* Lottery */}
+      <PumpadLottery />
+    </div>
+  );
+}

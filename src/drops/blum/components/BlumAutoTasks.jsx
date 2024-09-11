@@ -116,7 +116,7 @@ export default function BlumAutoTasks() {
         <>
           {/* Tasks Info */}
           <h4 className="font-bold">Total Tasks: {tasks.length}</h4>
-          <h4 className="font-bold text-green-500">
+          <h4 className="font-bold text-blum-green-500">
             Finished Tasks: {finishedTasks.length}
           </h4>
           <h4 className="font-bold text-yellow-500">
@@ -145,7 +145,9 @@ export default function BlumAutoTasks() {
                   Current Mode:{" "}
                   <span
                     className={
-                      action === "start" ? "text-yellow-500" : "text-green-500"
+                      action === "start"
+                        ? "text-yellow-500"
+                        : "text-blum-green-500"
                     }
                   >
                     {action === "start" ? "Starting Task" : "Claiming Task"}{" "}
@@ -157,7 +159,7 @@ export default function BlumAutoTasks() {
                   className={cn(
                     "capitalize",
                     {
-                      success: "text-green-500",
+                      success: "text-blum-green-500",
                       error: "text-red-500",
                     }[
                       action === "start"

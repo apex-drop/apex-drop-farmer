@@ -1,4 +1,4 @@
-import TicketIcon from "../assets/ticket.webp";
+import TicketIcon from "../assets/images/ticket.webp";
 import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
 
 export default function BlumBalanceDisplay() {

@@ -1,19 +1,22 @@
 import { useEffect } from "react";
 import { useState } from "react";
 
+import BlumIcon from "../assets/images/icon.png";
+
 export default function useBlumAuthorizationHeader() {
   const [authorizationHeader, setAuthorizationHeader] = useState(null);
 
   useEffect(() => {
     const handleWebRequest = (details) => {
-      let header = details.requestHeaders.find(
+      let authorization = details.requestHeaders.find(
         (item) => item.name === "Authorization"
-      );
+      )?.value;
 
-      if (header && header.value && header.value !== authorizationHeader) {
-        setAuthorizationHeader(header.value);
+      if (authorization && authorization !== authorizationHeader) {
+        setAuthorizationHeader(authorization);
+
         chrome.notifications.create("blum-auth", {
-          iconUrl: "/icon.png",
+          iconUrl: BlumIcon,
           title: "Blum Farmer",
           message: "Blum Auth Detected",
           type: "basic",

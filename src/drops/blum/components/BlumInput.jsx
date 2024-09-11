@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export default function Input({ ...props }) {
+export default function BlumInput({ ...props }) {
   return (
     <input
       className={cn(

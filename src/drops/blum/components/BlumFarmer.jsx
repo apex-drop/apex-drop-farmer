@@ -1,18 +1,18 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { cn } from "@/lib/utils";
 
-import AutoGamer from "./AutoGamer";
-import AutoTasks from "./AutoTasks";
-import BalanceDisplay from "./BalanceDisplay";
-import FarmerHeader from "./FarmerHeader";
-import UsernameDisplay from "./UsernameDisplay";
+import BlumAutoGamer from "./BlumAutoGamer";
+import BlumAutoTasks from "./BlumAutoTasks";
+import BlumBalanceDisplay from "./BlumBalanceDisplay";
+import BlumFarmerHeader from "./BlumFarmerHeader";
+import BlumUsernameDisplay from "./BlumUsernameDisplay";
 
-export default function Farmer() {
+export default function BlumFarmer() {
   return (
     <div className="flex flex-col p-4">
-      <FarmerHeader />
-      <UsernameDisplay />
-      <BalanceDisplay />
+      <BlumFarmerHeader />
+      <BlumUsernameDisplay />
+      <BlumBalanceDisplay />
 
       <Tabs.Root defaultValue="game" className="flex flex-col gap-4">
         <Tabs.List className="grid grid-cols-2">
@@ -31,10 +31,10 @@ export default function Farmer() {
           ))}
         </Tabs.List>
         <Tabs.Content value="game">
-          <AutoGamer />
+          <BlumAutoGamer />
         </Tabs.Content>
         <Tabs.Content value="tasks">
-          <AutoTasks />
+          <BlumAutoTasks />
         </Tabs.Content>
       </Tabs.Root>
     </div>

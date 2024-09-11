@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 
-export default function useAuthorizationHeader() {
+export default function useBlumAuthorizationHeader() {
   const [authorizationHeader, setAuthorizationHeader] = useState(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function useAuthorizationHeader() {
       }
     };
 
-    chrome.webRequest.onSendHeaders.addListener(
+    chrome?.webRequest?.onSendHeaders.addListener(
       handleWebRequest,
       {
         urls: ["*://game-domain.blum.codes/*"],
@@ -30,7 +30,7 @@ export default function useAuthorizationHeader() {
     );
 
     return () =>
-      chrome.webRequest.onSendHeaders.removeListener(handleWebRequest);
+      chrome?.webRequest?.onSendHeaders.removeListener(handleWebRequest);
   }, [authorizationHeader]);
 
   return authorizationHeader;

@@ -1,7 +1,7 @@
-import useUserQuery from "@/hooks/useUserQuery";
+import useBlumUserQuery from "../hooks/useBlumUserQuery";
 
-export default function UsernameDisplay() {
-  const query = useUserQuery();
+export default function BlumUsernameDisplay() {
+  const query = useBlumUserQuery();
 
   return (
     <div className="py-2">

@@ -14,6 +14,7 @@ export default defineConfig({
       input: {
         index: path.resolve(__dirname, "./index.html"),
         "service-worker": path.resolve(__dirname, "./src/service-worker.js"),
+        "content-script": path.resolve(__dirname, "./src/content-script.js"),
       },
       output: {
         entryFileNames: "[name].js",

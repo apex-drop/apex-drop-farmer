@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import useAuth from "./useAuth";
+import useBlumAuth from "./useBlumAuth";
 
-export default function useBalanceQuery() {
-  const auth = useAuth();
+export default function useBlumTasksQuery() {
+  const auth = useBlumAuth();
   return useQuery({
-    queryKey: ["balance"],
+    queryKey: ["tasks"],
     queryFn: () =>
       axios
-        .get("https://game-domain.blum.codes/api/v1/user/balance", {
+        .get("https://game-domain.blum.codes/api/v1/tasks", {
           headers: {
             Authorization: auth,
           },

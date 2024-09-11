@@ -1,0 +1,13 @@
+import BlumIcon from "../assets/icon.png";
+
+export default function BlumAuthDetect() {
+  return (
+    <div className="flex flex-col items-center justify-center gap-4 p-4 grow">
+      <img src={BlumIcon} alt="Blum Farmer" className="w-16 h-16" />
+      <h3 className="font-bold text-center">Detecting Auth...</h3>
+      <p className="text-center text-gray-400">
+        Try switching to the tasks or frens section back and forth.
+      </p>
+    </div>
+  );
+}

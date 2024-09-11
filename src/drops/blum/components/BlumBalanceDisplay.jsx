@@ -1,8 +1,8 @@
-import TicketIcon from "@/assets/ticket.webp";
-import useBalanceQuery from "@/hooks/useBalanceQuery";
+import TicketIcon from "../assets/ticket.webp";
+import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
 
-export default function BalanceDisplay() {
-  const query = useBalanceQuery();
+export default function BlumBalanceDisplay() {
+  const query = useBlumBalanceQuery();
 
   return (
     <div className="py-4 text-center">

@@ -1,17 +1,17 @@
-import useClaimTaskMutation from "@/hooks/useClaimTaskMutation";
-import useStartTaskMutation from "@/hooks/useStartTaskMutation";
-import useTasksQuery from "@/hooks/useTasksQuery";
 import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import Button from "./Button";
+import BlumButton from "./BlumButton";
+import useBlumClaimTaskMutation from "../hooks/useBlumClaimTaskMutation";
+import useBlumStartTaskMutation from "../hooks/useBlumStartTaskMutation";
+import useBlumTasksQuery from "../hooks/useBlumTasksQuery";
 
-export default function AutoTasks() {
+export default function BlumAutoTasks() {
   const client = useQueryClient();
-  const query = useTasksQuery();
+  const query = useBlumTasksQuery();
 
   const tasks = useMemo(
     () =>
@@ -42,8 +42,8 @@ export default function AutoTasks() {
   const [taskOffset, setTaskOffset] = useState(null);
   const [action, setAction] = useState(null);
 
-  const startTaskMutation = useStartTaskMutation();
-  const claimTaskMutation = useClaimTaskMutation();
+  const startTaskMutation = useBlumStartTaskMutation();
+  const claimTaskMutation = useBlumClaimTaskMutation();
 
   /** Handle button click */
   const handleAutoClaimClick = () => {
@@ -96,6 +96,9 @@ export default function AutoTasks() {
         await client.refetchQueries({
           queryKey: ["tasks"],
         });
+        await client.refetchQueries({
+          queryKey: ["balance"],
+        });
         setAutoClaiming(false);
         setAction(null);
         setCurrentTask(null);
@@ -125,7 +128,7 @@ export default function AutoTasks() {
 
           <div className="flex flex-col gap-2 py-2">
             {/* Start Button */}
-            <Button
+            <BlumButton
               color={autoClaiming ? "danger" : "primary"}
               onClick={handleAutoClaimClick}
               disabled={
@@ -134,7 +137,7 @@ export default function AutoTasks() {
               }
             >
               {autoClaiming ? "Stop" : "Start"}
-            </Button>
+            </BlumButton>
 
             {autoClaiming && currentTask ? (
               <div className="flex flex-col gap-2 p-4 rounded-lg bg-neutral-800">

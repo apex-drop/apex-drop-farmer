@@ -1,13 +1,13 @@
 import Countdown from "react-countdown";
-import useBalanceQuery from "@/hooks/useBalanceQuery";
-import useClaimGameMutation from "@/hooks/useClaimGameMutation";
-import useStartGameMutation from "@/hooks/useStartGameMutation";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import Button from "./Button";
-import Input from "./Input";
+import BlumButton from "./BlumButton";
+import BlumInput from "./BlumInput";
+import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
+import useBlumClaimGameMutation from "../hooks/useBlumClaimGameMutation";
+import useBlumStartGameMutation from "../hooks/useBlumStartGameMutation";
 
 const GAME_DURATION = 30 * 1000;
 const EXTRA_DELAY = 3 * 1000;
@@ -20,8 +20,8 @@ const delay = (length) =>
     setTimeout(res, length);
   });
 
-export default function () {
-  const query = useBalanceQuery();
+export default function Blum() {
+  const query = useBlumBalanceQuery();
   const client = useQueryClient();
 
   const [autoPlaying, setAutoPlaying] = useState(false);
@@ -31,8 +31,8 @@ export default function () {
   const tickets = query.data?.playPasses || 0;
   const points = Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint));
 
-  const startGameMutation = useStartGameMutation();
-  const claimGameMutation = useClaimGameMutation(points);
+  const startGameMutation = useBlumStartGameMutation();
+  const claimGameMutation = useBlumClaimGameMutation(points);
 
   /** Countdown renderer */
   const countdownRenderer = ({ seconds }) => (
@@ -81,7 +81,7 @@ export default function () {
     <div className="flex flex-col gap-2">
       {tickets > 0 ? (
         <>
-          <Input
+          <BlumInput
             disabled={autoPlaying || !tickets}
             value={desiredPoint}
             onInput={(ev) => setDesiredPoint(ev.target.value)}
@@ -97,13 +97,13 @@ export default function () {
       ) : null}
 
       {/* Start or Stop Button  */}
-      <Button
+      <BlumButton
         color={autoPlaying ? "danger" : "primary"}
         disabled={!tickets}
         onClick={handleAutoPlayClick}
       >
         {autoPlaying ? "Stop" : "Start"}
-      </Button>
+      </BlumButton>
 
       {autoPlaying ? (
         <div className="flex flex-col gap-2 p-4 rounded-lg bg-neutral-800">

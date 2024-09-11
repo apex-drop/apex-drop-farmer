@@ -1,15 +1,18 @@
-import AuthDetect from "@/components/AuthDetect";
-import Farmer from "@/components/Farmer";
+import Blum from "@/drops/blum/Blum";
+import Welcome from "@/pages/Welcome";
+import { Route } from "react-router-dom";
+import { Routes } from "react-router-dom";
 
-import AuthContext from "./context/AuthContext";
-import useAuthorizationHeader from "./hooks/useAuthorizationHeader";
+import DropLayout from "./layouts/DropLayout";
 
 function App() {
-  const auth = useAuthorizationHeader();
   return (
-    <AuthContext.Provider value={auth}>
-      {auth ? <Farmer /> : <AuthDetect />}
-    </AuthContext.Provider>
+    <Routes>
+      <Route index element={<Welcome />} />
+      <Route element={<DropLayout />}>
+        <Route path="/blum" element={<Blum />} />
+      </Route>
+    </Routes>
   );
 }
 

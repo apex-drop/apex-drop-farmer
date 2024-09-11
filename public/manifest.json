@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Blum Farmer",
-  "description": "Blum airdrop farmer",
+  "name": "Apex Drop Farmer",
+  "description": "Apex Drop Farmer",
   "version": "1.0",
   "icons": {
     "16": "icon-16.png",
@@ -17,13 +17,24 @@
   ],
   "action": {
     "default_icon": "icon-48.png",
-    "default_title": "Open Blum Farmer",
+    "default_title": "Open Apex Drop Farmer",
     "default_popup": "index.html"
   },
   "side_panel": {
     "default_path": "index.html"
   },
-  "host_permissions": ["*://*.blum.codes/*"],
+  "host_permissions": ["*://*.blum.codes/*", "*://*.pumpad.io/*"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.tomarket.ai/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true,
+      "world": "MAIN"
+    }
+  ],
   "background": {
     "service_worker": "service-worker.js",
     "type": "module"
@@ -34,6 +45,11 @@
         "id": "blum_ruleset",
         "enabled": true,
         "path": "blum_rules.json"
+      },
+      {
+        "id": "pumpad_ruleset",
+        "enabled": true,
+        "path": "pumpad_rules.json"
       }
     ]
   }

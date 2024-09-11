@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 
-import useAuth from "./useAuth";
+import useBlumAuth from "./useBlumAuth";
 
-export default function useClaimGameMutation(points) {
-  const auth = useAuth();
+export default function useBlumClaimGameMutation(points) {
+  const auth = useBlumAuth();
   return useMutation({
     mutationKey: ["game", "claim", points],
     mutationFn: (id) =>

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export default function Button({ color = "primary", ...props }) {
+export default function BlumButton({ color = "primary", ...props }) {
   return (
     <button
       className={cn(

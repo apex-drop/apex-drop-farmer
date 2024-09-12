@@ -52,9 +52,19 @@ export default function BlumAutoTasks() {
   const claimTaskMutation = useBlumClaimTaskMutation();
   const validateTaskMutation = useBlumValidateTaskMutation();
 
+  const resetTask = () => {
+    setCurrentTask(null);
+    setTaskOffset(null);
+  };
+
+  const reset = () => {
+    resetTask();
+    setAction(null);
+  };
+
   /** Handle button click */
   const handleAutoClaimClick = () => {
-    setAction(null);
+    reset();
     setAutoClaiming((previous) => !previous);
   };
 
@@ -91,9 +101,9 @@ export default function BlumAutoTasks() {
             await delay(1000);
           }
 
-          // Set Next Task
+          // Set Next Action
           await refetchTasks();
-          setCurrentTask(null);
+          resetTask();
           setAction("verify");
 
           return;
@@ -109,9 +119,9 @@ export default function BlumAutoTasks() {
             await delay(1000);
           }
 
-          // Set Next Task
+          // Set Next Action
           await refetchTasks();
-          setCurrentTask(null);
+          resetTask();
           setAction("claim");
           return;
 
@@ -131,8 +141,7 @@ export default function BlumAutoTasks() {
       await refetchTasks();
       await refetchBalance();
 
-      setAction(null);
-      setCurrentTask(null);
+      resetTask();
       setAutoClaiming(false);
     })();
   }, [autoClaiming, action]);

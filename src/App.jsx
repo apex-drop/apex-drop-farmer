@@ -8,6 +8,8 @@ import { Route } from "react-router-dom";
 import { Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
+import Slotcoin from "./drops/slotcoin/Slotcoin";
+
 function App() {
   return (
     <>
@@ -18,6 +20,7 @@ function App() {
           <Route path="/pumpad" element={<Pumpad />} />
           <Route path="/agent301" element={<Agent301 />} />
           <Route path="/major" element={<Major />} />
+          <Route path="/slotcoin" element={<Slotcoin />} />
         </Route>
       </Routes>
       <Toaster position="top-center" />

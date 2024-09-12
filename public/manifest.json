@@ -27,7 +27,8 @@
     "*://*.blum.codes/*",
     "*://*.pumpad.io/*",
     "*://*.agent301.org/*",
-    "*://*.major.bot/*"
+    "*://*.major.bot/*",
+    "*://*.slotcoin.app/*"
   ],
   "content_scripts": [
     {

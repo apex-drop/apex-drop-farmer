@@ -5,7 +5,16 @@ import { createRoot } from "react-dom/client";
 
 import App from "./App.jsx";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: true,
+    },
+    mutations: {
+      retry: true,
+    },
+  },
+});
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

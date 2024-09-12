@@ -50,7 +50,7 @@ export default function Blum() {
       return;
     }
 
-    if (!tickets) {
+    if (tickets < 1) {
       setAutoPlaying(false);
       return;
     }
@@ -63,6 +63,9 @@ export default function Blum() {
         setCountdown(Date.now() + GAME_DURATION);
         await delay(GAME_DURATION);
 
+        /** Reset countdown */
+        setCountdown(null);
+
         /** Claim Game */
         await claimGameMutation.mutateAsync(game.gameId);
 
@@ -74,8 +77,6 @@ export default function Blum() {
       await client.refetchQueries({
         queryKey: ["blum", "balance"],
       });
-      await startGameMutation.reset();
-      await claimGameMutation.reset();
     })();
   }, [autoPlaying, tickets]);
 
@@ -84,7 +85,7 @@ export default function Blum() {
       {tickets > 0 ? (
         <>
           <BlumInput
-            disabled={autoPlaying || !tickets}
+            disabled={autoPlaying || tickets < 1}
             value={desiredPoint}
             onInput={(ev) => setDesiredPoint(ev.target.value)}
             type="number"
@@ -101,7 +102,7 @@ export default function Blum() {
       {/* Start or Stop Button  */}
       <BlumButton
         color={autoPlaying ? "danger" : "primary"}
-        disabled={!tickets}
+        disabled={tickets < 1}
         onClick={handleAutoPlayClick}
       >
         {autoPlaying ? "Stop" : "Start"}
@@ -120,7 +121,13 @@ export default function Blum() {
                 GAME ID: {startGameMutation.data?.gameId}
               </p>
               <p>
-                {claimGameMutation.isPending ? (
+                {countdown ? (
+                  <Countdown
+                    key={countdown}
+                    date={countdown}
+                    renderer={countdownRenderer}
+                  />
+                ) : claimGameMutation.isPending ? (
                   <span className="text-yellow-500">Claiming points...</span>
                 ) : claimGameMutation.isError ? (
                   <span className="text-red-500">
@@ -130,13 +137,7 @@ export default function Blum() {
                   <span className="font-bold text-blum-green-500">
                     Points claimed. (Refreshing...)
                   </span>
-                ) : (
-                  <Countdown
-                    key={countdown}
-                    date={countdown}
-                    renderer={countdownRenderer}
-                  />
-                )}
+                ) : null}
               </p>
             </>
           ) : (

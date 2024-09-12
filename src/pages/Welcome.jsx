@@ -3,6 +3,7 @@ import AppIcon from "@/assets/images/icon.png";
 import BlumIcon from "@/drops/blum/assets/images/icon.png";
 import MajorIcon from "@/drops/major/assets/images/icon.png";
 import PumpadIcon from "@/drops/pumpad/assets/images/icon.png";
+import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png";
 import { Link } from "react-router-dom";
 
 const drops = [
@@ -25,6 +26,11 @@ const drops = [
     title: "Agent 301",
     path: "/agent301",
     icon: Agent301Icon,
+  },
+  {
+    title: "Slotcoin",
+    path: "/slotcoin",
+    icon: SlotcoinIcon,
   },
 ];
 

@@ -6,7 +6,6 @@ import useMajorAuth from "./useMajorAuth";
 export default function useMajorUserQuery() {
   const Authorization = useMajorAuth();
   const streakQuery = useQuery({
-    retry: true,
     queryKey: ["major", "streak"],
     queryFn: () =>
       axios
@@ -20,7 +19,6 @@ export default function useMajorUserQuery() {
   });
 
   const userQuery = useQuery({
-    retry: true,
     enabled: streakQuery.isSuccess,
     queryKey: ["major", "user", streakQuery.data?.["user_id"]],
     queryFn: () =>

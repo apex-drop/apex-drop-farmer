@@ -6,7 +6,6 @@ import useBlumAuth from "./useBlumAuth";
 export default function useBlumBalanceQuery() {
   const auth = useBlumAuth();
   return useQuery({
-    retry: true,
     queryKey: ["blum", "balance"],
     queryFn: () =>
       axios

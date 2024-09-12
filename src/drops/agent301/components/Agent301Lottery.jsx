@@ -1,19 +1,16 @@
 import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
-import { useMemo } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import useAgent301BalanceQuery from "../hooks/useAgent301BalanceQuery";
 import useAgent301LotteryMutation from "../hooks/useAgent301LotteryMutation";
 
 export default function Agent301Lottery() {
-  const client = useQueryClient();
+  const [autoSpin, setAutoSpin] = useState(false);
+
   const balanceQuery = useAgent301BalanceQuery();
   const result = balanceQuery.data?.result;
-
-  const tickets = useMemo(() => result?.tickets, [result]);
-  const [autoSpin, setAutoSpin] = useState(false);
+  const tickets = result?.tickets;
 
   const spinMutation = useAgent301LotteryMutation();
 
@@ -27,7 +24,7 @@ export default function Agent301Lottery() {
       return;
     }
 
-    if (!tickets) {
+    if (tickets < 1) {
       setAutoSpin(false);
       return;
     }
@@ -37,9 +34,7 @@ export default function Agent301Lottery() {
 
       await delay(10_000);
 
-      await client.refetchQueries({
-        queryKey: ["agent301", "balance"],
-      });
+      await balanceQuery.refetch();
     })();
   }, [autoSpin, tickets]);
 
@@ -56,7 +51,7 @@ export default function Agent301Lottery() {
         // Success
         <div className="flex flex-col gap-2">
           <button
-            disabled={!tickets}
+            disabled={tickets < 1}
             onClick={handleAutoSpinClick}
             className={cn(
               "p-2 rounded-lg disabled:opacity-50",

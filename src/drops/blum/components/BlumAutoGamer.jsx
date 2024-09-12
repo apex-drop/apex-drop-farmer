@@ -56,17 +56,19 @@ export default function Blum() {
     }
 
     (async function () {
-      const game = await startGameMutation.mutateAsync();
+      try {
+        const game = await startGameMutation.mutateAsync();
 
-      /** Wait for countdown */
-      setCountdown(Date.now() + GAME_DURATION);
-      await delay(GAME_DURATION);
+        /** Wait for countdown */
+        setCountdown(Date.now() + GAME_DURATION);
+        await delay(GAME_DURATION);
 
-      /** Claim Game */
-      await claimGameMutation.mutateAsync(game.gameId);
+        /** Claim Game */
+        await claimGameMutation.mutateAsync(game.gameId);
 
-      /** Add a little delay */
-      await delay(EXTRA_DELAY);
+        /** Add a little delay */
+        await delay(EXTRA_DELAY);
+      } catch {}
 
       /** Reset Mutation */
       await client.refetchQueries({

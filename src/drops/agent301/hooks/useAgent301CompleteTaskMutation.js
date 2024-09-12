@@ -1,15 +1,15 @@
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import useAgent301Auth from "./useAgent301Auth";
 
-export default function useAgent301LotteryQuery() {
+export default function useAgent301CompleteTaskMutation() {
   const Authorization = useAgent301Auth();
-  return useQuery({
-    queryKey: ["agent301", "lottery"],
-    queryFn: () =>
+  return useMutation({
+    mutationKey: ["agent301", "task", "complete"],
+    mutationFn: (data) =>
       axios
-        .get("https://tg.Agent301.io/referral/api/v1/lottery", {
+        .post("https://api.agent301.org/completeTask", data, {
           withCredentials: true,
           headers: {
             Authorization,

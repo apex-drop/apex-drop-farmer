@@ -1,16 +1,18 @@
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
+import useAgent301BalanceQuery from "../hooks/useAgent301BalanceQuery";
 import useAgent301LotteryMutation from "../hooks/useAgent301LotteryMutation";
-import useAgent301LotteryQuery from "../hooks/useAgent301LotteryQuery";
 
 export default function Agent301Lottery() {
   const client = useQueryClient();
-  const query = useAgent301LotteryQuery();
-  const drawCount = useMemo(() => query.data?.["draw_count"], [query.data]);
+  const balanceQuery = useAgent301BalanceQuery();
+  const result = balanceQuery.data?.result;
+
+  const tickets = useMemo(() => result?.tickets, [result]);
   const [autoSpin, setAutoSpin] = useState(false);
 
   const spinMutation = useAgent301LotteryMutation();
@@ -25,41 +27,40 @@ export default function Agent301Lottery() {
       return;
     }
 
-    if (!drawCount) {
+    if (!tickets) {
       setAutoSpin(false);
       return;
     }
 
     (async function () {
       await spinMutation.mutateAsync();
-      /** Fetch Lottery */
+
+      await delay(10_000);
+
       await client.refetchQueries({
-        queryKey: ["Agent301", "lottery"],
+        queryKey: ["agent301", "balance"],
       });
-      await spinMutation.reset();
     })();
-  }, [autoSpin, drawCount]);
+  }, [autoSpin, tickets]);
 
   return (
     <div className="p-4">
-      {query.isPending ? (
-        <div className="flex justify-center">Fetching Lottery...</div>
+      {balanceQuery.isPending ? (
+        <div className="flex justify-center">Loading...</div>
       ) : // Error
-      query.isError ? (
+      balanceQuery.isError ? (
         <div className="flex justify-center text-red-500">
-          Failed to fetch lottery...
+          Failed to fetch tickets...
         </div>
       ) : (
         // Success
         <div className="flex flex-col gap-2">
-          <h3 className="text-2xl font-bold text-center">{drawCount}</h3>
-
           <button
-            disabled={!drawCount}
+            disabled={!tickets}
             onClick={handleAutoSpinClick}
             className={cn(
-              "p-2 text-black rounded-lg disabled:opacity-50",
-              autoSpin ? "bg-red-500" : "bg-Agent301-green-500"
+              "p-2 rounded-lg disabled:opacity-50",
+              autoSpin ? "bg-red-500 text-black" : "bg-white text-black"
             )}
           >
             {autoSpin ? "Stop" : "Start"}

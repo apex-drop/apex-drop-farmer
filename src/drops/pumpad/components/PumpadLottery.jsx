@@ -9,11 +9,13 @@ import usePumpadLotteryQuery from "../hooks/usePumpadLotteryQuery";
 
 export default function PumpadLottery() {
   const client = useQueryClient();
+
   const query = usePumpadLotteryQuery();
   const drawCount = useMemo(() => query.data?.["draw_count"], [query.data]);
-  const [autoSpin, setAutoSpin] = useState(false);
 
   const spinMutation = usePumpadLotteryMutation();
+
+  const [autoSpin, setAutoSpin] = useState(false);
 
   /** Handle button click */
   const handleAutoSpinClick = () => {
@@ -32,11 +34,10 @@ export default function PumpadLottery() {
 
     (async function () {
       await spinMutation.mutateAsync();
-      /** Fetch Lottery */
-      await client.refetchQueries({
-        queryKey: ["pumpad", "lottery"],
+
+      client.setQueryData(["pumpad", "lottery"], (previous) => {
+        return { ...previous, draw_count: previous["draw_count"] - 1 };
       });
-      await spinMutation.reset();
     })();
   }, [autoSpin, drawCount]);
 
@@ -53,13 +54,16 @@ export default function PumpadLottery() {
         // Success
         <div className="flex flex-col gap-2">
           <h3 className="text-2xl font-bold text-center">{drawCount}</h3>
+          <p className="text-center text-neutral-500">Lottery</p>
 
+          {/* Auto Spin Button */}
           <button
             disabled={!drawCount}
             onClick={handleAutoSpinClick}
             className={cn(
               "p-2 text-black rounded-lg disabled:opacity-50",
-              autoSpin ? "bg-red-500" : "bg-pumpad-green-500"
+              autoSpin ? "bg-red-500" : "bg-pumpad-green-500",
+              "font-bold"
             )}
           >
             {autoSpin ? "Stop" : "Start"}

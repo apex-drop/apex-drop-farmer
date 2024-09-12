@@ -9,7 +9,7 @@ export default function useAgent301TasksQuery() {
     queryKey: ["agent301", "tasks"],
     queryFn: () =>
       axios
-        .get("https://api.agent301.org/getTasks", null, {
+        .post("https://api.agent301.org/getTasks", null, {
           withCredentials: true,
           headers: {
             Authorization,

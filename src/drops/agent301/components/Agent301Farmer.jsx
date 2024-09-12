@@ -1,7 +1,10 @@
-import { cn } from "@/lib/utils";
-import Agent301Icon from "../assets/images/icon.png";
-import Agent301BalanceDisplay from "./Agent301BalanceDisplay";
 import * as Tabs from "@radix-ui/react-tabs";
+import { cn } from "@/lib/utils";
+
+import Agent301BalanceDisplay from "./Agent301BalanceDisplay";
+import Agent301Icon from "../assets/images/icon.png";
+import Agent301Lottery from "./Agent301Lottery";
+import Agent301Tasks from "./Agent301Tasks";
 
 export default function Agent301Farmer() {
   return (
@@ -31,8 +34,12 @@ export default function Agent301Farmer() {
             </Tabs.Trigger>
           ))}
         </Tabs.List>
-        <Tabs.Content value="tickets">{/* Nothing */}</Tabs.Content>
-        <Tabs.Content value="tasks">{/* Nothing */}</Tabs.Content>
+        <Tabs.Content value="tickets">
+          <Agent301Lottery />
+        </Tabs.Content>
+        <Tabs.Content value="tasks">
+          <Agent301Tasks />
+        </Tabs.Content>
       </Tabs.Root>
     </div>
   );

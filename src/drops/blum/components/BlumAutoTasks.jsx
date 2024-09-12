@@ -8,6 +8,7 @@ import BlumButton from "./BlumButton";
 import useBlumClaimTaskMutation from "../hooks/useBlumClaimTaskMutation";
 import useBlumStartTaskMutation from "../hooks/useBlumStartTaskMutation";
 import useBlumTasksQuery from "../hooks/useBlumTasksQuery";
+import useBlumValidateTaskMutation from "../hooks/useBlumValidateTaskMutation";
 
 export default function BlumAutoTasks() {
   const client = useQueryClient();
@@ -37,6 +38,11 @@ export default function BlumAutoTasks() {
     [tasks]
   );
 
+  const unverifiedTasks = useMemo(
+    () => tasks.filter((item) => item.status === "READY_FOR_VERIFY"),
+    [tasks]
+  );
+
   const [autoClaiming, setAutoClaiming] = useState(false);
   const [currentTask, setCurrentTask] = useState(null);
   const [taskOffset, setTaskOffset] = useState(null);
@@ -44,6 +50,7 @@ export default function BlumAutoTasks() {
 
   const startTaskMutation = useBlumStartTaskMutation();
   const claimTaskMutation = useBlumClaimTaskMutation();
+  const validateTaskMutation = useBlumValidateTaskMutation();
 
   /** Handle button click */
   const handleAutoClaimClick = () => {
@@ -51,60 +58,84 @@ export default function BlumAutoTasks() {
     setAutoClaiming((previous) => !previous);
   };
 
+  const refetchTasks = () =>
+    client.refetchQueries({
+      queryKey: ["blum", "tasks"],
+    });
+
+  const refetchBalance = () =>
+    client.refetchQueries({
+      queryKey: ["blum", "balance"],
+    });
+
   useEffect(() => {
     if (!autoClaiming) {
       return;
     }
 
-    (async function name() {
+    (async function () {
       if (!action) {
         setAction("start");
         return;
       }
+      switch (action) {
+        case "start":
+          /** Beginning of Start Action */
+          setAction("start");
+          for (let [index, task] of Object.entries(pendingTasks)) {
+            setTaskOffset(index);
+            setCurrentTask(task);
+            try {
+              await startTaskMutation.mutateAsync(task.id);
+            } catch {}
+            await delay(1000);
+          }
 
-      if (action === "start") {
-        /** Beginning of Start Action */
-        for (let [index, task] of Object.entries(pendingTasks)) {
-          setTaskOffset(index);
-          setCurrentTask(task);
-          try {
-            await startTaskMutation.mutateAsync(task.id);
-          } catch {}
-          await delay(1000);
-          await startTaskMutation.reset();
-        }
-        await client.refetchQueries({
-          queryKey: ["blum", "tasks"],
-        });
+          // Set Next Task
+          await refetchTasks();
+          setCurrentTask(null);
+          setAction("verify");
 
-        setCurrentTask(null);
-        setAction("claim");
+          return;
+        case "verify":
+          /** Verify */
+          for (let [index, task] of Object.entries(unverifiedTasks)) {
+            setTaskOffset(index);
+            setCurrentTask(task);
+            try {
+              let keyword = prompt(`Keyword: ${task.title}`);
+              await validateTaskMutation.mutateAsync({ id: task.id, keyword });
+            } catch {}
+            await delay(1000);
+          }
 
-        /** End of Start Action */
-      } else if (action === "claim") {
-        /** Claim */
-        for (let [index, task] of Object.entries(unclaimedTasks)) {
-          setTaskOffset(index);
-          setCurrentTask(task);
-          try {
-            await claimTaskMutation.mutateAsync(task.id);
-          } catch {}
-          await delay(1000);
-          await claimTaskMutation.reset();
-        }
+          // Set Next Task
+          await refetchTasks();
+          setCurrentTask(null);
+          setAction("claim");
+          return;
 
-        await client.refetchQueries({
-          queryKey: ["blum", "tasks"],
-        });
-        await client.refetchQueries({
-          queryKey: ["blum", "balance"],
-        });
-        setAutoClaiming(false);
-        setAction(null);
-        setCurrentTask(null);
+        case "claim":
+          /** Claim */
+          for (let [index, task] of Object.entries(unclaimedTasks)) {
+            setTaskOffset(index);
+            setCurrentTask(task);
+            try {
+              await claimTaskMutation.mutateAsync({ id: task.id });
+            } catch {}
+            await delay(1000);
+          }
+          break;
       }
+
+      await refetchTasks();
+      await refetchBalance();
+
+      setAction(null);
+      setCurrentTask(null);
+      setAutoClaiming(false);
     })();
-  }, [action, autoClaiming]);
+  }, [autoClaiming, action]);
 
   return (
     <div className="flex flex-col py-2">
@@ -122,6 +153,10 @@ export default function BlumAutoTasks() {
           <h4 className="font-bold text-yellow-500">
             Pending Tasks: {pendingTasks.length}
           </h4>
+          <h4 className="font-bold text-blue-500">
+            Unverified Tasks: {unverifiedTasks.length}
+          </h4>
+
           <h4 className="font-bold text-purple-500">
             Unclaimed Tasks: {unclaimedTasks.length}
           </h4>
@@ -150,7 +185,11 @@ export default function BlumAutoTasks() {
                         : "text-blum-green-500"
                     }
                   >
-                    {action === "start" ? "Starting Task" : "Claiming Task"}{" "}
+                    {action === "start"
+                      ? "Starting Task"
+                      : action === "verify"
+                      ? "Verifying Task"
+                      : "Claiming Task"}{" "}
                     {+taskOffset + 1}
                   </span>
                 </h4>
@@ -164,12 +203,16 @@ export default function BlumAutoTasks() {
                     }[
                       action === "start"
                         ? startTaskMutation.status
+                        : action === "verify"
+                        ? validateTaskMutation.status
                         : claimTaskMutation.status
                     ]
                   )}
                 >
                   {action === "start"
                     ? startTaskMutation.status
+                    : action === "verify"
+                    ? validateTaskMutation.status
                     : claimTaskMutation.status}
                 </p>
               </div>

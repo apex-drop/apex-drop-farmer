@@ -9,12 +9,16 @@ export default function useAgent301LotteryMutation() {
     mutationKey: ["agent301", "lottery", "spin"],
     mutationFn: () =>
       axios
-        .post("https://tg.Agent301.io/referral/api/v1/lottery", null, {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
+        .post(
+          "https://api.agent301.org/wheel/spin",
+          {},
+          {
+            withCredentials: true,
+            headers: {
+              Authorization,
+            },
+          }
+        )
         .then((res) => res.data),
   });
 }

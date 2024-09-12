@@ -26,7 +26,8 @@
   "host_permissions": [
     "*://*.blum.codes/*",
     "*://*.pumpad.io/*",
-    "*://*.agent301.org/*"
+    "*://*.agent301.org/*",
+    "*://*.major.bot/*"
   ],
   "content_scripts": [
     {

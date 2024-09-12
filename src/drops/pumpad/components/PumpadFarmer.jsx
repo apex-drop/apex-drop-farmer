@@ -7,7 +7,11 @@ export default function PumpadFarmer() {
     <div className="flex flex-col gap-2">
       {/* Header */}
       <div className="flex items-center justify-center gap-2">
-        <img src={PumpadIcon} alt="Pumpad Farmer" className="w-8 h-8" />
+        <img
+          src={PumpadIcon}
+          alt="Pumpad Farmer"
+          className="w-8 h-8 rounded-full"
+        />
         <h1 className="font-bold">Pumpad Farmer</h1>
       </div>
 

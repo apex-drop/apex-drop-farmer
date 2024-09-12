@@ -10,6 +10,9 @@ export default function MajorSwipeCoin() {
   const game = useMajorGame();
   const Authorization = useMajorAuth();
   const startMutation = useMutation({
+    retry(failureCount, e) {
+      return !e.response?.data?.detail?.["blocked_until"];
+    },
     mutationKey: ["major", "swipe-coin", "start"],
     mutationFn: () =>
       axios

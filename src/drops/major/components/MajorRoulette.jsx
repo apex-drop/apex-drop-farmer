@@ -10,6 +10,9 @@ export default function MajorRoulette() {
   const game = useMajorGame();
   const Authorization = useMajorAuth();
   const startMutation = useMutation({
+    retry(failureCount, e) {
+      return !e.response?.data?.detail?.["blocked_until"];
+    },
     mutationKey: ["major", "roulette", "start"],
     mutationFn: () =>
       axios

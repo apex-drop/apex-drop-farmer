@@ -10,6 +10,9 @@ export default function MajorHoldCoin() {
   const game = useMajorGame();
   const Authorization = useMajorAuth();
   const startMutation = useMutation({
+    retry(failureCount, e) {
+      return !e.response?.data?.detail?.["blocked_until"];
+    },
     mutationKey: ["major", "hold-coin", "start"],
     mutationFn: () =>
       axios

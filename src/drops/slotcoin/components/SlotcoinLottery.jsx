@@ -8,13 +8,13 @@ import useSlotcoinInfoQuery from "../hooks/useSlotcoinInfoQuery";
 
 export default function SlotcoinLottery() {
   const query = useSlotcoinInfoQuery();
-  const balance = query.data?.user?.balance || 0;
   const energy = query.data?.user?.spins || 0;
   const maxEnergy = query.data?.user?.["max_spins"] || 0;
 
   const spinMutation = useSlotcoinLotteryMutation();
 
   const [autoSpin, setAutoSpin] = useState(false);
+  const [updatedAt, setUpdatedAt] = useState(null);
 
   /** Handle button click */
   const handleAutoSpinClick = () => {
@@ -37,8 +37,10 @@ export default function SlotcoinLottery() {
       await delay(2_000);
 
       await query.refetch();
+
+      setUpdatedAt(Date.now());
     })();
-  }, [autoSpin, energy, balance]);
+  }, [autoSpin, energy, updatedAt]);
 
   return (
     <div className="p-4">

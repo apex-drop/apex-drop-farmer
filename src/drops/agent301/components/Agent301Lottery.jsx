@@ -7,6 +7,7 @@ import useAgent301LotteryMutation from "../hooks/useAgent301LotteryMutation";
 
 export default function Agent301Lottery() {
   const [autoSpin, setAutoSpin] = useState(false);
+  const [updatedAt, setUpdatedAt] = useState(null);
 
   const balanceQuery = useAgent301BalanceQuery();
   const result = balanceQuery.data?.result;
@@ -35,8 +36,10 @@ export default function Agent301Lottery() {
       await delay(10_000);
 
       await balanceQuery.refetch();
+
+      setUpdatedAt(Date.now());
     })();
-  }, [autoSpin, tickets]);
+  }, [autoSpin, tickets, updatedAt]);
 
   return (
     <div className="p-4">

@@ -1,18 +1,19 @@
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
+import useMajorUserQuery from "./useMajorUserQuery";
+
 export default function useMajorGame() {
   const client = useQueryClient();
+  const user = useMajorUserQuery();
+
   return async (start, claim) => {
     try {
       await start();
       await claim();
+      await user.refetch();
 
       toast.success("Claimed Successfully!");
-
-      client.refetchQueries({
-        queryKey: ["major", "user"],
-      });
     } catch (e) {
       // Catch Blocked
       const blocked = e.response?.data?.detail?.["blocked_until"];

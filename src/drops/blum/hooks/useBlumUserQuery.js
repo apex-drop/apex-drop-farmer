@@ -7,9 +7,10 @@ export default function useBlumUserQuery() {
   const auth = useBlumAuth();
   return useQuery({
     queryKey: ["blum", "user"],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
         .get("https://user-domain.blum.codes/api/v1/user/me", {
+          signal,
           headers: {
             Authorization: auth,
           },

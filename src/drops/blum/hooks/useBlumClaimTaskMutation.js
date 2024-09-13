@@ -9,7 +9,7 @@ export default function useBlumClaimTaskMutation() {
     mutationKey: ["blum", "task", "claim"],
     mutationFn: ({ id }) =>
       axios
-        .post(`https://game-domain.blum.codes/api/v1/tasks/${id}/claim`, null, {
+        .post(`https://earn-domain.blum.codes/api/v1/tasks/${id}/claim`, null, {
           headers: {
             Authorization: auth,
           },

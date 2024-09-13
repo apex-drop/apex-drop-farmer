@@ -16,8 +16,16 @@ export default function BlumAutoTasks() {
 
   const tasks = useMemo(
     () =>
-      query.data?.[0].subSections.reduce(
-        (all, group) => all.concat(group.tasks),
+      query.data?.reduce(
+        (all, section) =>
+          all
+            .concat(section.tasks)
+            .concat(
+              section.subSections.reduce(
+                (all, group) => all.concat(group.tasks),
+                []
+              )
+            ),
         []
       ) || [],
     [query.data]
@@ -29,7 +37,10 @@ export default function BlumAutoTasks() {
   );
 
   const pendingTasks = useMemo(
-    () => tasks.filter((item) => item.status === "NOT_STARTED"),
+    () =>
+      tasks.filter(
+        (item) => item.status === "NOT_STARTED" && item.kind !== "QUEST"
+      ),
     [tasks]
   );
 

@@ -7,9 +7,10 @@ export default function useSlotcoinInfoQuery() {
   const Authorization = useSlotcoinAuth();
   return useQuery({
     queryKey: ["slotcoin", "info"],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
         .post("https://api.slotcoin.app/v1/clicker/api/info", null, {
+          signal,
           withCredentials: true,
           headers: {
             Authorization,

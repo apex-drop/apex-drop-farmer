@@ -10,7 +10,7 @@ export default function useBlumValidateTaskMutation() {
     mutationFn: ({ id, keyword }) =>
       axios
         .post(
-          `https://game-domain.blum.codes/api/v1/tasks/${id}/validate`,
+          `https://earn-domain.blum.codes/api/v1/tasks/${id}/validate`,
           { keyword },
           {
             headers: {

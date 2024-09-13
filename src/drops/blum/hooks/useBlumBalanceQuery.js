@@ -7,9 +7,10 @@ export default function useBlumBalanceQuery() {
   const auth = useBlumAuth();
   return useQuery({
     queryKey: ["blum", "balance"],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
         .get("https://game-domain.blum.codes/api/v1/user/balance", {
+          signal,
           headers: {
             Authorization: auth,
           },

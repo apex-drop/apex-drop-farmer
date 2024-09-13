@@ -7,9 +7,10 @@ export default function useAgent301BalanceQuery() {
   const Authorization = useAgent301Auth();
   return useQuery({
     queryKey: ["agent301", "balance"],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
         .post("https://api.agent301.org/getMe", null, {
+          signal,
           withCredentials: true,
           headers: {
             Authorization,

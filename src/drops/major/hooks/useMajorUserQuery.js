@@ -7,7 +7,7 @@ export default function useMajorUserQuery() {
   const Authorization = useMajorAuth();
   const streakQuery = useQuery({
     queryKey: ["major", "streak"],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
         .get("https://major.bot/api/user-visits/streak/", {
           withCredentials: true,
@@ -21,9 +21,10 @@ export default function useMajorUserQuery() {
   const userQuery = useQuery({
     enabled: streakQuery.isSuccess,
     queryKey: ["major", "user", streakQuery.data?.["user_id"]],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
         .get(`https://major.bot/api/users/${streakQuery.data?.["user_id"]}/`, {
+          signal,
           withCredentials: true,
           headers: {
             Authorization,

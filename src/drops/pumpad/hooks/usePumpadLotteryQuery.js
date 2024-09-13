@@ -7,9 +7,10 @@ export default function usePumpadLotteryQuery() {
   const Authorization = usePumpadAuth();
   return useQuery({
     queryKey: ["pumpad", "lottery"],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
         .get("https://tg.pumpad.io/referral/api/v1/lottery", {
+          signal,
           withCredentials: true,
           headers: {
             Authorization,

@@ -27,7 +27,11 @@ export default function useBlumAuthorizationHeader() {
     chrome?.webRequest?.onSendHeaders.addListener(
       handleWebRequest,
       {
-        urls: ["*://game-domain.blum.codes/*"],
+        urls: [
+          "*://user-domain.blum.codes/*",
+          "*://earn-domain.blum.codes/*",
+          "*://game-domain.blum.codes/*",
+        ],
       },
       ["requestHeaders"]
     );

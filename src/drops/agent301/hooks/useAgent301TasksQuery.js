@@ -7,9 +7,10 @@ export default function useAgent301TasksQuery() {
   const Authorization = useAgent301Auth();
   return useQuery({
     queryKey: ["agent301", "tasks"],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
         .post("https://api.agent301.org/getTasks", null, {
+          signal,
           withCredentials: true,
           headers: {
             Authorization,

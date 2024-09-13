@@ -7,9 +7,10 @@ export default function useBlumTasksQuery() {
   const auth = useBlumAuth();
   return useQuery({
     queryKey: ["blum", "tasks"],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
-        .get("https://game-domain.blum.codes/api/v1/tasks", {
+        .get("https://earn-domain.blum.codes/api/v1/tasks", {
+          signal,
           headers: {
             Authorization: auth,
           },

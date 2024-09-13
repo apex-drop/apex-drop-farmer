@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "1.0",
+  "version": "0.0.1",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -25,6 +25,7 @@
   },
   "host_permissions": [
     "*://*.blum.codes/*",
+    "*://*.gamee.com/*",
     "*://*.pumpad.io/*",
     "*://*.agent301.org/*",
     "*://*.major.bot/*",
@@ -56,6 +57,11 @@
         "id": "pumpad_ruleset",
         "enabled": true,
         "path": "pumpad_rules.json"
+      },
+      {
+        "id": "gamee_ruleset",
+        "enabled": true,
+        "path": "gamee_rules.json"
       }
     ]
   }

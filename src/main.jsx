@@ -12,7 +12,7 @@ const queryClient = new QueryClient({
     },
     mutations: {
       retry(failureCount, error) {
-        return !error?.response;
+        return !error?.response || failureCount < 3;
       },
     },
   },

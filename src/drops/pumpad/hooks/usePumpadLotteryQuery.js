@@ -6,6 +6,7 @@ import usePumpadAuth from "./usePumpadAuth";
 export default function usePumpadLotteryQuery() {
   const Authorization = usePumpadAuth();
   return useQuery({
+    refetchInterval: 5000,
     queryKey: ["pumpad", "lottery"],
     queryFn: ({ signal }) =>
       axios

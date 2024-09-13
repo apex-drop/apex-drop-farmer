@@ -6,6 +6,7 @@ import useSlotcoinAuth from "./useSlotcoinAuth";
 export default function useSlotcoinInfoQuery() {
   const Authorization = useSlotcoinAuth();
   return useQuery({
+    refetchInterval: 5000,
     queryKey: ["slotcoin", "info"],
     queryFn: ({ signal }) =>
       axios

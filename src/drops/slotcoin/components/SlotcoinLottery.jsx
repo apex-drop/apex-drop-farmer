@@ -14,33 +14,40 @@ export default function SlotcoinLottery() {
   const spinMutation = useSlotcoinLotteryMutation();
 
   const [autoSpin, setAutoSpin] = useState(false);
-  const [updatedAt, setUpdatedAt] = useState(null);
+  const [working, setWorking] = useState(false);
 
   /** Handle button click */
   const handleAutoSpinClick = () => {
     setAutoSpin((previous) => !previous);
+    setWorking(false);
   };
 
   useEffect(() => {
-    if (!autoSpin) {
+    if (!autoSpin || working) {
       return;
     }
 
     if (energy < 1) {
       setAutoSpin(false);
+      setWorking(false);
       return;
     }
 
     (async function () {
-      await spinMutation.mutateAsync();
+      // Lock Process
+      setWorking(true);
 
-      await delay(2_000);
+      try {
+        await spinMutation.mutateAsync();
+        await delay(2_000);
+      } catch {}
 
       await query.refetch();
 
-      setUpdatedAt(Date.now());
+      // Release Lock
+      setWorking(false);
     })();
-  }, [autoSpin, energy, updatedAt]);
+  }, [autoSpin, energy, working]);
 
   return (
     <div className="p-4">

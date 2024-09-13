@@ -24,7 +24,7 @@ export default function Blum() {
   const query = useBlumBalanceQuery();
   const client = useQueryClient();
 
-  const [updatedAt, setUpdatedAt] = useState(null);
+  const [working, setWorking] = useState(false);
   const [autoPlaying, setAutoPlaying] = useState(false);
   const [countdown, setCountdown] = useState(null);
   const [desiredPoint, setDesiredPoint] = useState(INITIAL_POINT);
@@ -44,19 +44,24 @@ export default function Blum() {
   const handleAutoPlayClick = () => {
     setDesiredPoint(points);
     setAutoPlaying((previous) => !previous);
+    setWorking(false);
   };
 
   useEffect(() => {
-    if (!autoPlaying) {
+    if (!autoPlaying || working) {
       return;
     }
 
     if (tickets < 1) {
       setAutoPlaying(false);
+      setWorking(false);
       return;
     }
 
     (async function () {
+      /** Lock Process */
+      setWorking(true);
+
       try {
         const game = await startGameMutation.mutateAsync();
 
@@ -79,10 +84,10 @@ export default function Blum() {
         queryKey: ["blum", "balance"],
       });
 
-      /** Set last update */
-      setUpdatedAt(Date.now());
+      /** Release Lock */
+      setWorking(false);
     })();
-  }, [autoPlaying, tickets, updatedAt]);
+  }, [autoPlaying, tickets, working]);
 
   return (
     <div className="flex flex-col gap-2">

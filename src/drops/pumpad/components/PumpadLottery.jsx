@@ -1,45 +1,50 @@
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
-import { useMemo } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import usePumpadLotteryMutation from "../hooks/usePumpadLotteryMutation";
 import usePumpadLotteryQuery from "../hooks/usePumpadLotteryQuery";
 
 export default function PumpadLottery() {
-  const client = useQueryClient();
-
   const query = usePumpadLotteryQuery();
-  const drawCount = useMemo(() => query.data?.["draw_count"], [query.data]);
+  const drawCount = query.data?.["draw_count"] || 0;
 
   const spinMutation = usePumpadLotteryMutation();
 
+  const [working, setWorking] = useState(false);
   const [autoSpin, setAutoSpin] = useState(false);
 
   /** Handle button click */
   const handleAutoSpinClick = () => {
     setAutoSpin((previous) => !previous);
+    setWorking(false);
   };
 
   useEffect(() => {
-    if (!autoSpin) {
+    if (!autoSpin || working) {
       return;
     }
 
     if (!drawCount) {
       setAutoSpin(false);
+      setWorking(false);
       return;
     }
 
     (async function () {
-      await spinMutation.mutateAsync();
+      // Lock Process
+      setWorking(true);
 
-      client.setQueryData(["pumpad", "lottery"], (previous) => {
-        return { ...previous, draw_count: previous["draw_count"] - 1 };
-      });
+      try {
+        await spinMutation.mutateAsync();
+      } catch {}
+
+      await query.refetch();
+
+      // Release Lock
+      setWorking(false);
     })();
-  }, [autoSpin, drawCount]);
+  }, [autoSpin, drawCount, working]);
 
   return (
     <div className="p-4">

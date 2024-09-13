@@ -7,7 +7,7 @@ import useAgent301LotteryMutation from "../hooks/useAgent301LotteryMutation";
 
 export default function Agent301Lottery() {
   const [autoSpin, setAutoSpin] = useState(false);
-  const [updatedAt, setUpdatedAt] = useState(null);
+  const [working, setWorking] = useState(false);
 
   const balanceQuery = useAgent301BalanceQuery();
   const result = balanceQuery.data?.result;
@@ -18,28 +18,34 @@ export default function Agent301Lottery() {
   /** Handle button click */
   const handleAutoSpinClick = () => {
     setAutoSpin((previous) => !previous);
+    setWorking(false);
   };
 
   useEffect(() => {
-    if (!autoSpin) {
-      return;
-    }
+    if (!autoSpin || working) return;
 
     if (tickets < 1) {
       setAutoSpin(false);
+      setWorking(false);
       return;
     }
 
     (async function () {
-      await spinMutation.mutateAsync();
+      // Lock Process
+      setWorking(true);
 
-      await delay(10_000);
+      try {
+        await spinMutation.mutateAsync();
+
+        await delay(10_000);
+      } catch {}
 
       await balanceQuery.refetch();
 
-      setUpdatedAt(Date.now());
+      // Release Lock
+      setWorking(false);
     })();
-  }, [autoSpin, tickets, updatedAt]);
+  }, [autoSpin, tickets, working]);
 
   return (
     <div className="p-4">

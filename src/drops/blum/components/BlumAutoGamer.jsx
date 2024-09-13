@@ -24,6 +24,7 @@ export default function Blum() {
   const query = useBlumBalanceQuery();
   const client = useQueryClient();
 
+  const [updatedAt, setUpdatedAt] = useState(null);
   const [autoPlaying, setAutoPlaying] = useState(false);
   const [countdown, setCountdown] = useState(null);
   const [desiredPoint, setDesiredPoint] = useState(INITIAL_POINT);
@@ -77,8 +78,11 @@ export default function Blum() {
       await client.refetchQueries({
         queryKey: ["blum", "balance"],
       });
+
+      /** Set last update */
+      setUpdatedAt(Date.now());
     })();
-  }, [autoPlaying, tickets]);
+  }, [autoPlaying, tickets, updatedAt]);
 
   return (
     <div className="flex flex-col gap-2">

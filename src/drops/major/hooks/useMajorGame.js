@@ -18,7 +18,7 @@ export default function useMajorGame() {
       // Catch Blocked
       const blocked = e.response?.data?.detail?.["blocked_until"];
       if (blocked) {
-        toast.error(`Please wait until ${new Date(blocked)}`, {
+        toast.error(`Please wait until ${new Date(blocked * 1000)}`, {
           duration: 3000,
         });
       } else {

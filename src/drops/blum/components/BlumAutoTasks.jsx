@@ -10,31 +10,50 @@ import useBlumStartTaskMutation from "../hooks/useBlumStartTaskMutation";
 import useBlumTasksQuery from "../hooks/useBlumTasksQuery";
 import useBlumValidateTaskMutation from "../hooks/useBlumValidateTaskMutation";
 
+const reduceTasks = (tasks) =>
+  tasks.reduce((items, current) => {
+    if (current.subTasks) {
+      return items.concat(reduceTasks(current.subTasks));
+    }
+
+    return items.concat(current);
+  }, []);
+
 export default function BlumAutoTasks() {
   const client = useQueryClient();
   const query = useBlumTasksQuery();
 
-  const tasks = useMemo(
+  const rawTasks = useMemo(
     () =>
       query.data
-        ?.reduce(
-          (all, section) =>
-            all
-              .concat(section.tasks)
-              .concat(
-                section.subSections.reduce(
-                  (all, group) => all.concat(group.tasks),
-                  []
-                )
-              ),
-          []
-        )
-        .reduce((map, obj) => {
-          map.set(obj.id, obj);
-          return map;
-        }, new Map())
-        .values() || [],
+        ?.reduce((all, section) => {
+          return all
+            .concat(reduceTasks(section.tasks))
+            .concat(
+              section.subSections.reduce(
+                (all, group) => all.concat(reduceTasks(group.tasks)),
+                []
+              )
+            );
+        }, [])
+        .reduce((tasks, item) => {
+          if (!tasks.some((task) => task.id === item.id)) {
+            tasks.push(item);
+          }
+          return tasks;
+        }, []) || [],
     [query.data]
+  );
+
+  const tasks = useMemo(
+    () =>
+      rawTasks.reduce((tasks, item) => {
+        if (!tasks.some((task) => task.id === item.id)) {
+          tasks.push(item);
+        }
+        return tasks;
+      }, []),
+    [rawTasks]
   );
 
   const finishedTasks = useMemo(
@@ -45,7 +64,9 @@ export default function BlumAutoTasks() {
   const pendingTasks = useMemo(
     () =>
       tasks.filter(
-        (item) => item.status === "NOT_STARTED" && item.kind !== "QUEST"
+        (item) =>
+          item.status === "NOT_STARTED" &&
+          !["ONCHAIN_TRANSACTION", "QUEST"].includes(item.kind)
       ),
     [tasks]
   );

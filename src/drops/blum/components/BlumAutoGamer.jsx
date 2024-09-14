@@ -80,9 +80,11 @@ export default function Blum() {
       } catch {}
 
       /** Reset Mutation */
-      await client.refetchQueries({
-        queryKey: ["blum", "balance"],
-      });
+      try {
+        await client.refetchQueries({
+          queryKey: ["blum", "balance"],
+        });
+      } catch {}
 
       /** Release Lock */
       setWorking(false);

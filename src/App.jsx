@@ -9,6 +9,7 @@ import { Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import Slotcoin from "./drops/slotcoin/Slotcoin";
+import Truecoin from "./drops/truecoin/Truecoin";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/agent301" element={<Agent301 />} />
           <Route path="/major" element={<Major />} />
           <Route path="/slotcoin" element={<Slotcoin />} />
+          <Route path="/truecoin" element={<Truecoin />} />
         </Route>
       </Routes>
       <Toaster position="top-center" />

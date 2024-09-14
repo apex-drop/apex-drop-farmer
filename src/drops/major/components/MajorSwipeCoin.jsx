@@ -45,10 +45,7 @@ export default function MajorSwipeCoin() {
   const handleButtonClick = () => {
     game(
       () => startMutation.mutateAsync(),
-      () =>
-        claimMutation.mutateAsync(
-          Math.min(+prompt("Coins", "2000") || 2000, 3000)
-        )
+      () => claimMutation.mutateAsync(1100 + Math.floor(Math.random() * 20))
     );
   };
 

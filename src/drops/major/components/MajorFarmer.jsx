@@ -2,10 +2,11 @@ import { CgSpinner } from "react-icons/cg";
 import MajorIcon from "../assets/images/icon.png";
 import useMajorUserQuery from "../hooks/useMajorUserQuery";
 import MajorBalanceDisplay from "./MajorBalanceDisplay";
-import MajorHoldCoin from "./MajorHoldCoin";
-import MajorRoulette from "./MajorRoulette";
-import MajorSwipeCoin from "./MajorSwipeCoin";
 
+import * as Tabs from "@radix-ui/react-tabs";
+import { cn } from "@/lib/utils";
+import MajorGames from "./MajorGames";
+import MajorTasks from "./MajorTasks";
 export default function MajorFarmer() {
   const userQuery = useMajorUserQuery();
 
@@ -24,11 +25,29 @@ export default function MajorFarmer() {
       {userQuery.isSuccess ? (
         <>
           <MajorBalanceDisplay />
-          <div className="flex flex-col gap-2 py-4">
-            <MajorHoldCoin />
-            <MajorRoulette />
-            <MajorSwipeCoin />
-          </div>
+          <Tabs.Root defaultValue="games" className="flex flex-col gap-4">
+            <Tabs.List className="grid grid-cols-2">
+              {["games", "tasks"].map((value, index) => (
+                <Tabs.Trigger
+                  key={index}
+                  value={value}
+                  className={cn(
+                    "p-2",
+                    "border-b-2 border-transparent",
+                    "data-[state=active]:border-orange-500"
+                  )}
+                >
+                  {value.toUpperCase()}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+            <Tabs.Content value="games">
+              <MajorGames />
+            </Tabs.Content>
+            <Tabs.Content value="tasks">
+              <MajorTasks />
+            </Tabs.Content>
+          </Tabs.Root>
         </>
       ) : (
         <CgSpinner className="w-5 h-5 mx-auto animate-spin" />

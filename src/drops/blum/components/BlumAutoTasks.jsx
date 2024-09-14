@@ -16,18 +16,24 @@ export default function BlumAutoTasks() {
 
   const tasks = useMemo(
     () =>
-      query.data?.reduce(
-        (all, section) =>
-          all
-            .concat(section.tasks)
-            .concat(
-              section.subSections.reduce(
-                (all, group) => all.concat(group.tasks),
-                []
-              )
-            ),
-        []
-      ) || [],
+      query.data
+        ?.reduce(
+          (all, section) =>
+            all
+              .concat(section.tasks)
+              .concat(
+                section.subSections.reduce(
+                  (all, group) => all.concat(group.tasks),
+                  []
+                )
+              ),
+          []
+        )
+        .reduce((map, obj) => {
+          map.set(obj.id, obj);
+          return map;
+        }, new Map())
+        .values() || [],
     [query.data]
   );
 
@@ -113,7 +119,9 @@ export default function BlumAutoTasks() {
           }
 
           // Set Next Action
-          await refetchTasks();
+          try {
+            await refetchTasks();
+          } catch {}
           resetTask();
           setAction("verify");
 
@@ -131,7 +139,9 @@ export default function BlumAutoTasks() {
           }
 
           // Set Next Action
-          await refetchTasks();
+          try {
+            await refetchTasks();
+          } catch {}
           resetTask();
           setAction("claim");
           return;
@@ -149,8 +159,10 @@ export default function BlumAutoTasks() {
           break;
       }
 
-      await refetchTasks();
-      await refetchBalance();
+      try {
+        await refetchTasks();
+        await refetchBalance();
+      } catch {}
 
       resetTask();
       setAutoClaiming(false);

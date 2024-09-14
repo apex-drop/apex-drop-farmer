@@ -40,7 +40,9 @@ export default function Agent301Lottery() {
         await delay(10_000);
       } catch {}
 
-      await balanceQuery.refetch();
+      try {
+        await balanceQuery.refetch();
+      } catch {}
 
       // Release Lock
       setWorking(false);

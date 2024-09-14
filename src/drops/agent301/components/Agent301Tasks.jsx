@@ -75,9 +75,11 @@ export default function Agent301Tasks() {
       }
 
       // Refetch Tasks List
-      await client.refetchQueries({
-        queryKey: ["agent301", "tasks"],
-      });
+      try {
+        await client.refetchQueries({
+          queryKey: ["agent301", "tasks"],
+        });
+      } catch {}
 
       reset();
 
@@ -94,12 +96,14 @@ export default function Agent301Tasks() {
         await delay(1000);
       }
 
-      await client.refetchQueries({
-        queryKey: ["agent301", "tasks"],
-      });
-      await client.refetchQueries({
-        queryKey: ["agent301", "balance"],
-      });
+      try {
+        await client.refetchQueries({
+          queryKey: ["agent301", "tasks"],
+        });
+        await client.refetchQueries({
+          queryKey: ["agent301", "balance"],
+        });
+      } catch {}
 
       reset();
       setAutoClaiming(false);

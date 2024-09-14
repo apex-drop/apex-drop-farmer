@@ -4,6 +4,7 @@ import BlumIcon from "@/drops/blum/assets/images/icon.png";
 import MajorIcon from "@/drops/major/assets/images/icon.png";
 import PumpadIcon from "@/drops/pumpad/assets/images/icon.png";
 import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png";
+import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png";
 import { Link } from "react-router-dom";
 
 const drops = [
@@ -31,6 +32,11 @@ const drops = [
     title: "Slotcoin",
     path: "/slotcoin",
     icon: SlotcoinIcon,
+  },
+  {
+    title: "Truecoin",
+    path: "/truecoin",
+    icon: TruecoinIcon,
   },
 ];
 

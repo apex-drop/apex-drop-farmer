@@ -39,7 +39,9 @@ export default function PumpadLottery() {
         await spinMutation.mutateAsync();
       } catch {}
 
-      await query.refetch();
+      try {
+        await query.refetch();
+      } catch {}
 
       // Release Lock
       setWorking(false);

@@ -42,7 +42,9 @@ export default function SlotcoinLottery() {
         await delay(2_000);
       } catch {}
 
-      await query.refetch();
+      try {
+        await query.refetch();
+      } catch {}
 
       // Release Lock
       setWorking(false);

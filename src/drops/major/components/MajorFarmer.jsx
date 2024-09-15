@@ -1,12 +1,13 @@
-import { CgSpinner } from "react-icons/cg";
-import MajorIcon from "../assets/images/icon.png";
-import useMajorUserQuery from "../hooks/useMajorUserQuery";
-import MajorBalanceDisplay from "./MajorBalanceDisplay";
-
 import * as Tabs from "@radix-ui/react-tabs";
+import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
+
+import MajorBalanceDisplay from "./MajorBalanceDisplay";
 import MajorGames from "./MajorGames";
+import MajorIcon from "../assets/images/icon.png?format=webp";
 import MajorTasks from "./MajorTasks";
+import useMajorUserQuery from "../hooks/useMajorUserQuery";
+
 export default function MajorFarmer() {
   const userQuery = useMajorUserQuery();
 

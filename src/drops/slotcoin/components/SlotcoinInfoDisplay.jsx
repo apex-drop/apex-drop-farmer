@@ -1,5 +1,5 @@
+import CoinIcon from "../assets/images/coin.png?format=webp";
 import useSlotcoinInfoQuery from "../hooks/useSlotcoinInfoQuery";
-import CoinIcon from "../assets/images/coin.png";
 
 export default function SlotcoinUsernameDisplay() {
   const query = useSlotcoinInfoQuery();

@@ -1,4 +1,4 @@
-import MajorIcon from "../assets/images/icon.png";
+import MajorIcon from "../assets/images/icon.png?format=webp";
 
 export default function MajorAuthDetect() {
   return (

@@ -1,13 +1,13 @@
+import toast from "react-hot-toast";
+import { HiOutlineArrowPath } from "react-icons/hi2";
 import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 import { useState } from "react";
 
-import EnergyIcon from "../assets/images/energy.png";
-import CoinIcon from "../assets/images/coin.png";
-import useTruecoinLotteryMutation from "../hooks/useTruecoinLotteryMutation";
-import { HiOutlineArrowPath } from "react-icons/hi2";
+import CoinIcon from "../assets/images/coin.png?format=webp";
+import EnergyIcon from "../assets/images/energy.png?format=webp";
 import useTruecoin50SpinsBoost from "../hooks/useTruecoin50SpinsBoostMutation";
-import toast from "react-hot-toast";
+import useTruecoinLotteryMutation from "../hooks/useTruecoinLotteryMutation";
 
 export default function TruecoinLottery() {
   const [data, setData] = useState(null);

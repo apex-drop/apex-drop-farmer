@@ -1,4 +1,4 @@
-import BlumIcon from "../assets/images/icon.png";
+import BlumIcon from "../assets/images/icon.png?format=webp";
 
 export default function BlumFarmerHeader() {
   return (

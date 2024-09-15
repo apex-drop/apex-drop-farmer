@@ -1,6 +1,6 @@
 import useDropAuthorizationHeader from "@/hooks/useDropAuthorizationHeader";
 
-import Agent301Icon from "../assets/images/icon.png";
+import Agent301Icon from "../assets/images/icon.png?format=webp";
 
 export default function useAgent301AuthorizationHeader() {
   return useDropAuthorizationHeader({

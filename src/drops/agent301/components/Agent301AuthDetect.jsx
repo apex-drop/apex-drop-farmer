@@ -1,4 +1,4 @@
-import Agent301Icon from "../assets/images/icon.png";
+import Agent301Icon from "../assets/images/icon.png?format=webp";
 
 export default function Agent301AuthDetect() {
   return (

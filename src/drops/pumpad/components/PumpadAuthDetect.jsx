@@ -1,4 +1,4 @@
-import PumpadIcon from "../assets/images/icon.png";
+import PumpadIcon from "../assets/images/icon.png?format=webp";
 
 export default function PumpadAuthDetect() {
   return (

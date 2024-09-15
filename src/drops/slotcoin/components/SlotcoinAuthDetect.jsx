@@ -1,4 +1,4 @@
-import SlotcoinIcon from "../assets/images/icon.png";
+import SlotcoinIcon from "../assets/images/icon.png?format=webp";
 
 export default function SlotcoinAuthDetect() {
   return (

@@ -1,4 +1,4 @@
-import TruecoinIcon from "../assets/images/icon.png";
+import TruecoinIcon from "../assets/images/icon.png?format=webp";
 
 export default function TruecoinAuthDetect() {
   return (

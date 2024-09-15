@@ -16,6 +16,7 @@ export default function Agent301Tasks() {
     [tasksQuery.data]
   );
 
+  /** Partner Tasks */
   const partnerTasks = useMemo(
     () => tasks.filter((item) => item.category === "partners"),
     [tasks]
@@ -31,9 +32,29 @@ export default function Agent301Tasks() {
     [partnerTasks]
   );
 
+  /** Video Task */
   const videoTask = useMemo(
     () => tasks.find((item) => item.type === "video"),
     [tasks]
+  );
+
+  /** In game */
+  const inGameTasks = useMemo(
+    () =>
+      tasks.filter(
+        (item) => item.category === "in-game" && item.type !== "video"
+      ),
+    [tasks]
+  );
+
+  const claimedInGameTasks = useMemo(
+    () => inGameTasks.filter((item) => item["is_claimed"]),
+    [inGameTasks]
+  );
+
+  const unClaimedInGameTasks = useMemo(
+    () => inGameTasks.filter((item) => !item["is_claimed"]),
+    [inGameTasks]
   );
 
   const completeTaskMutation = useAgent301CompleteTaskMutation();
@@ -96,6 +117,28 @@ export default function Agent301Tasks() {
         await delay(1000);
       }
 
+      // Refetch Tasks List
+      try {
+        await client.refetchQueries({
+          queryKey: ["agent301", "tasks"],
+        });
+      } catch {}
+
+      reset();
+
+      /** In Game */
+      setAction("in-game");
+      for (let [index, task] of Object.entries(unClaimedInGameTasks)) {
+        setTaskOffset(index);
+        setCurrentTask(task);
+        try {
+          await completeTaskMutation.mutateAsync({
+            type: task["type"],
+          });
+        } catch {}
+        await delay(1000);
+      }
+
       try {
         await client.refetchQueries({
           queryKey: ["agent301", "tasks"],
@@ -133,6 +176,11 @@ export default function Agent301Tasks() {
               <span className="font-bold">{claimedPartnerTasks.length}</span> /{" "}
               <span className="font-bold">{partnerTasks.length}</span>
             </p>
+            <p>
+              <span className="font-bold text-green-800">In-Game Tasks</span>:{" "}
+              <span className="font-bold">{claimedInGameTasks.length}</span> /{" "}
+              <span className="font-bold">{inGameTasks.length}</span>
+            </p>
           </div>
           <button
             disabled={autoClaiming}
@@ -151,13 +199,15 @@ export default function Agent301Tasks() {
                 Current Mode:{" "}
                 <span
                   className={
-                    action === "video"
-                      ? "text-yellow-500"
-                      : "text-blum-green-500"
+                    action === "video" ? "text-yellow-500" : "text-green-500"
                   }
                 >
-                  {action === "video" ? "Video Task" : "Partner Tasks"}{" "}
-                  {+taskOffset + 1}
+                  {action === "video"
+                    ? "Video Task"
+                    : action === "partner"
+                    ? "Partner Tasks"
+                    : "In-Game Tasks"}{" "}
+                  {taskOffset !== null ? +taskOffset + 1 : null}
                 </span>
               </h4>
               <h5 className="font-bold">{currentTask.title}</h5>
@@ -165,7 +215,7 @@ export default function Agent301Tasks() {
                 className={cn(
                   "capitalize",
                   {
-                    success: "text-blum-green-500",
+                    success: "text-green-500",
                     error: "text-red-500",
                   }[completeTaskMutation.status]
                 )}

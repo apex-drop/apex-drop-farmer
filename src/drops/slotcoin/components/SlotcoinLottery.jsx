@@ -2,9 +2,9 @@ import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 import { useState } from "react";
 
-import EnergyIcon from "../assets/images/energy.png";
-import useSlotcoinLotteryMutation from "../hooks/useSlotcoinLotteryMutation";
+import EnergyIcon from "../assets/images/energy.png?format=webp";
 import useSlotcoinInfoQuery from "../hooks/useSlotcoinInfoQuery";
+import useSlotcoinLotteryMutation from "../hooks/useSlotcoinLotteryMutation";
 
 export default function SlotcoinLottery() {
   const query = useSlotcoinInfoQuery();

@@ -2,9 +2,10 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { cn } from "@/lib/utils";
 
 import Agent301BalanceDisplay from "./Agent301BalanceDisplay";
-import Agent301Icon from "../assets/images/icon.png";
+import Agent301Icon from "../assets/images/icon.png?format=webp";
 import Agent301Lottery from "./Agent301Lottery";
 import Agent301Tasks from "./Agent301Tasks";
+import Agent301Wheel from "./Agent301Wheel";
 
 export default function Agent301Farmer() {
   return (
@@ -19,8 +20,8 @@ export default function Agent301Farmer() {
       <Agent301BalanceDisplay />
 
       <Tabs.Root defaultValue="tickets" className="flex flex-col gap-4">
-        <Tabs.List className="grid grid-cols-2">
-          {["tickets", "tasks"].map((value, index) => (
+        <Tabs.List className="grid grid-cols-3">
+          {["tickets", "wheel", "tasks"].map((value, index) => (
             <Tabs.Trigger
               key={index}
               value={value}
@@ -36,6 +37,9 @@ export default function Agent301Farmer() {
         </Tabs.List>
         <Tabs.Content value="tickets">
           <Agent301Lottery />
+        </Tabs.Content>
+        <Tabs.Content value="wheel">
+          <Agent301Wheel />
         </Tabs.Content>
         <Tabs.Content value="tasks">
           <Agent301Tasks />

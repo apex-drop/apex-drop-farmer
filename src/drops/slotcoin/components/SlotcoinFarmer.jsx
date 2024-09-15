@@ -1,6 +1,6 @@
-import SlotcoinIcon from "../assets/images/icon.png";
-import SlotcoinLottery from "./SlotcoinLottery";
+import SlotcoinIcon from "../assets/images/icon.png?format=webp";
 import SlotcoinInfoDisplay from "./SlotcoinInfoDisplay";
+import SlotcoinLottery from "./SlotcoinLottery";
 
 export default function SlotcoinFarmer() {
   return (

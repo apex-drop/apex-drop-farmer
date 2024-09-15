@@ -1,10 +1,10 @@
-import Agent301Icon from "@/drops/agent301/assets/images/icon.png";
-import AppIcon from "@/assets/images/icon.png";
-import BlumIcon from "@/drops/blum/assets/images/icon.png";
-import MajorIcon from "@/drops/major/assets/images/icon.png";
-import PumpadIcon from "@/drops/pumpad/assets/images/icon.png";
-import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png";
-import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png";
+import Agent301Icon from "@/drops/agent301/assets/images/icon.png?format=webp&w=80";
+import AppIcon from "@/assets/images/icon.png?format=webp&w=224";
+import BlumIcon from "@/drops/blum/assets/images/icon.png?format=webp&w=80";
+import MajorIcon from "@/drops/major/assets/images/icon.png?format=webp&w=80";
+import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
+import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
+import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import { Link } from "react-router-dom";
 
 const drops = [

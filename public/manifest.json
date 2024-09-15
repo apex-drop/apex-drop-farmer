@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -30,7 +30,8 @@
     "*://*.agent301.org/*",
     "*://*.major.bot/*",
     "*://*.slotcoin.app/*",
-    "*://*.true.world/*"
+    "*://*.true.world/*",
+    "*://*.goatsbot.xyz/*"
   ],
   "content_scripts": [
     {

@@ -1,3 +1,4 @@
+import GoatsIcon from "@/drops/goats/assets/images/icon.png?format=webp&w=80";
 import Agent301Icon from "@/drops/agent301/assets/images/icon.png?format=webp&w=80";
 import AppIcon from "@/assets/images/icon.png?format=webp&w=224";
 import BlumIcon from "@/drops/blum/assets/images/icon.png?format=webp&w=80";
@@ -6,6 +7,7 @@ import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
 import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
 import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 const drops = [
   {
@@ -34,6 +36,11 @@ const drops = [
     icon: SlotcoinIcon,
   },
   {
+    title: "Goats",
+    path: "/goats",
+    icon: GoatsIcon,
+  },
+  {
     title: "Truecoin",
     path: "/truecoin",
     icon: TruecoinIcon,
@@ -42,12 +49,23 @@ const drops = [
 
 export default function Welcome() {
   return (
-    <div className="flex flex-col justify-center gap-4 p-4 py-20 mx-auto min-h-dvh max-w-96">
+    <div className="flex flex-col justify-center gap-2 p-4 py-20 mx-auto min-h-dvh max-w-96">
       <img src={AppIcon} className="mx-auto w-28 h-28" />
       <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
+      <p className="text-lg text-center">
+        <span
+          className={cn(
+            "text-transparent font-bold",
+            "bg-clip-text",
+            "bg-gradient-to-r from-pink-500 to-violet-500"
+          )}
+        >
+          v{chrome.runtime.getManifest().version}
+        </span>
+      </p>
 
       {/* Drops */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 py-4">
         {drops.map((drop, index) => (
           <Link
             key={index}

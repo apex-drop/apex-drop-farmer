@@ -5,8 +5,10 @@ import { cn } from "@/lib/utils";
 import StarIcon from "../assets/images/star-amount.svg";
 import toast from "react-hot-toast";
 import useMajorClaimTaskMutation from "../hooks/useMajorClaimTaskMutation";
+import useMajorUserQuery from "../hooks/useMajorUserQuery";
 
 export default function MajorTasks() {
+  const userQuery = useMajorUserQuery();
   const tasksQuery = useMajorTasksQuery(true);
   const tasks = useMemo(
     () =>
@@ -25,7 +27,10 @@ export default function MajorTasks() {
         error: "Failed to Claim..",
         success: "Claimed Successfully",
       })
-      .then(() => tasksQuery.refetch());
+      .then(() => {
+        tasksQuery.refetch();
+        userQuery.refetch();
+      });
   };
 
   return tasksQuery.isPending ? (

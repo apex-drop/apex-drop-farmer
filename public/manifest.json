@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -25,24 +25,12 @@
   },
   "host_permissions": [
     "*://*.blum.codes/*",
-    "*://*.gamee.com/*",
     "*://*.pumpad.io/*",
     "*://*.agent301.org/*",
     "*://*.major.bot/*",
     "*://*.slotcoin.app/*",
     "*://*.true.world/*",
     "*://*.goatsbot.xyz/*"
-  ],
-  "content_scripts": [
-    {
-      "matches": ["*://*.tomarket.ai/*"],
-      "js": ["content-script.js"],
-      "run_at": "document_start",
-      "all_frames": true,
-      "match_about_blank": true,
-      "match_origin_as_fallback": true,
-      "world": "MAIN"
-    }
   ],
   "background": {
     "service_worker": "service-worker.js",
@@ -51,19 +39,9 @@
   "declarative_net_request": {
     "rule_resources": [
       {
-        "id": "blum_ruleset",
+        "id": "user_agent_ruleset",
         "enabled": true,
-        "path": "blum_rules.json"
-      },
-      {
-        "id": "pumpad_ruleset",
-        "enabled": true,
-        "path": "pumpad_rules.json"
-      },
-      {
-        "id": "gamee_ruleset",
-        "enabled": true,
-        "path": "gamee_rules.json"
+        "path": "user_agent_rules.json"
       }
     ]
   }

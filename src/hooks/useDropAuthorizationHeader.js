@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 
@@ -38,8 +39,20 @@ export default function useDropAuthorizationHeader({
       ["requestHeaders"]
     );
 
-    return () =>
+    let interceptor = axios.interceptors.response.use(
+      (response) => Promise.resolve(response),
+      (error) => {
+        if (401 === error?.response?.status) {
+          setAuth(null);
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
       chrome?.webRequest?.onSendHeaders.removeListener(handleWebRequest);
+      axios.interceptors.response.eject(interceptor);
+    };
   }, [auth]);
 
   return auth;

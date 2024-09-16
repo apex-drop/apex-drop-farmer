@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -10,6 +10,9 @@
     "128": "icon-128.png"
   },
   "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
     "sidePanel",
     "webRequest",
     "declarativeNetRequest",
@@ -23,19 +26,20 @@
   "side_panel": {
     "default_path": "index.html"
   },
-  "host_permissions": [
-    "*://*.blum.codes/*",
-    "*://*.pumpad.io/*",
-    "*://*.agent301.org/*",
-    "*://*.major.bot/*",
-    "*://*.slotcoin.app/*",
-    "*://*.true.world/*",
-    "*://*.goatsbot.xyz/*"
-  ],
   "background": {
     "service_worker": "service-worker.js",
     "type": "module"
   },
+  "host_permissions": [
+    "*://*.major.bot/*",
+    "*://*.blum.codes/*",
+    "*://*.tomarket.ai/*",
+    "*://*.pumpad.io/*",
+    "*://*.agent301.org/*",
+    "*://*.slotcoin.app/*",
+    "*://*.true.world/*",
+    "*://*.goatsbot.xyz/*"
+  ],
   "declarative_net_request": {
     "rule_resources": [
       {

@@ -27,7 +27,8 @@
       ]
     },
     "condition": {
-      "urlFilter": "|*"
+      "urlFilter": "|*",
+      "resourceTypes": ["sub_frame", "xmlhttprequest"]
     }
   }
 ]

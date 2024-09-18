@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -30,18 +30,14 @@
     "service_worker": "service-worker.js",
     "type": "module"
   },
-  "host_permissions": [
-    "*://*.major.bot/*",
-    "*://*.blum.codes/*",
-    "*://*.tomarket.ai/*",
-    "*://*.pumpad.io/*",
-    "*://*.agent301.org/*",
-    "*://*.slotcoin.app/*",
-    "*://*.true.world/*",
-    "*://*.goatsbot.xyz/*"
-  ],
+  "host_permissions": ["*://*/*"],
   "declarative_net_request": {
     "rule_resources": [
+      {
+        "id": "platform_ruleset",
+        "enabled": true,
+        "path": "platform_rules.json"
+      },
       {
         "id": "user_agent_ruleset",
         "enabled": true,

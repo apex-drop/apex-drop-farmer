@@ -1,17 +1,3 @@
-/** General Content Script */
-chrome.scripting
-  .registerContentScripts([
-    {
-      id: "content-script",
-      js: ["content-script.js"],
-      matches: chrome.runtime.getManifest()["host_permissions"],
-      runAt: "document_start",
-      allFrames: true,
-    },
-  ])
-  .then(() => {})
-  .catch((err) => {});
-
 /** Tomarket Game Object Script */
 [
   {

@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "regexSubstitution": "&tgWebAppPlatform=android"
+      }
+    },
+    "condition": {
+      "regexFilter": "&tgWebAppPlatform=web"
+    }
+  }
+]

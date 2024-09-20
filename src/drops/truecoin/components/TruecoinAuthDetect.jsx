@@ -10,7 +10,7 @@ export default function TruecoinAuthDetect() {
       />
       <h3 className="font-bold text-center">Detecting Auth...</h3>
       <p className="text-center text-neutral-500">
-        Try switching to the earn or referral section back and forth.
+        Try switching between sections back and forth.
       </p>
     </div>
   );

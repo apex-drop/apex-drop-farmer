@@ -6,7 +6,7 @@ export default function TomarketAuthDetect() {
       <img src={TomarketIcon} alt="Tomarket Farmer" className="w-16 h-16" />
       <h3 className="font-bold text-center">Detecting Auth...</h3>
       <p className="text-center text-gray-400">
-        Try switching to the earn or frens section back and forth.
+        Try switching between sections back and forth.
       </p>
     </div>
   );

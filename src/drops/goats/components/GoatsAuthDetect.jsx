@@ -6,7 +6,7 @@ export default function GoatsAuthDetect() {
       <img src={GoatsIcon} alt="Goats Farmer" className="w-16 h-16" />
       <h3 className="font-bold text-center">Detecting Auth...</h3>
       <p className="text-center text-neutral-500">
-        Try switching to the missions or friends section back and forth.
+        Try switching between sections back and forth.
       </p>
     </div>
   );

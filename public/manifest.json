@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -31,6 +31,15 @@
     "type": "module"
   },
   "host_permissions": ["*://*/*"],
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    }
+  ],
   "declarative_net_request": {
     "rule_resources": [
       {

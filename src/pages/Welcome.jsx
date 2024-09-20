@@ -53,6 +53,11 @@ const drops = [
   },
 ];
 
+const navigateToWebVersion = (v) =>
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.update(tabs[0].id, { url: `https://web.telegram.org/${v}` });
+  });
+
 export default function Welcome() {
   return (
     <div className="flex flex-col justify-center gap-2 p-4 py-20 mx-auto min-h-dvh max-w-96">
@@ -70,16 +75,39 @@ export default function Welcome() {
         </span>
       </p>
 
+      <div className="flex justify-center gap-1">
+        {["k", "a"].map((v, index) => (
+          <button
+            key={index}
+            onClick={() => navigateToWebVersion(v)}
+            className={cn(
+              "p-2 px-4",
+              "rounded-full",
+              "bg-neutral-100",
+              "hover:bg-blue-500",
+              "hover:text-white"
+            )}
+          >
+            {`Web${v.toUpperCase()}`}
+          </button>
+        ))}
+      </div>
+
       {/* Drops */}
-      <div className="flex flex-col gap-2 py-4">
+
+      <div className={cn("grid grid-cols-3", "gap-2 py-4")}>
         {drops.map((drop, index) => (
           <Link
             key={index}
             to={drop.path}
-            className="flex items-center gap-2 p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200"
+            className={cn(
+              "flex flex-col justify-center items-center",
+              "gap-2 p-2 rounded-lg",
+              "bg-neutral-100 hover:bg-neutral-200"
+            )}
           >
             <img src={drop.icon} className="w-10 h-10 rounded-full shrink-0" />
-            <h3 className="min-w-0">{drop.title}</h3>
+            <h3 className={cn("min-w-0")}>{drop.title}</h3>
           </Link>
         ))}
       </div>

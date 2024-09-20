@@ -6,7 +6,7 @@ export default function Agent301AuthDetect() {
       <img src={Agent301Icon} alt="Agent301 Farmer" className="w-16 h-16" />
       <h3 className="font-bold text-center">Detecting Auth...</h3>
       <p className="text-center text-neutral-500">
-        Try switching to the tasks or friends section back and forth.
+        Try switching between sections back and forth.
       </p>
     </div>
   );

@@ -108,6 +108,8 @@ export default function Tomarket() {
     <div className="flex flex-col gap-2">
       {tickets > 0 ? (
         <>
+          <h3 className="font-bold">Game</h3>
+
           <TomarketInput
             disabled={autoPlaying || tickets < 1}
             value={desiredPoint}

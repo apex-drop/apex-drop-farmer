@@ -1,5 +1,6 @@
 import TomarketAutoGamer from "./TomarketAutoGamer";
 import TomarketBalanceDisplay from "./TomarketBalanceDisplay";
+import TomarketDailyCombo from "./TomarketDailyCombo";
 import TomarketFarmerHeader from "./TomarketFarmerHeader";
 
 export default function TomarketFarmer() {
@@ -8,6 +9,7 @@ export default function TomarketFarmer() {
       <TomarketFarmerHeader />
       <TomarketBalanceDisplay />
 
+      <TomarketDailyCombo />
       <TomarketAutoGamer />
     </div>
   );

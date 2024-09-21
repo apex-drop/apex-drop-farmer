@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 
 import Goats from "./drops/goats/Goats";
 import Slotcoin from "./drops/slotcoin/Slotcoin";
+import TapCat from "./drops/tapcat/TapCat";
 import Tomarket from "./drops/tomarket/Tomarket";
 import Truecoin from "./drops/truecoin/Truecoin";
 
@@ -27,6 +28,7 @@ function App() {
           <Route path="/goats" element={<Goats />} />
           <Route path="/truecoin" element={<Truecoin />} />
           <Route path="/tomarket" element={<Tomarket />} />
+          <Route path="/tapcat" element={<TapCat />} />
         </Route>
       </Routes>
       <Toaster position="top-center" />

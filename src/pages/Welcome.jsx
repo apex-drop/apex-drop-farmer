@@ -7,6 +7,7 @@ import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
 import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
 import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
+import TapCatIcon from "@/drops/tapcat/assets/images/icon.png?format=webp&w=80";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -32,14 +33,19 @@ const drops = [
     icon: PumpadIcon,
   },
   {
+    title: "Slotcoin",
+    path: "/slotcoin",
+    icon: SlotcoinIcon,
+  },
+  {
     title: "Agent 301",
     path: "/agent301",
     icon: Agent301Icon,
   },
   {
-    title: "Slotcoin",
-    path: "/slotcoin",
-    icon: SlotcoinIcon,
+    title: "Tap Cat",
+    path: "/tapcat",
+    icon: TapCatIcon,
   },
   {
     title: "Goats",
@@ -55,7 +61,10 @@ const drops = [
 
 const navigateToWebVersion = (v) =>
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.update(tabs[0].id, { url: `https://web.telegram.org/${v}` });
+    chrome.tabs.update(tabs[0].id, {
+      url: `https://web.telegram.org/${v}`,
+      active: true,
+    });
   });
 
 export default function Welcome() {

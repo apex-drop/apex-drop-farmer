@@ -19,6 +19,6 @@ export default function useTomarketHiddenTaskQuery() {
             },
           }
         )
-        .then((res) => res.data),
+        .then((res) => res.data.data),
   });
 }

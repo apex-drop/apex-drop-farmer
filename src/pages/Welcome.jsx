@@ -8,54 +8,72 @@ import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=
 import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
 import TapCatIcon from "@/drops/tapcat/assets/images/icon.png?format=webp&w=80";
-import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import Major from "@/drops/major/Major";
+import useTabContext from "@/hooks/useTabContext";
+import Blum from "@/drops/blum/Blum";
+import Tomarket from "@/drops/tomarket/Tomarket";
+import Pumpad from "@/drops/pumpad/Pumpad";
+import Slotcoin from "@/drops/slotcoin/Slotcoin";
+import Agent301 from "@/drops/agent301/Agent301";
+import TapCat from "@/drops/tapcat/TapCat";
+import Goats from "@/drops/goats/Goats";
+import Truecoin from "@/drops/truecoin/Truecoin";
 
 const drops = [
   {
+    id: "major",
     title: "Major",
-    path: "/major",
     icon: MajorIcon,
+    component: <Major />,
   },
   {
     title: "Blum",
-    path: "/blum",
+    id: "blum",
     icon: BlumIcon,
+    component: <Blum />,
   },
   {
     title: "Tomarket",
-    path: "/tomarket",
+    id: "tomarket",
     icon: TomarketIcon,
+    component: <Tomarket />,
   },
   {
     title: "Pumpad",
-    path: "/pumpad",
+    id: "pumpad",
     icon: PumpadIcon,
+    component: <Pumpad />,
   },
   {
     title: "Slotcoin",
-    path: "/slotcoin",
+    id: "slotcoin",
     icon: SlotcoinIcon,
+    component: <Slotcoin />,
   },
   {
     title: "Agent 301",
-    path: "/agent301",
+    id: "agent301",
     icon: Agent301Icon,
+    component: <Agent301 />,
   },
   {
     title: "Tap Cat",
-    path: "/tapcat",
+    id: "tapcat",
     icon: TapCatIcon,
+    component: <TapCat />,
   },
   {
     title: "Goats",
-    path: "/goats",
+    id: "goats",
     icon: GoatsIcon,
+    component: <Goats />,
   },
   {
     title: "Truecoin",
-    path: "/truecoin",
+    id: "truecoin",
     icon: TruecoinIcon,
+    component: <Truecoin />,
   },
 ];
 
@@ -68,6 +86,8 @@ const navigateToWebVersion = (v) =>
   });
 
 export default function Welcome() {
+  const { pushTab } = useTabContext();
+
   return (
     <div className="flex flex-col justify-center gap-2 p-4 py-20 mx-auto min-h-dvh max-w-96">
       <img src={AppIcon} className="mx-auto w-28 h-28" />
@@ -106,9 +126,9 @@ export default function Welcome() {
 
       <div className={cn("grid grid-cols-3", "gap-2 py-4")}>
         {drops.map((drop, index) => (
-          <Link
+          <button
             key={index}
-            to={drop.path}
+            onClick={() => pushTab(drop)}
             className={cn(
               "flex flex-col justify-center items-center",
               "gap-2 p-2 rounded-lg",
@@ -117,7 +137,7 @@ export default function Welcome() {
           >
             <img src={drop.icon} className="w-10 h-10 rounded-full shrink-0" />
             <h3 className={cn("min-w-0")}>{drop.title}</h3>
-          </Link>
+          </button>
         ))}
       </div>
 

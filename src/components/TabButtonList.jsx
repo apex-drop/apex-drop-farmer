@@ -1,18 +1,29 @@
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 import TabButton from "./TabButton";
 
 export default function TabButtonList({ tabs }) {
+  const otherTabs = useMemo(() => tabs.slice(1), [tabs]);
+
   return (
     <div
       className={cn(
-        "flex px-2 pt-2 shrink-0",
+        "flex shrink-0 py-2 pr-2",
         "overflow-auto border-b scrollbar-thin"
       )}
     >
-      {tabs.map((tab) => (
-        <TabButton key={tab.id} tab={tab} />
-      ))}
+      {/* Main */}
+      <div className="sticky left-0 px-2 bg-white shrink-0">
+        <TabButton key={tabs[0].id} tab={tabs[0]} />
+      </div>
+
+      {/* Others */}
+      <div className="flex gap-2 flex-nowrap shrink-0">
+        {otherTabs.map((tab) => (
+          <TabButton key={tab.id} tab={tab} />
+        ))}
+      </div>
     </div>
   );
 }

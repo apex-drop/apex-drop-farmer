@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import TabContext from "./contexts/TabContext";
 import Welcome from "./pages/Welcome";
-import AppIcon from "@/assets/images/icon.png?format=webp&w=80";
+import AppIcon from "@/assets/images/icon-wrapped.png?format=webp&w=80";
 import TabContent from "./components/TabContent";
 import TabButtonList from "./components/TabButtonList";
 
@@ -15,7 +15,6 @@ const defaultTabs = () => [
     icon: AppIcon,
     component: <Welcome />,
     active: true,
-    removable: false,
   },
 ];
 
@@ -39,7 +38,7 @@ function App() {
         // Add New Tab
         setTabs((previous) => [
           ...previous.map((item) => ({ ...item, active: false })),
-          { removable: true, ...tab, active: true },
+          { ...tab, active: true },
         ]);
       }
     },

@@ -33,7 +33,7 @@ export default function TabButton({ tab }) {
       className={cn(
         "cursor-pointer",
         "flex gap-2 items-center",
-        "p-2 rounded-t-xl shrink-0",
+        "p-1.5 rounded-full shrink-0",
         tab.active ? "bg-neutral-100" : null
       )}
     >

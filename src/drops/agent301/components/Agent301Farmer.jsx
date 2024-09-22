@@ -9,7 +9,7 @@ import Agent301Wheel from "./Agent301Wheel";
 
 export default function Agent301Farmer() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 py-4">
       {/* Header */}
       <div className="flex items-center justify-center gap-2 p-2">
         <img src={Agent301Icon} alt="Agent301 Farmer" className="w-8 h-8" />

@@ -19,63 +19,7 @@ import Agent301 from "@/drops/agent301/Agent301";
 import TapCat from "@/drops/tapcat/TapCat";
 import Goats from "@/drops/goats/Goats";
 import Truecoin from "@/drops/truecoin/Truecoin";
-
-const drops = [
-  {
-    id: "major",
-    title: "Major",
-    icon: MajorIcon,
-    component: <Major />,
-  },
-  {
-    title: "Blum",
-    id: "blum",
-    icon: BlumIcon,
-    component: <Blum />,
-  },
-  {
-    title: "Tomarket",
-    id: "tomarket",
-    icon: TomarketIcon,
-    component: <Tomarket />,
-  },
-  {
-    title: "Pumpad",
-    id: "pumpad",
-    icon: PumpadIcon,
-    component: <Pumpad />,
-  },
-  {
-    title: "Slotcoin",
-    id: "slotcoin",
-    icon: SlotcoinIcon,
-    component: <Slotcoin />,
-  },
-  {
-    title: "Agent 301",
-    id: "agent301",
-    icon: Agent301Icon,
-    component: <Agent301 />,
-  },
-  {
-    title: "Tap Cat",
-    id: "tapcat",
-    icon: TapCatIcon,
-    component: <TapCat />,
-  },
-  {
-    title: "Goats",
-    id: "goats",
-    icon: GoatsIcon,
-    component: <Goats />,
-  },
-  {
-    title: "Truecoin",
-    id: "truecoin",
-    icon: TruecoinIcon,
-    component: <Truecoin />,
-  },
-];
+import { useMemo } from "react";
 
 const navigateToWebVersion = (v) =>
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -87,9 +31,68 @@ const navigateToWebVersion = (v) =>
 
 export default function Welcome() {
   const { pushTab } = useTabContext();
+  const drops = useMemo(
+    () => [
+      {
+        id: "major",
+        title: "Major",
+        icon: MajorIcon,
+        component: <Major />,
+      },
+      {
+        title: "Blum",
+        id: "blum",
+        icon: BlumIcon,
+        component: <Blum />,
+      },
+      {
+        title: "Tomarket",
+        id: "tomarket",
+        icon: TomarketIcon,
+        component: <Tomarket />,
+      },
+      {
+        title: "Pumpad",
+        id: "pumpad",
+        icon: PumpadIcon,
+        component: <Pumpad />,
+      },
+      {
+        title: "Slotcoin",
+        id: "slotcoin",
+        icon: SlotcoinIcon,
+        component: <Slotcoin />,
+      },
+      {
+        title: "Agent 301",
+        id: "agent301",
+        icon: Agent301Icon,
+        component: <Agent301 />,
+      },
+      {
+        title: "Tap Cat",
+        id: "tapcat",
+        icon: TapCatIcon,
+        component: <TapCat />,
+      },
+      {
+        title: "Goats",
+        id: "goats",
+        icon: GoatsIcon,
+        component: <Goats />,
+      },
+      {
+        title: "Truecoin",
+        id: "truecoin",
+        icon: TruecoinIcon,
+        component: <Truecoin />,
+      },
+    ],
+    []
+  );
 
   return (
-    <div className="flex flex-col justify-center gap-2 p-4 py-20 mx-auto min-h-dvh max-w-96">
+    <div className="flex flex-col justify-center w-full gap-2 p-4 py-20 mx-auto max-w-96">
       <img src={AppIcon} className="mx-auto w-28 h-28" />
       <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
       <p className="text-lg text-center">

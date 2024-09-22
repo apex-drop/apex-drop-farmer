@@ -7,7 +7,7 @@ import GoatsMissions from "./GoatsMissions";
 
 export default function GoatsFarmer() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 py-4">
       {/* Header */}
       <div className="flex items-center justify-center gap-2 p-2">
         <img src={GoatsIcon} alt="Goats Farmer" className="w-8 h-8" />

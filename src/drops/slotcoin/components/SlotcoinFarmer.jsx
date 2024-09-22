@@ -4,7 +4,7 @@ import SlotcoinLottery from "./SlotcoinLottery";
 
 export default function SlotcoinFarmer() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 py-4">
       {/* Header */}
       <div className="flex items-center justify-center gap-2">
         <img

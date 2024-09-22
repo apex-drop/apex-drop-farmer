@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import useTomarketAuth from "./useTomarketAuth";
 
 export default function useTomarketHiddenTaskQuery() {
-  const auth = useTomarketAuth();
+  const Authorization = useTomarketAuth();
   return useQuery({
     queryKey: ["tomarket", "hidden-task"],
     queryFn: ({ signal }) =>
@@ -15,7 +15,7 @@ export default function useTomarketHiddenTaskQuery() {
           {
             signal,
             headers: {
-              Authorization: auth,
+              Authorization,
             },
           }
         )

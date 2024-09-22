@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import useBlumAuth from "./useBlumAuth";
 
 export default function useBlumValidateTaskMutation() {
-  const auth = useBlumAuth();
+  const Authorization = useBlumAuth();
   return useMutation({
     mutationKey: ["blum", "task", "validate"],
     mutationFn: ({ id, keyword }) =>
@@ -14,7 +14,7 @@ export default function useBlumValidateTaskMutation() {
           { keyword },
           {
             headers: {
-              Authorization: auth,
+              Authorization,
             },
           }
         )

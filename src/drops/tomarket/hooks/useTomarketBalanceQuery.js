@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import useTomarketAuth from "./useTomarketAuth";
 
 export default function useTomarketBalanceQuery() {
-  const auth = useTomarketAuth();
+  const Authorization = useTomarketAuth();
   return useQuery({
     queryKey: ["tomarket", "balance"],
     queryFn: ({ signal }) =>
@@ -15,7 +15,7 @@ export default function useTomarketBalanceQuery() {
           {
             signal,
             headers: {
-              Authorization: auth,
+              Authorization,
             },
           }
         )

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import useBlumAuth from "./useBlumAuth";
 
 export default function useBlumTasksQuery() {
-  const auth = useBlumAuth();
+  const Authorization = useBlumAuth();
   return useQuery({
     queryKey: ["blum", "tasks"],
     queryFn: ({ signal }) =>
@@ -12,7 +12,7 @@ export default function useBlumTasksQuery() {
         .get("https://earn-domain.blum.codes/api/v1/tasks", {
           signal,
           headers: {
-            Authorization: auth,
+            Authorization,
           },
         })
         .then((res) => res.data),

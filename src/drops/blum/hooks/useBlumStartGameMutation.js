@@ -4,14 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 import useBlumAuth from "./useBlumAuth";
 
 export default function useBlumStartGameMutation() {
-  const auth = useBlumAuth();
+  const Authorization = useBlumAuth();
   return useMutation({
     mutationKey: ["blum", "game", "start"],
     mutationFn: () =>
       axios
         .post("https://game-domain.blum.codes/api/v1/game/play", null, {
           headers: {
-            Authorization: auth,
+            Authorization,
           },
         })
         .then((res) => res.data),

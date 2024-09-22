@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import useBlumAuth from "./useBlumAuth";
 
 export default function useBlumBalanceQuery() {
-  const auth = useBlumAuth();
+  const Authorization = useBlumAuth();
   return useQuery({
     queryKey: ["blum", "balance"],
     queryFn: ({ signal }) =>
@@ -12,7 +12,7 @@ export default function useBlumBalanceQuery() {
         .get("https://game-domain.blum.codes/api/v1/user/balance", {
           signal,
           headers: {
-            Authorization: auth,
+            Authorization,
           },
         })
         .then((res) => res.data),

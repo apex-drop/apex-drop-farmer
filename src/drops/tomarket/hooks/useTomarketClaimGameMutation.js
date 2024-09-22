@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import useTomarketAuth from "./useTomarketAuth";
 
 export default function useTomarketClaimGameMutation(id, points) {
-  const auth = useTomarketAuth();
+  const Authorization = useTomarketAuth();
   return useMutation({
     mutationKey: ["tomarket", "game", "claim", id, points],
     mutationFn: () =>
@@ -17,7 +17,7 @@ export default function useTomarketClaimGameMutation(id, points) {
           },
           {
             headers: {
-              Authorization: auth,
+              Authorization,
             },
           }
         )

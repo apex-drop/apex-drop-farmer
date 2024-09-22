@@ -4,14 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 import useBlumAuth from "./useBlumAuth";
 
 export default function useBlumStartTaskMutation() {
-  const auth = useBlumAuth();
+  const Authorization = useBlumAuth();
   return useMutation({
     mutationKey: ["blum", "task", "start"],
     mutationFn: (id) =>
       axios
         .post(`https://earn-domain.blum.codes/api/v1/tasks/${id}/start`, null, {
           headers: {
-            Authorization: auth,
+            Authorization,
           },
         })
         .then((res) => res.data),

@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import useTruecoinAuth from "./useTruecoinAuth";
 
 export default function useTruecoinLotteryMutation() {
-  const auth = useTruecoinAuth();
+  const Authorization = useTruecoinAuth();
   return useMutation({
     mutationKey: ["truecoin", "lottery", "spin"],
     mutationFn: () =>
@@ -12,7 +12,7 @@ export default function useTruecoinLotteryMutation() {
         .get("https://api.true.world/api/game/roll", {
           withCredentials: true,
           headers: {
-            ...auth,
+            Authorization,
           },
         })
         .then((res) => res.data),

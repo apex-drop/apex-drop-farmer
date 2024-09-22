@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import useTruecoinAuth from "./useTruecoinAuth";
 
 export default function useTruecoin50SpinsBoost() {
-  const auth = useTruecoinAuth();
+  const Authorization = useTruecoinAuth();
   return useMutation({
     mutationKey: ["truecoin", "boost", 50, "spins"],
     mutationFn: () =>
@@ -15,7 +15,7 @@ export default function useTruecoin50SpinsBoost() {
           {
             withCredentials: true,
             headers: {
-              ...auth,
+              Authorization,
             },
           }
         )

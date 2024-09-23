@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 
 export default function useDropAuthorizationHeader({
@@ -9,6 +10,13 @@ export default function useDropAuthorizationHeader({
   compareAuth,
 }) {
   const [auth, setAuth] = useState(null);
+  const urlRegexList = useMemo(
+    () =>
+      urls.map(
+        (url) => new RegExp(url.replaceAll(".", "\\.").replaceAll("*", ".*"))
+      ),
+    [urls]
+  );
 
   useEffect(() => {
     const handleWebRequest = (details) => {
@@ -42,7 +50,10 @@ export default function useDropAuthorizationHeader({
     let interceptor = axios.interceptors.response.use(
       (response) => Promise.resolve(response),
       (error) => {
-        if (401 === error?.response?.status) {
+        if (
+          401 === error?.response?.status &&
+          urlRegexList.some((expr) => expr.test(error.config.url))
+        ) {
           setAuth(null);
         }
         return Promise.reject(error);

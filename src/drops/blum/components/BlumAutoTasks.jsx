@@ -10,6 +10,8 @@ import useBlumStartTaskMutation from "../hooks/useBlumStartTaskMutation";
 import useBlumTasksQuery from "../hooks/useBlumTasksQuery";
 import useBlumValidateTaskMutation from "../hooks/useBlumValidateTaskMutation";
 
+const DELAY_BETWEEN_TASKS = 2000;
+
 const reduceTasks = (tasks) =>
   tasks.reduce((items, current) => {
     if (current.subTasks) {
@@ -136,7 +138,7 @@ export default function BlumAutoTasks() {
             try {
               await startTaskMutation.mutateAsync(task.id);
             } catch {}
-            await delay(1000);
+            await delay(DELAY_BETWEEN_TASKS);
           }
 
           // Set Next Action
@@ -156,7 +158,7 @@ export default function BlumAutoTasks() {
               let keyword = prompt(`Keyword: ${task.title}`);
               await validateTaskMutation.mutateAsync({ id: task.id, keyword });
             } catch {}
-            await delay(1000);
+            await delay(DELAY_BETWEEN_TASKS);
           }
 
           // Set Next Action
@@ -175,7 +177,7 @@ export default function BlumAutoTasks() {
             try {
               await claimTaskMutation.mutateAsync({ id: task.id });
             } catch {}
-            await delay(1000);
+            await delay(DELAY_BETWEEN_TASKS);
           }
           break;
       }

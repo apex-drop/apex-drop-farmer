@@ -7,6 +7,8 @@ import { useState } from "react";
 import useTapCatCompleteTaskMutation from "../hooks/useTapCatCompleteTaskMutation";
 import useTapCatTasksQuery from "../hooks/useTapCatTasksQuery";
 
+const DELAY_BETWEEN_TASKS = 2000;
+
 export default function TapCatTasks() {
   const client = useQueryClient();
   const tasksQuery = useTapCatTasksQuery();
@@ -52,7 +54,7 @@ export default function TapCatTasks() {
         try {
           await completeTaskMutation.mutateAsync(task["id"]);
         } catch {}
-        await delay(2000);
+        await delay(DELAY_BETWEEN_TASKS);
       }
 
       try {

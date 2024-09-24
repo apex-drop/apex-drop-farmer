@@ -36,9 +36,9 @@ export default function Agent301Lottery() {
 
       try {
         await spinMutation.mutateAsync();
-
-        await delay(10_000);
       } catch {}
+
+      await delay(10_000);
 
       try {
         await balanceQuery.refetch();

@@ -74,10 +74,10 @@ export default function Blum() {
 
         /** Claim Game */
         await claimGameMutation.mutateAsync(game.gameId);
-
-        /** Add a little delay */
-        await delay(EXTRA_DELAY);
       } catch {}
+
+      /** Add a little delay */
+      await delay(EXTRA_DELAY);
 
       /** Reset Mutation */
       try {

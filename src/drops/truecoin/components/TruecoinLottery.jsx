@@ -50,12 +50,13 @@ export default function TruecoinLottery() {
           }
           setData(data);
         });
-        await delay(2000);
       } catch (e) {
         if (e?.response?.status === 400) {
           setAutoSpin(false);
         }
       }
+
+      await delay(2000);
 
       // Release Lock
       setWorking(false);

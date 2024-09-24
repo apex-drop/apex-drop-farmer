@@ -57,8 +57,6 @@ function App() {
             active: index === previousIndex - 1,
           }));
 
-        console.log(newTabs);
-
         return newTabs;
       });
     },

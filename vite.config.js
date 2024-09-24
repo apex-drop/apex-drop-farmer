@@ -7,25 +7,22 @@ import { resolve } from "path";
 export default defineConfig({
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"),
+      "@": resolve("./src"),
     },
   },
   build: {
     rollupOptions: {
       input: {
-        index: resolve(__dirname, "./index.html"),
-        "service-worker": resolve(__dirname, "./src/service-worker.js"),
-        "content-script": resolve(__dirname, "./src/content-script.js"),
+        index: resolve("./index.html"),
+        "service-worker": resolve("./src/service-worker.js"),
+        "content-script": resolve("./src/content-script.js"),
+        "tg-web": resolve("./src/tg-web.js"),
 
-        // Tomarket Content Scripts
+        /** Tomarket Content Scripts */
         "tomarket-isolated": resolve(
-          __dirname,
           "./src/drops/tomarket/tomarket-isolated.js"
         ),
-        "tomarket-world": resolve(
-          __dirname,
-          "./src/drops/tomarket/tomarket-world.js"
-        ),
+        "tomarket-world": resolve("./src/drops/tomarket/tomarket-world.js"),
       },
       output: {
         entryFileNames: "[name].js",

@@ -89,10 +89,10 @@ export default function Tomarket() {
 
         /** Claim Game */
         await claimGameMutation.mutateAsync();
-
-        /** Add a little delay */
-        await delay(EXTRA_DELAY);
       } catch {}
+
+      /** Add a little delay */
+      await delay(EXTRA_DELAY);
 
       /** Reset Mutation */
       try {

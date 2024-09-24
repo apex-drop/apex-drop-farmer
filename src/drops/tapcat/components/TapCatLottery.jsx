@@ -37,8 +37,9 @@ export default function TapCatLottery() {
 
       try {
         await spinMutation.mutateAsync();
-        await delay(3_000);
       } catch {}
+
+      await delay(3_000);
 
       try {
         await query.refetch();

@@ -39,8 +39,9 @@ export default function SlotcoinLottery() {
 
       try {
         await spinMutation.mutateAsync();
-        await delay(2_000);
       } catch {}
+
+      await delay(2_000);
 
       try {
         await query.refetch();

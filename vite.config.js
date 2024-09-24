@@ -1,28 +1,35 @@
+import path from "path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { fileURLToPath } from "url";
 import { imagetools } from "vite-imagetools";
-import { resolve } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
     alias: {
-      "@": resolve("./src"),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   build: {
     rollupOptions: {
       input: {
-        index: resolve("./index.html"),
-        "service-worker": resolve("./src/service-worker.js"),
-        "content-script": resolve("./src/content-script.js"),
-        "tg-web": resolve("./src/tg-web.js"),
+        index: path.resolve(__dirname, "./index.html"),
+        "service-worker": path.resolve(__dirname, "./src/service-worker.js"),
+        "content-script": path.resolve(__dirname, "./src/content-script.js"),
 
         /** Tomarket Content Scripts */
-        "tomarket-isolated": resolve(
+        "tomarket-isolated": path.resolve(
+          __dirname,
           "./src/drops/tomarket/tomarket-isolated.js"
         ),
-        "tomarket-world": resolve("./src/drops/tomarket/tomarket-world.js"),
+        "tomarket-world": path.resolve(
+          __dirname,
+          "./src/drops/tomarket/tomarket-world.js"
+        ),
       },
       output: {
         entryFileNames: "[name].js",

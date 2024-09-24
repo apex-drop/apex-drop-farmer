@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -40,27 +40,26 @@
       "all_frames": true
     },
     {
-      "matches": ["*://web.telegram.org/*"],
-      "js": ["tg-web.js"]
-    }
-  ],
-  "web_accessible_resources": [
+      "matches": ["*://*.tomarket.ai/*"],
+      "js": ["tomarket-world.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
     {
-      "resources": ["index.html", "icon.png"],
-      "matches": ["*://web.telegram.org/*"]
+      "matches": ["*://*.tomarket.ai/*"],
+      "js": ["tomarket-isolated.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED",
+      "all_frames": true
     }
   ],
   "declarative_net_request": {
     "rule_resources": [
       {
-        "id": "platform_ruleset",
+        "id": "declarative_net_request_ruleset",
         "enabled": true,
-        "path": "platform_rules.json"
-      },
-      {
-        "id": "user_agent_ruleset",
-        "enabled": true,
-        "path": "user_agent_rules.json"
+        "path": "declarative_net_request_rules.json"
       }
     ]
   }

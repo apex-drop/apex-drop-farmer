@@ -2,6 +2,18 @@
   {
     "id": 1,
     "action": {
+      "type": "redirect",
+      "redirect": {
+        "regexSubstitution": "&tgWebAppPlatform=android"
+      }
+    },
+    "condition": {
+      "regexFilter": "&tgWebAppPlatform=web"
+    }
+  },
+  {
+    "id": 2,
+    "action": {
       "type": "modifyHeaders",
       "requestHeaders": [
         {

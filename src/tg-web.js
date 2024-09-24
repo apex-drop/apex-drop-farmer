@@ -29,7 +29,7 @@ styleElement(iframe, {
   ...(tabletMedia.matches ? tabletIframeStyles : mobileIframeStyles),
   position: "fixed",
   zIndex: "9999",
-  visibility: "visible",
+  visibility: "hidden",
   border: "0",
 });
 

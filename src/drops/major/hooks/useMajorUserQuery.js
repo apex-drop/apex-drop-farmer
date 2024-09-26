@@ -1,19 +1,16 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import useMajorAuth from "./useMajorAuth";
+import useMajorApi from "./useMajorApi";
 
 export default function useMajorUserQuery() {
-  const Authorization = useMajorAuth();
+  const api = useMajorApi();
   const streakQuery = useQuery({
+    refetchInterval: false,
     queryKey: ["major", "streak"],
     queryFn: ({ signal }) =>
-      axios
+      api
         .get("https://major.bot/api/user-visits/streak/", {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
+          signal,
         })
         .then((res) => res.data),
   });
@@ -22,13 +19,9 @@ export default function useMajorUserQuery() {
     enabled: streakQuery.isSuccess,
     queryKey: ["major", "user", streakQuery.data?.["user_id"]],
     queryFn: ({ signal }) =>
-      axios
+      api
         .get(`https://major.bot/api/users/${streakQuery.data?.["user_id"]}/`, {
           signal,
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
         })
         .then((res) => res.data),
   });

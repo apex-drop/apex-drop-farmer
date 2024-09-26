@@ -1,20 +1,20 @@
-import axios from "axios";
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
-import useTapCatAuth from "./useTapCatAuth";
+import useTapCatApi from "./useTapCatApi";
 
 export default function useTapCatCompleteTaskMutation() {
-  const Authorization = useTapCatAuth();
+  const api = useTapCatApi();
   return useMutation({
     mutationKey: ["tapcat", "task", "complete"],
     mutationFn: (id) =>
-      axios
-        .post(`https://cat-backend.pro/v1/tasks/comeplete-task/${id}`, null, {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
+      delay(3000)
+        .then(() =>
+          api.post(
+            `https://cat-backend.pro/v1/tasks/comeplete-task/${id}`,
+            null
+          )
+        )
         .then((res) => res.data),
   });
 }

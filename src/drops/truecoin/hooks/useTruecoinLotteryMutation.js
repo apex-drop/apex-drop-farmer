@@ -1,20 +1,15 @@
-import axios from "axios";
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
-import useTruecoinAuth from "./useTruecoinAuth";
+import useTruecoinApi from "./useTruecoinApi";
 
 export default function useTruecoinLotteryMutation() {
-  const Authorization = useTruecoinAuth();
+  const api = useTruecoinApi();
   return useMutation({
     mutationKey: ["truecoin", "lottery", "spin"],
     mutationFn: () =>
-      axios
-        .get("https://api.true.world/api/game/roll", {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
+      delay(2000)
+        .then(() => api.get("https://api.true.world/api/game/roll"))
         .then((res) => res.data),
   });
 }

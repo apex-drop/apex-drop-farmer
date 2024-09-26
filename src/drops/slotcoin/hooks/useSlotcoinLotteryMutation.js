@@ -1,20 +1,17 @@
-import axios from "axios";
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
-import useSlotcoinAuth from "./useSlotcoinAuth";
+import useSlotcoinApi from "./useSlotcoinApi";
 
 export default function useSlotcoinLotteryMutation() {
-  const Authorization = useSlotcoinAuth();
+  const api = useSlotcoinApi();
   return useMutation({
     mutationKey: ["slotcoin", "lottery", "spin"],
     mutationFn: () =>
-      axios
-        .post("https://api.slotcoin.app/v1/clicker/api/spin", null, {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
+      delay(2500)
+        .then(() =>
+          api.post("https://api.slotcoin.app/v1/clicker/api/spin", null)
+        )
         .then((res) => res.data),
   });
 }

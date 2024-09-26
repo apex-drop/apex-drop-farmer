@@ -1,0 +1,102 @@
+import axios from "axios";
+import { useEffect } from "react";
+import { useMemo } from "react";
+import { useState } from "react";
+
+export default function useDropFarmer({
+  urls = [],
+  notification = {},
+  getAuth,
+  compareAuth,
+}) {
+  /** Auth */
+  const [auth, setAuth] = useState(null);
+
+  /** Axios Instance */
+  const api = useMemo(
+    () =>
+      axios.create({
+        withCredentials: true,
+      }),
+    []
+  );
+  const urlRegexList = useMemo(
+    () =>
+      urls.map(
+        (url) => new RegExp(url.replaceAll(".", "\\.").replaceAll("*", ".*"))
+      ),
+    [urls]
+  );
+
+  /** Configure Authorization */
+  const configureAuthorization = (auth) => {
+    if (auth) {
+      api.defaults.headers.common["Authorization"] = auth;
+    } else {
+      delete api.defaults.headers.common["Authorization"];
+    }
+    setAuth(auth);
+  };
+
+  /** Interceptor */
+  useEffect(() => {
+    const interceptor = api.interceptors.response.use(
+      (response) => Promise.resolve(response),
+      (error) => {
+        if (
+          401 === error?.response?.status &&
+          urlRegexList.some((expr) => expr.test(error.config.url))
+        ) {
+          configureAuthorization(null);
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      api.interceptors.response.eject(interceptor);
+    };
+  }, [api]);
+
+  /** Chrome Web Request */
+  useEffect(() => {
+    const handleWebRequest = (details) => {
+      let newAuth = getAuth
+        ? getAuth(details)
+        : details.requestHeaders.find((item) => item.name === "Authorization")
+            ?.value;
+
+      if (
+        compareAuth ? compareAuth(auth, newAuth) : newAuth && newAuth !== auth
+      ) {
+        /** Set New Auth */
+        configureAuthorization(newAuth);
+
+        /** Create Notification */
+        chrome.notifications.create(notification.id, {
+          iconUrl: notification.icon,
+          title: notification.title,
+          message: notification.message,
+          type: "basic",
+        });
+      }
+    };
+
+    /** Add Listener */
+    chrome?.webRequest?.onSendHeaders.addListener(
+      handleWebRequest,
+      {
+        urls,
+      },
+      ["requestHeaders"]
+    );
+
+    return () => {
+      /** Remove Listener */
+      chrome?.webRequest?.onSendHeaders.removeListener(handleWebRequest);
+    };
+  }, [auth]);
+
+  /** Return API and Auth */
+  return useMemo(() => ({ api, auth }), [api, auth]);
+}

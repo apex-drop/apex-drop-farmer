@@ -1,14 +1,14 @@
-import SlotcoinAuthContext from "./context/SlotcoinAuthContext";
 import SlotcoinAuthDetect from "./components/SlotcoinAuthDetect";
 import SlotcoinFarmer from "./components/SlotcoinFarmer";
-import useSlotcoinAuthorizationHeader from "./hooks/useSlotcoinAuthorizationHeader";
+import SlotcoinFarmerContext from "./context/SlotcoinFarmerContext";
+import useSlotcoinFarmer from "./hooks/useSlotcoinFarmer";
 
 function Slotcoin() {
-  const auth = useSlotcoinAuthorizationHeader();
+  const farmer = useSlotcoinFarmer();
   return (
-    <SlotcoinAuthContext.Provider value={auth}>
-      {auth ? <SlotcoinFarmer /> : <SlotcoinAuthDetect />}
-    </SlotcoinAuthContext.Provider>
+    <SlotcoinFarmerContext.Provider value={farmer}>
+      {farmer.auth ? <SlotcoinFarmer /> : <SlotcoinAuthDetect />}
+    </SlotcoinFarmerContext.Provider>
   );
 }
 

@@ -1,24 +1,16 @@
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 
-import useTruecoinAuth from "./useTruecoinAuth";
+import useTruecoinApi from "./useTruecoinApi";
 
 export default function useTruecoin50SpinsBoost() {
-  const Authorization = useTruecoinAuth();
+  const api = useTruecoinApi();
   return useMutation({
     mutationKey: ["truecoin", "boost", 50, "spins"],
     mutationFn: () =>
-      axios
-        .post(
-          "https://api.true.world/api/boosts/buy",
-          { code: "50_ad_additional_spins" },
-          {
-            withCredentials: true,
-            headers: {
-              Authorization,
-            },
-          }
-        )
+      api
+        .post("https://api.true.world/api/boosts/buy", {
+          code: "50_ad_additional_spins",
+        })
         .then((res) => res.data),
   });
 }

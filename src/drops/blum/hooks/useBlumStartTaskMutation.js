@@ -1,19 +1,20 @@
-import axios from "axios";
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
-import useBlumAuth from "./useBlumAuth";
+import useBlumApi from "./useBlumApi";
 
 export default function useBlumStartTaskMutation() {
-  const Authorization = useBlumAuth();
+  const api = useBlumApi();
   return useMutation({
     mutationKey: ["blum", "task", "start"],
     mutationFn: (id) =>
-      axios
-        .post(`https://earn-domain.blum.codes/api/v1/tasks/${id}/start`, null, {
-          headers: {
-            Authorization,
-          },
-        })
+      delay(2000)
+        .then(() =>
+          api.post(
+            `https://earn-domain.blum.codes/api/v1/tasks/${id}/start`,
+            null
+          )
+        )
         .then((res) => res.data),
   });
 }

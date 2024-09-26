@@ -1,24 +1,15 @@
-import axios from "axios";
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
-import useAgent301Auth from "./useAgent301Auth";
+import useAgent301Api from "./useAgent301Api";
 
 export default function useAgent301LotteryMutation() {
-  const Authorization = useAgent301Auth();
+  const api = useAgent301Api();
   return useMutation({
     mutationKey: ["agent301", "lottery", "spin"],
     mutationFn: () =>
-      axios
-        .post(
-          "https://api.agent301.org/wheel/spin",
-          {},
-          {
-            withCredentials: true,
-            headers: {
-              Authorization,
-            },
-          }
-        )
+      delay(10_000)
+        .then(() => api.post("https://api.agent301.org/wheel/spin", {}))
         .then((res) => res.data),
   });
 }

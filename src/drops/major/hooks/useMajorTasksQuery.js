@@ -1,21 +1,16 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import useMajorAuth from "./useMajorAuth";
+import useMajorApi from "./useMajorApi";
 
 export default function useMajorTasksQuery(daily = false) {
-  const Authorization = useMajorAuth();
+  const api = useMajorApi();
 
   return useQuery({
     queryKey: ["major", "tasks", daily],
     queryFn: ({ signal }) =>
-      axios
+      api
         .get(`https://major.bot/api/tasks/?is_daily=${daily}`, {
           signal,
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
         })
         .then((res) => res.data),
   });

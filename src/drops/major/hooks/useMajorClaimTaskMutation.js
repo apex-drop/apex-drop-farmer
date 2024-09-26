@@ -1,25 +1,16 @@
-import axios from "axios";
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
-import useMajorAuth from "./useMajorAuth";
+import useMajorApi from "./useMajorApi";
 
 export default function useMajorClaimTaskMutation() {
-  const Authorization = useMajorAuth();
+  const api = useMajorApi();
 
   return useMutation({
     mutationKey: ["major", "task", "claim"],
     mutationFn: (id) =>
-      axios
-        .post(
-          "https://major.bot/api/tasks/",
-          { task_id: id },
-          {
-            withCredentials: true,
-            headers: {
-              Authorization,
-            },
-          }
-        )
+      delay(1000)
+        .then(() => api.post("https://major.bot/api/tasks/", { task_id: id }))
         .then((res) => res.data),
   });
 }

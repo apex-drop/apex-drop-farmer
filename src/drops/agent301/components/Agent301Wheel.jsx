@@ -1,4 +1,4 @@
-import { cn, delay } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import useAgent301WheelQuery from "../hooks/useAgent301WheelQuery";
 import useAgent301CompleteWheelTaskMutation from "../hooks/useAgent301CompleteWheelTaskMutation";
@@ -27,7 +27,7 @@ export default function Agent301Wheel() {
     [tasks]
   );
 
-  const completeTaskMutation = useAgent301CompleteWheelTaskMutation();
+  const completeWheelTaskMutation = useAgent301CompleteWheelTaskMutation();
 
   const [autoClaiming, setAutoClaiming] = useState(false);
   const [taskOffset, setTaskOffset] = useState(null);
@@ -56,11 +56,11 @@ export default function Agent301Wheel() {
         for (let i = hourly["count"]; i < 5; i++) {
           setTaskOffset(i);
           try {
-            await completeTaskMutation.mutateAsync({
+            await completeWheelTaskMutation.mutateAsync({
+              delay: 10_000,
               type: "hour",
             });
           } catch {}
-          await delay(10_000);
         }
         reset();
       }
@@ -69,7 +69,8 @@ export default function Agent301Wheel() {
       if (Date.now() >= daily * 1000) {
         setAction("daily");
         try {
-          await completeTaskMutation.mutateAsync({
+          await completeWheelTaskMutation.mutateAsync({
+            delay: 1000,
             type: "daily",
           });
         } catch {}
@@ -80,11 +81,11 @@ export default function Agent301Wheel() {
       for (let k of Object.keys(otherTasks)) {
         setAction(k);
         try {
-          await completeTaskMutation.mutateAsync({
+          await completeWheelTaskMutation.mutateAsync({
+            delay: 1000,
             type: k,
           });
         } catch {}
-        await delay(1000);
       }
 
       reset();
@@ -156,10 +157,10 @@ export default function Agent301Wheel() {
                   {
                     success: "text-green-500",
                     error: "text-red-500",
-                  }[completeTaskMutation.status]
+                  }[completeWheelTaskMutation.status]
                 )}
               >
-                {completeTaskMutation.status}
+                {completeWheelTaskMutation.status}
               </p>
             </div>
           ) : null}

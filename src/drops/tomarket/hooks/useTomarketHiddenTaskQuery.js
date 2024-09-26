@@ -1,22 +1,18 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import useTomarketAuth from "./useTomarketAuth";
+import useTomarketApi from "./useTomarketApi";
 
 export default function useTomarketHiddenTaskQuery() {
-  const Authorization = useTomarketAuth();
+  const api = useTomarketApi();
   return useQuery({
     queryKey: ["tomarket", "hidden-task"],
     queryFn: ({ signal }) =>
-      axios
+      api
         .post(
           "https://api-web.tomarket.ai/tomarket-game/v1/tasks/hidden",
           null,
           {
             signal,
-            headers: {
-              Authorization,
-            },
           }
         )
         .then((res) => res.data.data),

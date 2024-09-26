@@ -1,19 +1,15 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import useBlumAuth from "./useBlumAuth";
+import useBlumApi from "./useBlumApi";
 
 export default function useBlumUserQuery() {
-  const Authorization = useBlumAuth();
+  const api = useBlumApi();
   return useQuery({
     queryKey: ["blum", "user"],
     queryFn: ({ signal }) =>
-      axios
+      api
         .get("https://user-domain.blum.codes/api/v1/user/me", {
           signal,
-          headers: {
-            Authorization,
-          },
         })
         .then((res) => res.data),
   });

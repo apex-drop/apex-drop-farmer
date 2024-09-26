@@ -1,20 +1,17 @@
-import axios from "axios";
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
-import useGoatsAuth from "./useGoatsAuth";
+import useGoatsApi from "./useGoatsApi";
 
 export default function useGoatsCompleteMissionMutation() {
-  const Authorization = useGoatsAuth();
+  const api = useGoatsApi();
   return useMutation({
     mutationKey: ["goats", "mission", "complete"],
     mutationFn: (id) =>
-      axios
-        .post(`https://dev-api.goatsbot.xyz/missions/action/${id}`, null, {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
+      delay(2000)
+        .then(() =>
+          api.post(`https://dev-api.goatsbot.xyz/missions/action/${id}`, null)
+        )
         .then((res) => res.data),
   });
 }

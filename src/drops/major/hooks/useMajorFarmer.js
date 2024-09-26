@@ -1,9 +1,9 @@
-import useDropAuthorizationHeader from "@/hooks/useDropAuthorizationHeader";
+import useDropFarmer from "@/hooks/useDropFarmer";
 
 import MajorIcon from "../assets/images/icon.png?format=webp";
 
-export default function useMajorAuthorizationHeader() {
-  return useDropAuthorizationHeader({
+export default function useMajorFarmer() {
+  return useDropFarmer({
     urls: ["*://major.bot/*"],
     notification: {
       id: "major-auth",

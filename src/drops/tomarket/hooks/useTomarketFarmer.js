@@ -1,9 +1,9 @@
-import useDropAuthorizationHeader from "@/hooks/useDropAuthorizationHeader";
+import useDropFarmer from "@/hooks/useDropFarmer";
 
 import TomarketIcon from "../assets/images/icon.png?format=webp";
 
-export default function useTomarketAuthorizationHeader() {
-  return useDropAuthorizationHeader({
+export default function useTomarketFarmer() {
+  return useDropFarmer({
     urls: ["*://api-web.tomarket.ai/*"],
     notification: {
       id: "tomarket-auth",

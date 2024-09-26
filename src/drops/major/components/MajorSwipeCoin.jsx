@@ -1,44 +1,43 @@
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import SwipeCoinIcon from "../assets/images/swipe-coin.svg";
-import useMajorAuth from "../hooks/useMajorAuth";
+
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
-import axios from "axios";
 import StarIcon from "../assets/images/star-amount.svg";
+import SwipeCoinIcon from "../assets/images/swipe-coin.svg";
 import useMajorGame from "../hooks/useMajorGame";
+import useMajorApi from "../hooks/useMajorApi";
+import toast from "react-hot-toast";
 
 export default function MajorSwipeCoin() {
   const game = useMajorGame();
-  const Authorization = useMajorAuth();
+  const api = useMajorApi();
   const startMutation = useMutation({
     retry(failureCount, e) {
       return !e.response?.data?.detail?.["blocked_until"];
     },
     mutationKey: ["major", "swipe-coin", "start"],
     mutationFn: () =>
-      axios
-        .get("https://major.bot/api/swipe_coin/", {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
-        .then((res) => res.data),
+      api.get("https://major.bot/api/swipe_coin/").then((res) => res.data),
   });
 
   const claimMutation = useMutation({
     mutationKey: ["major", "swipe-coin", "claim"],
     mutationFn: (coins) =>
-      axios
-        .post(
-          "https://major.bot/api/swipe_coin/",
-          { coins },
+      toast
+        .promise(
+          delay(60_000),
           {
-            withCredentials: true,
-            headers: {
-              Authorization,
+            loading: "Swiping for 60 secs..",
+            success: "Completed!",
+            error: "Error!",
+          },
+          {
+            style: {
+              fontWeight: "bold",
             },
           }
         )
+        .then(() => api.post("https://major.bot/api/swipe_coin/", { coins }))
         .then((res) => res.data),
   });
 

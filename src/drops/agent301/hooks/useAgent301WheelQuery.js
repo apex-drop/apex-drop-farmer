@@ -1,20 +1,15 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import useAgent301Auth from "./useAgent301Auth";
+import useAgent301Api from "./useAgent301Api";
 
 export default function useAgent301WheelQuery() {
-  const Authorization = useAgent301Auth();
+  const api = useAgent301Api();
   return useQuery({
     queryKey: ["agent301", "wheel"],
     queryFn: ({ signal }) =>
-      axios
+      api
         .post("https://api.agent301.org/wheel/load", null, {
           signal,
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
         })
         .then((res) => res.data),
   });

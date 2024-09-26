@@ -1,4 +1,4 @@
-import { cn, delay } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -61,7 +61,6 @@ export default function GoatsMissions() {
         try {
           await completeMissionMutation.mutateAsync(mission["_id"]);
         } catch {}
-        await delay(1000);
       }
 
       try {

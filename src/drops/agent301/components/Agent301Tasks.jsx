@@ -1,4 +1,4 @@
-import { cn, delay } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -89,10 +89,10 @@ export default function Agent301Tasks() {
         setCurrentTask(videoTask);
         try {
           await completeTaskMutation.mutateAsync({
+            delay: 10_000,
             type: videoTask["type"],
           });
         } catch {}
-        await delay(10_000);
       }
 
       // Refetch Tasks List
@@ -111,10 +111,10 @@ export default function Agent301Tasks() {
         setCurrentTask(task);
         try {
           await completeTaskMutation.mutateAsync({
+            delay: 1000,
             type: task["type"],
           });
         } catch {}
-        await delay(1000);
       }
 
       // Refetch Tasks List
@@ -133,10 +133,10 @@ export default function Agent301Tasks() {
         setCurrentTask(task);
         try {
           await completeTaskMutation.mutateAsync({
+            delay: 1000,
             type: task["type"],
           });
         } catch {}
-        await delay(1000);
       }
 
       try {

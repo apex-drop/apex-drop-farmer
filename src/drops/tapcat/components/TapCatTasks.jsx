@@ -1,4 +1,4 @@
-import { cn, delay } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -6,8 +6,6 @@ import { useState } from "react";
 
 import useTapCatCompleteTaskMutation from "../hooks/useTapCatCompleteTaskMutation";
 import useTapCatTasksQuery from "../hooks/useTapCatTasksQuery";
-
-const DELAY_BETWEEN_TASKS = 2000;
 
 export default function TapCatTasks() {
   const client = useQueryClient();
@@ -54,7 +52,6 @@ export default function TapCatTasks() {
         try {
           await completeTaskMutation.mutateAsync(task["id"]);
         } catch {}
-        await delay(DELAY_BETWEEN_TASKS);
       }
 
       try {

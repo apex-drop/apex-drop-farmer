@@ -1,9 +1,9 @@
-import useDropAuthorizationHeader from "@/hooks/useDropAuthorizationHeader";
+import useDropFarmer from "@/hooks/useDropFarmer";
 
 import SlotcoinIcon from "../assets/images/icon.png?format=webp";
 
-export default function useSlotcoinAuthorizationHeader() {
-  return useDropAuthorizationHeader({
+export default function useSlotcoinFarmer() {
+  return useDropFarmer({
     urls: ["*://api.slotcoin.app/*"],
     notification: {
       id: "slotcoin-auth",

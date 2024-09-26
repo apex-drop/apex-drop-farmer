@@ -1,9 +1,9 @@
-import useDropAuthorizationHeader from "@/hooks/useDropAuthorizationHeader";
+import useDropFarmer from "@/hooks/useDropFarmer";
 
 import BlumIcon from "../assets/images/icon.png?format=webp";
 
-export default function useBlumAuthorizationHeader() {
-  return useDropAuthorizationHeader({
+export default function useBlumFarmer() {
+  return useDropFarmer({
     urls: [
       "*://user-domain.blum.codes/*",
       "*://earn-domain.blum.codes/*",

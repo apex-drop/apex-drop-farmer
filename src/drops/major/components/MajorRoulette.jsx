@@ -1,40 +1,29 @@
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import RouletteIcon from "../assets/images/roulette.svg";
-import useMajorAuth from "../hooks/useMajorAuth";
+
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
-import axios from "axios";
+import RouletteIcon from "../assets/images/roulette.svg";
 import StarIcon from "../assets/images/star-amount.svg";
 import useMajorGame from "../hooks/useMajorGame";
+import useMajorApi from "../hooks/useMajorApi";
 
 export default function MajorRoulette() {
   const game = useMajorGame();
-  const Authorization = useMajorAuth();
+  const api = useMajorApi();
   const startMutation = useMutation({
     retry(failureCount, e) {
       return !e.response?.data?.detail?.["blocked_until"];
     },
     mutationKey: ["major", "roulette", "start"],
     mutationFn: () =>
-      axios
-        .get("https://major.bot/api/roulette/", {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
-        .then((res) => res.data),
+      api.get("https://major.bot/api/roulette/").then((res) => res.data),
   });
 
   const claimMutation = useMutation({
     mutationKey: ["major", "roulette", "claim"],
     mutationFn: () =>
-      axios
-        .post("https://major.bot/api/roulette/", null, {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
+      delay(2000)
+        .then(() => api.post("https://major.bot/api/roulette/", null))
         .then((res) => res.data),
   });
 

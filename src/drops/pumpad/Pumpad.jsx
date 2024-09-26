@@ -1,14 +1,14 @@
-import PumpadAuthContext from "./context/PumpadAuthContext";
 import PumpadAuthDetect from "./components/PumpadAuthDetect";
 import PumpadFarmer from "./components/PumpadFarmer";
-import usePumpadAuthorizationHeader from "./hooks/usePumpadAuthorizationHeader";
+import PumpadFarmerContext from "./context/PumpadFarmerContext";
+import usePumpadFarmer from "./hooks/usePumpadFarmer";
 
 function Pumpad() {
-  const auth = usePumpadAuthorizationHeader();
+  const farmer = usePumpadFarmer();
   return (
-    <PumpadAuthContext.Provider value={auth}>
-      {auth ? <PumpadFarmer /> : <PumpadAuthDetect />}
-    </PumpadAuthContext.Provider>
+    <PumpadFarmerContext.Provider value={farmer}>
+      {farmer.auth ? <PumpadFarmer /> : <PumpadAuthDetect />}
+    </PumpadFarmerContext.Provider>
   );
 }
 

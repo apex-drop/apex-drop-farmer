@@ -1,21 +1,15 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import usePumpadAuth from "./usePumpadAuth";
+import usePumpadApi from "./usePumpadApi";
 
 export default function usePumpadLotteryQuery() {
-  const Authorization = usePumpadAuth();
+  const api = usePumpadApi();
   return useQuery({
-    refetchInterval: 5000,
     queryKey: ["pumpad", "lottery"],
     queryFn: ({ signal }) =>
-      axios
+      api
         .get("https://tg.pumpad.io/referral/api/v1/lottery", {
           signal,
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
         })
         .then((res) => res.data),
   });

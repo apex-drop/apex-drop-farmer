@@ -1,11 +1,8 @@
 import toast from "react-hot-toast";
 import { formatRelative } from "date-fns";
-import { useQueryClient } from "@tanstack/react-query";
-
 import useMajorUserQuery from "./useMajorUserQuery";
 
 export default function useMajorGame() {
-  const client = useQueryClient();
   const user = useMajorUserQuery();
 
   return async (start, claim) => {

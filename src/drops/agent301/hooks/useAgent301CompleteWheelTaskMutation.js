@@ -1,20 +1,15 @@
-import axios from "axios";
+import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
-import useAgent301Auth from "./useAgent301Auth";
+import useAgent301Api from "./useAgent301Api";
 
 export default function useAgent301CompleteWheelTaskMutation() {
-  const Authorization = useAgent301Auth();
+  const api = useAgent301Api();
   return useMutation({
     mutationKey: ["agent301", "wheel", "task", "complete"],
-    mutationFn: (data) =>
-      axios
-        .post("https://api.agent301.org/wheel/task", data, {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
+    mutationFn: ({ delay: duration = 0, ...data }) =>
+      delay(duration)
+        .then(() => api.post("https://api.agent301.org/wheel/task", data))
         .then((res) => res.data),
   });
 }

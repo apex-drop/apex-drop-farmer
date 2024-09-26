@@ -1,21 +1,15 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import useGoatsAuth from "./useGoatsAuth";
+import useGoatsApi from "./useGoatsApi";
 
 export default function useGoatsMissionsQuery() {
-  const Authorization = useGoatsAuth();
+  const api = useGoatsApi();
   return useQuery({
-    refetchInterval: 5000,
     queryKey: ["goats", "missions"],
     queryFn: ({ signal }) =>
-      axios
+      api
         .get("https://api-mission.goatsbot.xyz/missions/user", {
           signal,
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
         })
         .then((res) => res.data),
   });

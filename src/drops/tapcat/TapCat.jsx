@@ -1,15 +1,15 @@
-import TapCatAuthContext from "./context/TapCatAuthContext";
 import TapCatAuthDetect from "./components/TapCatAuthDetect";
 import TapCatFarmer from "./components/TapCatFarmer";
-import useTapCatAuthorizationHeader from "./hooks/useTapCatAuthorizationHeader";
+import TapCatFarmerContext from "./context/TapCatFarmerContext";
+import useTapCatFarmer from "./hooks/useTapCatFarmer";
 
 function TapCat() {
-  const auth = useTapCatAuthorizationHeader();
+  const farmer = useTapCatFarmer();
   return (
     <div className="flex flex-col text-white bg-rose-500 grow">
-      <TapCatAuthContext.Provider value={auth}>
-        {auth ? <TapCatFarmer /> : <TapCatAuthDetect />}
-      </TapCatAuthContext.Provider>
+      <TapCatFarmerContext.Provider value={farmer}>
+        {farmer.auth ? <TapCatFarmer /> : <TapCatAuthDetect />}
+      </TapCatFarmerContext.Provider>
     </div>
   );
 }

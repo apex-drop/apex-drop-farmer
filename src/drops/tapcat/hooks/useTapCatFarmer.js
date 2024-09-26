@@ -1,9 +1,9 @@
-import useDropAuthorizationHeader from "@/hooks/useDropAuthorizationHeader";
+import useDropFarmer from "@/hooks/useDropFarmer";
 
 import TapCatIcon from "../assets/images/icon.png?format=webp";
 
-export default function useTapCatAuthorizationHeader() {
-  return useDropAuthorizationHeader({
+export default function useTapCatFarmer() {
+  return useDropFarmer({
     urls: ["*://cat-backend.pro/*"],
     notification: {
       id: "tapcat-auth",

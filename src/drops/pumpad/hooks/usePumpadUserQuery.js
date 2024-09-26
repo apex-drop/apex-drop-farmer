@@ -1,20 +1,15 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import usePumpadAuth from "./usePumpadAuth";
+import usePumpadApi from "./usePumpadApi";
 
 export default function usePumpadUserQuery() {
-  const Authorization = usePumpadAuth();
+  const api = usePumpadApi();
   return useQuery({
     queryKey: ["pumpad", "user"],
     queryFn: ({ signal }) =>
-      axios
+      api
         .get("https://tg.pumpad.io/referral/api/v1/tg/user/information", {
           signal,
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
         })
         .then((res) => res.data),
   });

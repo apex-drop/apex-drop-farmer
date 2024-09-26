@@ -5,8 +5,8 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-export function delay(length) {
+export function delay(length, value) {
   return new Promise((res) => {
-    setTimeout(res, length);
+    setTimeout(() => res(value), length);
   });
 }

@@ -1,14 +1,14 @@
-import TruecoinAuthContext from "./context/TruecoinAuthContext";
 import TruecoinAuthDetect from "./components/TruecoinAuthDetect";
 import TruecoinFarmer from "./components/TruecoinFarmer";
-import useTruecoinAuthorizationHeader from "./hooks/useTruecoinAuthorizationHeader";
+import TruecoinFarmerContext from "./context/TruecoinFarmerContext";
+import useTruecoinFarmer from "./hooks/useTruecoinFarmer";
 
 function Truecoin() {
-  const auth = useTruecoinAuthorizationHeader();
+  const farmer = useTruecoinFarmer();
   return (
-    <TruecoinAuthContext.Provider value={auth}>
-      {auth ? <TruecoinFarmer /> : <TruecoinAuthDetect />}
-    </TruecoinAuthContext.Provider>
+    <TruecoinFarmerContext.Provider value={farmer}>
+      {farmer.auth ? <TruecoinFarmer /> : <TruecoinAuthDetect />}
+    </TruecoinFarmerContext.Provider>
   );
 }
 

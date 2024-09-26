@@ -1,15 +1,15 @@
-import GoatsAuthContext from "./context/GoatsAuthContext";
 import GoatsAuthDetect from "./components/GoatsAuthDetect";
 import GoatsFarmer from "./components/GoatsFarmer";
-import useGoatsAuthorizationHeader from "./hooks/useGoatsAuthorizationHeader";
+import GoatsFarmerContext from "./context/GoatsFarmerContext";
+import useGoatsFarmer from "./hooks/useGoatsFarmer";
 
 function Goats() {
-  const auth = useGoatsAuthorizationHeader();
+  const farmer = useGoatsFarmer();
   return (
     <div className="flex flex-col text-white bg-black grow">
-      <GoatsAuthContext.Provider value={auth}>
-        {auth ? <GoatsFarmer /> : <GoatsAuthDetect />}
-      </GoatsAuthContext.Provider>
+      <GoatsFarmerContext.Provider value={farmer}>
+        {farmer.auth ? <GoatsFarmer /> : <GoatsAuthDetect />}
+      </GoatsFarmerContext.Provider>
     </div>
   );
 }

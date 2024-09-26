@@ -1,14 +1,14 @@
-import MajorAuthContext from "./context/MajorAuthContext";
 import MajorAuthDetect from "./components/MajorAuthDetect";
 import MajorFarmer from "./components/MajorFarmer";
-import useMajorAuthorizationHeader from "./hooks/useMajorAuthorizationHeader";
+import MajorFarmerContext from "./context/MajorFarmerContext";
+import useMajorFarmer from "./hooks/useMajorFarmer";
 
 function Major() {
-  const auth = useMajorAuthorizationHeader();
+  const farmer = useMajorFarmer();
   return (
-    <MajorAuthContext.Provider value={auth}>
-      {auth ? <MajorFarmer /> : <MajorAuthDetect />}
-    </MajorAuthContext.Provider>
+    <MajorFarmerContext.Provider value={farmer}>
+      {farmer.auth ? <MajorFarmer /> : <MajorAuthDetect />}
+    </MajorFarmerContext.Provider>
   );
 }
 

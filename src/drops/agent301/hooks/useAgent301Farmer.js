@@ -1,9 +1,9 @@
-import useDropAuthorizationHeader from "@/hooks/useDropAuthorizationHeader";
+import useDropFarmer from "@/hooks/useDropFarmer";
 
 import Agent301Icon from "../assets/images/icon.png?format=webp";
 
-export default function useAgent301AuthorizationHeader() {
-  return useDropAuthorizationHeader({
+export default function useAgent301Farmer() {
+  return useDropFarmer({
     urls: ["*://api.agent301.org/*"],
     notification: {
       id: "agent301-auth",

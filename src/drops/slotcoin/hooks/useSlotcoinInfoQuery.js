@@ -1,21 +1,15 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import useSlotcoinAuth from "./useSlotcoinAuth";
+import useSlotcoinApi from "./useSlotcoinApi";
 
 export default function useSlotcoinInfoQuery() {
-  const Authorization = useSlotcoinAuth();
+  const api = useSlotcoinApi();
   return useQuery({
-    refetchInterval: 5000,
     queryKey: ["slotcoin", "info"],
     queryFn: ({ signal }) =>
-      axios
+      api
         .post("https://api.slotcoin.app/v1/clicker/api/info", null, {
           signal,
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
         })
         .then((res) => res.data),
   });

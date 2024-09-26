@@ -1,16 +1,16 @@
-import TomarketAuthContext from "./context/TomarketAuthContext";
 import TomarketAuthDetect from "./components/TomarketAuthDetect";
 import TomarketFarmer from "./components/TomarketFarmer";
-import useTomarketAuthorizationHeader from "./hooks/useTomarketAuthorizationHeader";
+import TomarketFarmerContext from "./context/TomarketFarmerContext";
+import useTomarketFarmer from "./hooks/useTomarketFarmer";
 
 function Tomarket() {
-  const auth = useTomarketAuthorizationHeader();
+  const farmer = useTomarketFarmer();
 
   return (
     <div className="flex flex-col grow">
-      <TomarketAuthContext.Provider value={auth}>
-        {auth ? <TomarketFarmer /> : <TomarketAuthDetect />}
-      </TomarketAuthContext.Provider>
+      <TomarketFarmerContext.Provider value={farmer}>
+        {farmer.auth ? <TomarketFarmer /> : <TomarketAuthDetect />}
+      </TomarketFarmerContext.Provider>
     </div>
   );
 }

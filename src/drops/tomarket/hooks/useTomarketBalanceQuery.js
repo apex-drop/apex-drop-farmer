@@ -1,22 +1,18 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import useTomarketAuth from "./useTomarketAuth";
+import useTomarketApi from "./useTomarketApi";
 
 export default function useTomarketBalanceQuery() {
-  const Authorization = useTomarketAuth();
+  const api = useTomarketApi();
   return useQuery({
     queryKey: ["tomarket", "balance"],
     queryFn: ({ signal }) =>
-      axios
+      api
         .post(
           "https://api-web.tomarket.ai/tomarket-game/v1/user/balance",
           null,
           {
             signal,
-            headers: {
-              Authorization,
-            },
           }
         )
         .then((res) => res.data.data),

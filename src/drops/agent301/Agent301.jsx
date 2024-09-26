@@ -1,15 +1,15 @@
-import Agent301AuthContext from "./context/Agent301AuthContext";
 import Agent301AuthDetect from "./components/Agent301AuthDetect";
 import Agent301Farmer from "./components/Agent301Farmer";
-import useAgent301AuthorizationHeader from "./hooks/useAgent301AuthorizationHeader";
+import Agent301FarmerContext from "./context/Agent301FarmerContext";
+import useAgent301Farmer from "./hooks/useAgent301Farmer";
 
 function Agent301() {
-  const auth = useAgent301AuthorizationHeader();
+  const farmer = useAgent301Farmer();
   return (
     <div className="flex flex-col text-white bg-black grow">
-      <Agent301AuthContext.Provider value={auth}>
-        {auth ? <Agent301Farmer /> : <Agent301AuthDetect />}
-      </Agent301AuthContext.Provider>
+      <Agent301FarmerContext.Provider value={farmer}>
+        {farmer.auth ? <Agent301Farmer /> : <Agent301AuthDetect />}
+      </Agent301FarmerContext.Provider>
     </div>
   );
 }

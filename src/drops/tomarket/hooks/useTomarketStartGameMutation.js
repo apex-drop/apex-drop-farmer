@@ -1,23 +1,16 @@
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 
-import useTomarketAuth from "./useTomarketAuth";
+import useTomarketApi from "./useTomarketApi";
 
 export default function useTomarketStartGameMutation(id) {
-  const Authorization = useTomarketAuth();
+  const api = useTomarketApi();
   return useMutation({
     mutationKey: ["tomarket", "game", "start", id],
     mutationFn: () =>
-      axios
-        .post(
-          "https://api-web.tomarket.ai/tomarket-game/v1/game/play",
-          { game_id: id },
-          {
-            headers: {
-              Authorization,
-            },
-          }
-        )
+      api
+        .post("https://api-web.tomarket.ai/tomarket-game/v1/game/play", {
+          game_id: id,
+        })
         .then((res) => res.data.data),
   });
 }

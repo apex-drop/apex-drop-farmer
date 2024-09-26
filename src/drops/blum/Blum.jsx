@@ -1,15 +1,15 @@
-import BlumAuthContext from "./context/BlumAuthContext";
 import BlumAuthDetect from "./components/BlumAuthDetect";
 import BlumFarmer from "./components/BlumFarmer";
-import useBlumAuthorizationHeader from "./hooks/useBlumAuthorizationHeader";
+import BlumFarmerContext from "./context/BlumFarmerContext";
+import useBlumFarmer from "./hooks/useBlumFarmer";
 
 function Blum() {
-  const auth = useBlumAuthorizationHeader();
+  const farmer = useBlumFarmer();
   return (
     <div className="flex flex-col text-white bg-black grow">
-      <BlumAuthContext.Provider value={auth}>
-        {auth ? <BlumFarmer /> : <BlumAuthDetect />}
-      </BlumAuthContext.Provider>
+      <BlumFarmerContext.Provider value={farmer}>
+        {farmer.auth ? <BlumFarmer /> : <BlumAuthDetect />}
+      </BlumFarmerContext.Provider>
     </div>
   );
 }

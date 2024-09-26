@@ -1,9 +1,9 @@
-import useDropAuthorizationHeader from "@/hooks/useDropAuthorizationHeader";
+import useDropFarmer from "@/hooks/useDropFarmer";
 
 import PumpadIcon from "../assets/images/icon.png?format=webp";
 
-export default function usePumpadAuthorizationHeader() {
-  return useDropAuthorizationHeader({
+export default function usePumpadFarmer() {
+  return useDropFarmer({
     urls: ["*://tg.pumpad.io/*"],
     notification: {
       id: "pumpad-auth",

@@ -1,20 +1,13 @@
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
-
-import usePumpadAuth from "./usePumpadAuth";
+import usePumpadApi from "./usePumpadApi";
 
 export default function usePumpadLotteryMutation() {
-  const Authorization = usePumpadAuth();
+  const api = usePumpadApi();
   return useMutation({
     mutationKey: ["pumpad", "lottery", "spin"],
     mutationFn: () =>
-      axios
-        .post("https://tg.pumpad.io/referral/api/v1/lottery", null, {
-          withCredentials: true,
-          headers: {
-            Authorization,
-          },
-        })
+      api
+        .post("https://tg.pumpad.io/referral/api/v1/lottery", null)
         .then((res) => res.data),
   });
 }

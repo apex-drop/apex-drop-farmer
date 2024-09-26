@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import useAgent301WheelQuery from "../hooks/useAgent301WheelQuery";
 import useAgent301CompleteWheelTaskMutation from "../hooks/useAgent301CompleteWheelTaskMutation";
@@ -57,10 +57,12 @@ export default function Agent301Wheel() {
           setTaskOffset(i);
           try {
             await completeWheelTaskMutation.mutateAsync({
-              delay: 10_000,
               type: "hour",
             });
           } catch {}
+
+          /** Delay */
+          await delay(10_000);
         }
         reset();
       }
@@ -70,10 +72,13 @@ export default function Agent301Wheel() {
         setAction("daily");
         try {
           await completeWheelTaskMutation.mutateAsync({
-            delay: 1000,
             type: "daily",
           });
         } catch {}
+
+        /** Delay */
+        await delay(1_000);
+
         reset();
       }
 
@@ -82,10 +87,12 @@ export default function Agent301Wheel() {
         setAction(k);
         try {
           await completeWheelTaskMutation.mutateAsync({
-            delay: 1000,
             type: k,
           });
         } catch {}
+
+        /** Delay */
+        await delay(1_000);
       }
 
       reset();

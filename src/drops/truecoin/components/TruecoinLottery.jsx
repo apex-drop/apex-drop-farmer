@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { HiOutlineArrowPath } from "react-icons/hi2";
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 import { useState } from "react";
 
@@ -55,6 +55,9 @@ export default function TruecoinLottery() {
           setAutoSpin(false);
         }
       }
+
+      /** Delay */
+      await delay(3_000);
 
       // Release Lock
       setWorking(false);

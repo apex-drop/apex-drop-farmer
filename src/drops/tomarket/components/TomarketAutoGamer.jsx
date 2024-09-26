@@ -8,17 +8,13 @@ import useTomarketBalanceQuery from "../hooks/useTomarketBalanceQuery";
 import useTomarketClaimGameMutation from "../hooks/useTomarketClaimGameMutation";
 import useTomarketStartGameMutation from "../hooks/useTomarketStartGameMutation";
 import { CgSpinner } from "react-icons/cg";
+import { delay } from "@/lib/utils";
 
-const GAME_DURATION = 30 * 1000;
-const EXTRA_DELAY = 3 * 1000;
+const GAME_DURATION = 30_1000;
+const EXTRA_DELAY = 3_1000;
 const MIN_POINT = 100;
-const INITIAL_POINT = 180;
-const MAX_POINT = 280;
-
-const delay = (length) =>
-  new Promise((res) => {
-    setTimeout(res, length);
-  });
+const INITIAL_POINT = 220;
+const MAX_POINT = 390;
 
 export default function Tomarket() {
   const query = useTomarketBalanceQuery();

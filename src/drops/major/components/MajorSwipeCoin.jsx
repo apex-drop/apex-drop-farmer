@@ -25,10 +25,10 @@ export default function MajorSwipeCoin() {
     mutationFn: (coins) =>
       toast
         .promise(
-          delay(60_000),
+          delay(2_000),
           {
-            loading: "Swiping for 60 secs..",
-            success: "Completed!",
+            loading: "Delaying for 2 secs..",
+            success: "Done!",
             error: "Error!",
           },
           {

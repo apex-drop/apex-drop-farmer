@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 import { useState } from "react";
 
@@ -35,13 +35,18 @@ export default function TapCatLottery() {
       // Lock Process
       setWorking(true);
 
+      /** Spin */
       try {
         await spinMutation.mutateAsync();
       } catch {}
 
+      /** Refetch */
       try {
         await query.refetch();
       } catch {}
+
+      /** Delay */
+      await delay(3_000);
 
       // Release Lock
       setWorking(false);

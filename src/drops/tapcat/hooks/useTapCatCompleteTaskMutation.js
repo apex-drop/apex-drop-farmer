@@ -1,6 +1,4 @@
-import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-
 import useTapCatApi from "./useTapCatApi";
 
 export default function useTapCatCompleteTaskMutation() {
@@ -8,13 +6,8 @@ export default function useTapCatCompleteTaskMutation() {
   return useMutation({
     mutationKey: ["tapcat", "task", "complete"],
     mutationFn: (id) =>
-      delay(3000)
-        .then(() =>
-          api.post(
-            `https://cat-backend.pro/v1/tasks/comeplete-task/${id}`,
-            null
-          )
-        )
+      api
+        .post(`https://cat-backend.pro/v1/tasks/comeplete-task/${id}`, null)
         .then((res) => res.data),
   });
 }

@@ -1,4 +1,3 @@
-import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
@@ -22,9 +21,7 @@ export default function MajorRoulette() {
   const claimMutation = useMutation({
     mutationKey: ["major", "roulette", "claim"],
     mutationFn: () =>
-      delay(2000)
-        .then(() => api.post("https://major.bot/api/roulette/", null))
-        .then((res) => res.data),
+      api.post("https://major.bot/api/roulette/", null).then((res) => res.data),
   });
 
   const handleButtonClick = () => {

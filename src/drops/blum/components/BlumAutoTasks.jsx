@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -136,6 +136,9 @@ export default function BlumAutoTasks() {
             try {
               await startTaskMutation.mutateAsync(task.id);
             } catch {}
+
+            /** Delay */
+            await delay(1_000);
           }
 
           // Set Next Action
@@ -155,6 +158,9 @@ export default function BlumAutoTasks() {
               let keyword = prompt(`Keyword: ${task.title}`);
               await validateTaskMutation.mutateAsync({ id: task.id, keyword });
             } catch {}
+
+            /** Delay */
+            await delay(1_000);
           }
 
           // Set Next Action
@@ -173,6 +179,9 @@ export default function BlumAutoTasks() {
             try {
               await claimTaskMutation.mutateAsync({ id: task.id });
             } catch {}
+
+            /** Delay */
+            await delay(1_000);
           }
           break;
       }

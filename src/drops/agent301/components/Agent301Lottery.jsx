@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 import { useState } from "react";
 
@@ -34,13 +34,18 @@ export default function Agent301Lottery() {
       // Lock Process
       setWorking(true);
 
+      /** Spin */
       try {
         await spinMutation.mutateAsync();
       } catch {}
 
+      /** Refetch Balance */
       try {
         await balanceQuery.refetch();
       } catch {}
+
+      /** Delay */
+      await delay(10_000);
 
       // Release Lock
       setWorking(false);

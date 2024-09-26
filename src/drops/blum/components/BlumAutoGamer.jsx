@@ -8,17 +8,13 @@ import BlumInput from "./BlumInput";
 import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
 import useBlumClaimGameMutation from "../hooks/useBlumClaimGameMutation";
 import useBlumStartGameMutation from "../hooks/useBlumStartGameMutation";
+import { delay } from "@/lib/utils";
 
-const GAME_DURATION = 30 * 1000;
-const EXTRA_DELAY = 3 * 1000;
+const GAME_DURATION = 30_000;
+const EXTRA_DELAY = 3_000;
 const MIN_POINT = 100;
 const INITIAL_POINT = 180;
 const MAX_POINT = 280;
-
-const delay = (length) =>
-  new Promise((res) => {
-    setTimeout(res, length);
-  });
 
 export default function Blum() {
   const query = useBlumBalanceQuery();

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useState } from "react";
 
 export default function useDropFarmer({
+  id,
   urls = [],
   notification = {},
   getAuth,
@@ -29,12 +30,19 @@ export default function useDropFarmer({
   );
 
   /** Configure Authorization */
-  const configureAuthorization = (auth) => {
+  const configureAuthorization = (auth, store = true) => {
     if (auth) {
       api.defaults.headers.common["Authorization"] = auth;
     } else {
       delete api.defaults.headers.common["Authorization"];
     }
+
+    if (store) {
+      chrome.storage.local.set({
+        [`${id}-auth`]: auth,
+      });
+    }
+
     setAuth(auth);
   };
 
@@ -73,7 +81,7 @@ export default function useDropFarmer({
         configureAuthorization(newAuth);
 
         /** Create Notification */
-        chrome.notifications.create(notification.id, {
+        chrome.notifications.create(`${id}-auth`, {
           iconUrl: notification.icon,
           title: notification.title,
           message: notification.message,
@@ -96,6 +104,18 @@ export default function useDropFarmer({
       chrome?.webRequest?.onSendHeaders.removeListener(handleWebRequest);
     };
   }, [auth]);
+
+  /** Set Auth */
+  useEffect(() => {
+    const key = `${id}-auth`;
+
+    chrome?.storage?.local.get(key).then((item) => {
+      const value = item[key];
+      if (value) {
+        configureAuthorization(value, false);
+      }
+    });
+  }, []);
 
   /** Return API and Auth */
   return useMemo(() => ({ api, auth }), [api, auth]);

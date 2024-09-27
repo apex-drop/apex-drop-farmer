@@ -22,8 +22,8 @@ import Truecoin from "@/drops/truecoin/Truecoin";
 import { useMemo } from "react";
 
 const navigateToWebVersion = (v) =>
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.update(tabs[0].id, {
+  chrome?.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome?.tabs?.update(tabs[0].id, {
       url: `https://web.telegram.org/${v}`,
       active: true,
     });
@@ -103,7 +103,7 @@ export default function Welcome() {
             "bg-gradient-to-r from-pink-500 to-violet-500"
           )}
         >
-          v{chrome.runtime.getManifest().version}
+          v{chrome?.runtime?.getManifest().version}
         </span>
       </p>
 

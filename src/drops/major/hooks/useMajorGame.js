@@ -1,9 +1,11 @@
 import toast from "react-hot-toast";
-import { formatRelative } from "date-fns";
+
+import useMajorGameErrorHandler from "./useMajorGameErrorHandler";
 import useMajorUserQuery from "./useMajorUserQuery";
 
 export default function useMajorGame() {
   const user = useMajorUserQuery();
+  const handleError = useMajorGameErrorHandler();
 
   return async (start, claim) => {
     try {
@@ -12,33 +14,10 @@ export default function useMajorGame() {
       await user.refetch();
 
       toast.success("Claimed Successfully!", {
-        style: {
-          fontWeight: "bold",
-        },
+        className: "font-bold font-sans",
       });
     } catch (e) {
-      // Catch Blocked
-      const blocked = e.response?.data?.detail?.["blocked_until"];
-      if (blocked) {
-        toast.error(
-          `Please wait till - ${formatRelative(
-            new Date(blocked * 1000),
-            new Date()
-          )}`,
-          {
-            duration: 3000,
-            style: {
-              fontWeight: "bold",
-            },
-          }
-        );
-      } else {
-        toast.error("Something went wrong!", {
-          style: {
-            fontWeight: "bold",
-          },
-        });
-      }
+      handleError(e);
     }
   };
 }

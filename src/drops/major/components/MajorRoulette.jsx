@@ -1,10 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
-
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
 import RouletteIcon from "../assets/images/roulette.svg";
-import StarIcon from "../assets/images/star-amount.svg";
 import useMajorGame from "../hooks/useMajorGame";
 import useMajorApi from "../hooks/useMajorApi";
+import MajorGameButton from "./MajorGameButton";
 
 export default function MajorRoulette() {
   const game = useMajorGame();
@@ -33,18 +32,12 @@ export default function MajorRoulette() {
 
   return (
     <>
-      <button
+      <MajorGameButton
+        icon={RouletteIcon}
+        title={"Roulette"}
+        reward={10000}
         onClick={handleButtonClick}
-        className="flex items-center gap-2 p-2 rounded-lg bg-neutral-50"
-      >
-        <img src={RouletteIcon} className="w-10 h-10 shrink-0" />
-        <div>
-          <h1 className="font-bold">Roulette</h1>
-          <p className="text-orange-500">
-            +10,000 <img src={StarIcon} className="inline h-4" />
-          </p>
-        </div>
-      </button>
+      />
 
       {startMutation.isPending || claimMutation.isPending ? (
         <MajorFullscreenSpinner />

@@ -1,12 +1,12 @@
+import toast from "react-hot-toast";
 import { delay } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
-import StarIcon from "../assets/images/star-amount.svg";
+import MajorGameButton from "./MajorGameButton";
 import SwipeCoinIcon from "../assets/images/swipe-coin.svg";
-import useMajorGame from "../hooks/useMajorGame";
 import useMajorApi from "../hooks/useMajorApi";
-import toast from "react-hot-toast";
+import useMajorGame from "../hooks/useMajorGame";
 
 export default function MajorSwipeCoin() {
   const game = useMajorGame();
@@ -32,9 +32,7 @@ export default function MajorSwipeCoin() {
             error: "Error!",
           },
           {
-            style: {
-              fontWeight: "bold",
-            },
+            className: "font-bold font-sans",
           }
         )
         .then(() => api.post("https://major.bot/api/swipe_coin/", { coins }))
@@ -50,18 +48,12 @@ export default function MajorSwipeCoin() {
 
   return (
     <>
-      <button
+      <MajorGameButton
+        icon={SwipeCoinIcon}
+        title={"Swipe Coin"}
+        reward={3000}
         onClick={handleButtonClick}
-        className="flex items-center gap-2 p-2 rounded-lg bg-neutral-50"
-      >
-        <img src={SwipeCoinIcon} className="w-10 h-10 shrink-0" />
-        <div>
-          <h1 className="font-bold">Swipe Coin</h1>
-          <p className="text-orange-500">
-            +3,000 <img src={StarIcon} className="inline h-4" />
-          </p>
-        </div>
-      </button>
+      />
 
       {startMutation.isPending || claimMutation.isPending ? (
         <MajorFullscreenSpinner />

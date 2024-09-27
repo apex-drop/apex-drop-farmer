@@ -43,30 +43,23 @@ export default function MajorPuzzle() {
   const handleChoiceSubmit = (data) => {
     setShowModal(false);
 
-    claimMutation
-      .mutateAsync(data)
-      .then(({ correct }) => {
-        if (correct.length === 4) {
-          /** Correct */
-          toast
-            .success("Claimed Successfully!", {
-              className: "font-bold font-sans",
-            })
-            .then(userQuery.refetch);
-        } else {
-          /** Failed */
-          toast
-            .error("Incorrect choices!", {
-              className: "font-bold font-sans",
-            })
-            .then(userQuery.refetch);
-        }
-      })
-      .catch((e) => {
-        toast.error("Something went wrong!", {
-          className: "font-bold font-sans",
-        });
-      });
+    claimMutation.mutateAsync(data).then(({ correct }) => {
+      if (correct.length === 4) {
+        /** Correct */
+        toast
+          .success("Claimed Successfully!", {
+            className: "font-bold font-sans",
+          })
+          .then(userQuery.refetch);
+      } else {
+        /** Failed */
+        toast
+          .error("Incorrect choices!", {
+            className: "font-bold font-sans",
+          })
+          .then(userQuery.refetch);
+      }
+    });
   };
 
   return (

@@ -57,7 +57,7 @@ export default function TruecoinLottery() {
       }
 
       /** Delay */
-      await delay(3_000);
+      await delay(2_000);
 
       // Release Lock
       setWorking(false);

@@ -9,3 +9,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
 });
+
+document.addEventListener("readystatechange", () => {
+  if (document.readyState === "complete") {
+    const tomarket = getTomarket();
+
+    if (tomarket) {
+      chrome.storage.local.set({ tomarket });
+    }
+  }
+});

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -20,8 +20,7 @@
   ],
   "action": {
     "default_icon": "icon-48.png",
-    "default_title": "Open Apex Drop Farmer",
-    "default_popup": "index.html"
+    "default_title": "Open Apex Drop Farmer"
   },
   "side_panel": {
     "default_path": "index.html"

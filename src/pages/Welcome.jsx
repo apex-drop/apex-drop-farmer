@@ -1,3 +1,4 @@
+import * as Dialog from "@radix-ui/react-dialog";
 import GoatsIcon from "@/drops/goats/assets/images/icon.png?format=webp&w=80";
 import Agent301Icon from "@/drops/agent301/assets/images/icon.png?format=webp&w=80";
 import AppIcon from "@/assets/images/icon.png?format=webp&w=224";
@@ -8,7 +9,7 @@ import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=
 import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
 import TapCatIcon from "@/drops/tapcat/assets/images/icon.png?format=webp&w=80";
-import { cn } from "@/lib/utils";
+import { cn, getSettings } from "@/lib/utils";
 import Major from "@/drops/major/Major";
 import useTabContext from "@/hooks/useTabContext";
 import Blum from "@/drops/blum/Blum";
@@ -20,6 +21,15 @@ import TapCat from "@/drops/tapcat/TapCat";
 import Goats from "@/drops/goats/Goats";
 import Truecoin from "@/drops/truecoin/Truecoin";
 import { useMemo } from "react";
+import {
+  HiOutlineArrowTopRightOnSquare,
+  HiOutlineCog6Tooth,
+} from "react-icons/hi2";
+import TelegramWeb from "@/TelegramWeb";
+
+import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=80";
+import TelegramWebAIcon from "@/assets/images/telegram-web-a.png?format=webp&w=80";
+import Settings from "@/partials/Settings";
 
 const navigateToWebVersion = (v) =>
   chrome?.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
@@ -28,6 +38,16 @@ const navigateToWebVersion = (v) =>
       active: true,
     });
   });
+
+const openInSeparateWindow = () => {
+  chrome?.windows?.create({
+    url: "index.html",
+    width: 400,
+    type: "popup",
+  });
+
+  window.close();
+};
 
 export default function Welcome() {
   const { pushTab } = useTabContext();
@@ -91,8 +111,48 @@ export default function Welcome() {
     []
   );
 
+  const pushTgWeb = (v) => {
+    pushTab({
+      id: "telegram-web-" + v,
+      title: `Telegram Web ${v.toUpperCase()}`,
+      icon: v === "k" ? TelegramWebKIcon : TelegramWebAIcon,
+      component: <TelegramWeb version={v} />,
+    });
+  };
+
+  const openTelegramWeb = (v) => {
+    getSettings().then((settings) => {
+      if (settings.openTelegramWebWithinFarmer) {
+        pushTgWeb(v);
+      } else {
+        navigateToWebVersion(v);
+      }
+    });
+  };
+
   return (
-    <div className="flex flex-col justify-center w-full gap-2 p-4 py-20 mx-auto max-w-96">
+    <div className="flex flex-col justify-center w-full gap-2 p-4 mx-auto max-w-96">
+      {/* Settings and New Window Button */}
+      <div className="flex justify-between">
+        {/* Settings */}
+        <Dialog.Root>
+          <Dialog.Trigger title="Settings">
+            <HiOutlineCog6Tooth className="w-5 h-5" />
+          </Dialog.Trigger>
+
+          <Settings />
+        </Dialog.Root>
+
+        {/* Open in Separate Window */}
+        <button
+          title="Open in separate Window"
+          onClick={openInSeparateWindow}
+          className="p-2 rounded-full "
+        >
+          <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
+        </button>
+      </div>
+
       <img src={AppIcon} className="mx-auto w-28 h-28" />
       <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
       <p className="text-lg text-center">
@@ -111,22 +171,27 @@ export default function Welcome() {
         {["k", "a"].map((v, index) => (
           <button
             key={index}
-            onClick={() => navigateToWebVersion(v)}
+            onClick={() => openTelegramWeb(v)}
             className={cn(
-              "p-2 px-4",
+              "p-2",
               "rounded-full",
               "bg-neutral-100",
               "hover:bg-blue-500",
-              "hover:text-white"
+              "hover:text-white",
+              "inline-flex items-center justify-center gap-1"
             )}
+            title={`Switch to Web${v.toUpperCase()}`}
           >
+            <img
+              src={v === "k" ? TelegramWebKIcon : TelegramWebAIcon}
+              className="w-6 h-6"
+            />
             {`Web${v.toUpperCase()}`}
           </button>
         ))}
       </div>
 
       {/* Drops */}
-
       <div className={cn("grid grid-cols-3", "gap-2 py-4")}>
         {drops.map((drop, index) => (
           <button
@@ -137,6 +202,7 @@ export default function Welcome() {
               "gap-2 p-2 rounded-lg",
               "bg-neutral-100 hover:bg-neutral-200"
             )}
+            title={drop.title}
           >
             <img src={drop.icon} className="w-10 h-10 rounded-full shrink-0" />
             <h3 className={cn("min-w-0")}>{drop.title}</h3>

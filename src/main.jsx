@@ -5,13 +5,7 @@ import { createRoot } from "react-dom/client";
 
 import App from "./App.jsx";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchInterval: 5000,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

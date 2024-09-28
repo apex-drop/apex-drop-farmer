@@ -21,13 +21,6 @@ export default function useDropFarmer({
       }),
     []
   );
-  const urlRegexList = useMemo(
-    () =>
-      urls.map(
-        (url) => new RegExp(url.replaceAll(".", "\\.").replaceAll("*", ".*"))
-      ),
-    [urls]
-  );
 
   /** Configure Authorization */
   const configureAuthorization = (auth, store = true) => {
@@ -51,10 +44,7 @@ export default function useDropFarmer({
     const interceptor = api.interceptors.response.use(
       (response) => Promise.resolve(response),
       (error) => {
-        if (
-          401 === error?.response?.status &&
-          urlRegexList.some((expr) => expr.test(error.config.url))
-        ) {
+        if ([401, 403].includes(error?.response?.status)) {
           configureAuthorization(null);
         }
         return Promise.reject(error);
@@ -91,13 +81,15 @@ export default function useDropFarmer({
     };
 
     /** Add Listener */
-    chrome?.webRequest?.onSendHeaders.addListener(
-      handleWebRequest,
-      {
-        urls,
-      },
-      ["requestHeaders"]
-    );
+    if (!auth) {
+      chrome?.webRequest?.onSendHeaders.addListener(
+        handleWebRequest,
+        {
+          urls,
+        },
+        ["requestHeaders"]
+      );
+    }
 
     return () => {
       /** Remove Listener */

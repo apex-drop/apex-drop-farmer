@@ -47,17 +47,40 @@ export default function Tomarket() {
     setWorking(false);
   };
 
-  /** Get Game Object */
-  useEffect(() => {
-    chrome?.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-      const response = await chrome.tabs.sendMessage(tabs[0].id, {
-        action: "get_tomarket",
+  /** Configure Tomarket */
+  const configureTomarket = (data, store = true) => {
+    if (store) {
+      chrome?.storage?.local.set({
+        tomarket: data,
       });
+    }
+    setTomarket(data);
+  };
 
-      setTomarket(response.tomarket);
+  useEffect(() => {
+    const watchStorage = ({ tomarket: data }) => {
+      if (data) {
+        configureTomarket(data.newValue, false);
+      }
+    };
+
+    /** Get and Store Data */
+    chrome?.storage?.local.get("tomarket").then(({ tomarket: data }) => {
+      if (data) {
+        configureTomarket(data, false);
+      }
     });
+
+    /** Listen for change */
+    chrome?.storage?.local?.onChanged.addListener(watchStorage);
+
+    return () => {
+      /** Remove Listener */
+      chrome?.storage?.local?.onChanged.removeListener(watchStorage);
+    };
   }, []);
 
+  /** Auto Play */
   useEffect(() => {
     if (!autoPlaying || working) {
       return;

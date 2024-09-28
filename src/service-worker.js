@@ -1,5 +1,6 @@
 import defaultSettings from "@/default-settings";
 
+/** Get Settings */
 const getSettings = () => {
   return new Promise((res, rej) => {
     chrome.storage.local
@@ -9,28 +10,39 @@ const getSettings = () => {
   });
 };
 
+/** Open Farmer */
 const openFarmerWindow = () => {
   chrome.windows.create({
     url: "index.html",
     width: 400,
-    type: "popup",
   });
 };
 
-const configureExtension = (settings) => {
-  chrome.sidePanel
+const configureExtension = async (settings) => {
+  /** Configure Side Panel */
+  await chrome.sidePanel
     .setPanelBehavior({
       openPanelOnActionClick: !settings.openFarmerInNewWindow,
     })
     .catch(() => {});
 
-  if (settings.openFarmerInNewWindow) {
-    chrome.action.onClicked.addListener(openFarmerWindow);
-  } else {
-    chrome.action.onClicked.removeListener(openFarmerWindow);
-  }
+  /** Configure Action and Popup */
+  chrome.runtime.getPlatformInfo().then(async (platform) => {
+    if (platform.os === "android") return;
+
+    /** Remove Popup */
+    await chrome.action.setPopup({ popup: "" }).catch(() => {});
+
+    /** Configure Action */
+    if (settings.openFarmerInNewWindow) {
+      chrome.action.onClicked.addListener(openFarmerWindow);
+    } else {
+      chrome.action.onClicked.removeListener(openFarmerWindow);
+    }
+  });
 };
 
+/** Watch Storage for Settings Change */
 chrome.storage.local.onChanged.addListener(({ settings }) => {
   if (settings) {
     configureExtension(settings.newValue);

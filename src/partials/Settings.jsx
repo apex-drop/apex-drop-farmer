@@ -1,9 +1,9 @@
-import LabelToggle from "@/components/LabelToggle";
-import { cn, getSettings } from "@/lib/utils";
 import * as Dialog from "@radix-ui/react-dialog";
+import LabelToggle from "@/components/LabelToggle";
+import { CgSpinner } from "react-icons/cg";
+import { cn, getSettings } from "@/lib/utils";
 import { useEffect } from "react";
 import { useState } from "react";
-import { CgSpinner } from "react-icons/cg";
 
 export default function Settings() {
   const [settings, setSettings] = useState(null);
@@ -78,7 +78,7 @@ export default function Settings() {
                   }
                   checked={settings?.openFarmerInNewWindow}
                 >
-                  Open Farmer in New Window/Tab
+                  Open Farmer in New Window/Tab - (PC)
                 </LabelToggle>
 
                 {/* Open Telegram Web within the Farmer */}
@@ -96,7 +96,7 @@ export default function Settings() {
               </form>
             </div>
             <div className="flex flex-col p-4 font-bold shrink-0">
-              <Dialog.Close className="p-2.5 text-white bg-black rounded-lg">
+              <Dialog.Close className="p-2.5 text-white bg-black rounded-xl">
                 Cancel
               </Dialog.Close>
             </div>

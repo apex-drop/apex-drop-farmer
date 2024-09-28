@@ -26,9 +26,9 @@ export default function MajorHoldCoin() {
     mutationFn: () =>
       toast
         .promise(
-          delay(2_000),
+          delay(60_000),
           {
-            loading: "Delaying for 2 secs..",
+            loading: "Delaying for 60 secs..",
             success: "Done!",
             error: "Error!",
           },

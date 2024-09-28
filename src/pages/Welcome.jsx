@@ -1,36 +1,36 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import GoatsIcon from "@/drops/goats/assets/images/icon.png?format=webp&w=80";
+import Agent301 from "@/drops/agent301/Agent301";
 import Agent301Icon from "@/drops/agent301/assets/images/icon.png?format=webp&w=80";
 import AppIcon from "@/assets/images/icon.png?format=webp&w=224";
-import BlumIcon from "@/drops/blum/assets/images/icon.png?format=webp&w=80";
-import MajorIcon from "@/drops/major/assets/images/icon.png?format=webp&w=80";
-import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
-import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
-import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
-import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
-import TapCatIcon from "@/drops/tapcat/assets/images/icon.png?format=webp&w=80";
-import { cn, getSettings } from "@/lib/utils";
-import Major from "@/drops/major/Major";
-import useTabContext from "@/hooks/useTabContext";
 import Blum from "@/drops/blum/Blum";
-import Tomarket from "@/drops/tomarket/Tomarket";
-import Pumpad from "@/drops/pumpad/Pumpad";
-import Slotcoin from "@/drops/slotcoin/Slotcoin";
-import Agent301 from "@/drops/agent301/Agent301";
-import TapCat from "@/drops/tapcat/TapCat";
+import BlumIcon from "@/drops/blum/assets/images/icon.png?format=webp&w=80";
 import Goats from "@/drops/goats/Goats";
+import GoatsIcon from "@/drops/goats/assets/images/icon.png?format=webp&w=80";
+import Major from "@/drops/major/Major";
+import MajorIcon from "@/drops/major/assets/images/icon.png?format=webp&w=80";
+import Pumpad from "@/drops/pumpad/Pumpad";
+import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
+import Settings from "@/partials/Settings";
+import Slotcoin from "@/drops/slotcoin/Slotcoin";
+import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
+import TapCat from "@/drops/tapcat/TapCat";
+import TapCatIcon from "@/drops/tapcat/assets/images/icon.png?format=webp&w=80";
+import TelegramWeb from "@/TelegramWeb";
+import TelegramWebAIcon from "@/assets/images/telegram-web-a.png?format=webp&w=80";
+import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=80";
+import Tomarket from "@/drops/tomarket/Tomarket";
+import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
 import Truecoin from "@/drops/truecoin/Truecoin";
-import { useMemo } from "react";
+import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
+import useTabContext from "@/hooks/useTabContext";
 import {
   HiOutlineArrowTopRightOnSquare,
   HiOutlineCog6Tooth,
 } from "react-icons/hi2";
-import TelegramWeb from "@/TelegramWeb";
+import { cn, getSettings } from "@/lib/utils";
+import { useMemo } from "react";
 
-import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=80";
-import TelegramWebAIcon from "@/assets/images/telegram-web-a.png?format=webp&w=80";
-import Settings from "@/partials/Settings";
-
+/** Navigate to Telegram Web */
 const navigateToWebVersion = (v) =>
   chrome?.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
     chrome?.tabs?.update(tabs[0].id, {
@@ -39,11 +39,11 @@ const navigateToWebVersion = (v) =>
     });
   });
 
+/** Open Farmer in Separate Window */
 const openInSeparateWindow = () => {
   chrome?.windows?.create({
     url: "index.html",
     width: 400,
-    type: "popup",
   });
 
   window.close();
@@ -111,7 +111,8 @@ export default function Welcome() {
     []
   );
 
-  const pushTgWeb = (v) => {
+  /** Push Telegram Web into Tabs */
+  const pushTelegramWebTab = (v) => {
     pushTab({
       id: "telegram-web-" + v,
       title: `Telegram Web ${v.toUpperCase()}`,
@@ -120,10 +121,11 @@ export default function Welcome() {
     });
   };
 
+  /** Open Telegram Web */
   const openTelegramWeb = (v) => {
     getSettings().then((settings) => {
       if (settings.openTelegramWebWithinFarmer) {
-        pushTgWeb(v);
+        pushTelegramWebTab(v);
       } else {
         navigateToWebVersion(v);
       }

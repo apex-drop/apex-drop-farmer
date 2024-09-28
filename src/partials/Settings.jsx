@@ -4,20 +4,43 @@ import { CgSpinner } from "react-icons/cg";
 import { cn, getSettings } from "@/lib/utils";
 import { useEffect } from "react";
 import { useState } from "react";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import { useMemo } from "react";
+import { useCallback } from "react";
+import useAppContext from "@/hooks/useAppContext";
 
 export default function Settings() {
+  const { socket } = useAppContext();
   const [settings, setSettings] = useState(null);
 
-  const configureSettings = (k, v) => {
-    const newSettings = {
-      ...settings,
-      [k]: v,
-    };
+  const configureSettings = useCallback(
+    (k, v) => {
+      const newSettings = {
+        ...settings,
+        [k]: v,
+      };
 
-    chrome?.storage?.local.set({
-      settings: newSettings,
-    });
-  };
+      chrome?.storage?.local.set({
+        settings: newSettings,
+      });
+    },
+    [settings]
+  );
+
+  const configureSettingsAndDispatch = useCallback(
+    (k, v) => {
+      configureSettings(k, v);
+
+      socket.dispatch({
+        action: "settings.set-value",
+        data: {
+          key: k,
+          value: v,
+        },
+      });
+    },
+    [configureSettings]
+  );
 
   useEffect(() => {
     getSettings().then((settings) => {
@@ -38,6 +61,18 @@ export default function Settings() {
       chrome?.storage?.local?.onChanged.removeListener(watchStorage);
     };
   }, []);
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "settings.set-value": (command) => {
+          configureSettings(command.data.key, command.data.value);
+        },
+      }),
+      [configureSettings]
+    )
+  );
 
   return (
     <Dialog.Portal>
@@ -71,7 +106,7 @@ export default function Settings() {
                 {/* Open Farmer in new Window */}
                 <LabelToggle
                   onChange={(ev) =>
-                    configureSettings(
+                    configureSettingsAndDispatch(
                       "openFarmerInNewWindow",
                       ev.target.checked
                     )
@@ -84,7 +119,7 @@ export default function Settings() {
                 {/* Open Telegram Web within the Farmer */}
                 <LabelToggle
                   onChange={(ev) =>
-                    configureSettings(
+                    configureSettingsAndDispatch(
                       "openTelegramWebWithinFarmer",
                       ev.target.checked
                     )
@@ -97,7 +132,7 @@ export default function Settings() {
             </div>
             <div className="flex flex-col p-4 font-bold shrink-0">
               <Dialog.Close className="p-2.5 text-white bg-black rounded-xl">
-                Cancel
+                Close
               </Dialog.Close>
             </div>
           </>

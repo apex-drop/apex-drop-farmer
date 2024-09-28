@@ -22,13 +22,16 @@ import Tomarket from "@/drops/tomarket/Tomarket";
 import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
 import Truecoin from "@/drops/truecoin/Truecoin";
 import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
-import useTabContext from "@/hooks/useTabContext";
+import useAppContext from "@/hooks/useAppContext";
 import {
   HiOutlineArrowTopRightOnSquare,
   HiOutlineCog6Tooth,
 } from "react-icons/hi2";
 import { cn, getSettings } from "@/lib/utils";
 import { useMemo } from "react";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import { useCallback } from "react";
+import { useState } from "react";
 
 /** Navigate to Telegram Web */
 const navigateToWebVersion = (v) =>
@@ -50,7 +53,8 @@ const openInSeparateWindow = () => {
 };
 
 export default function Welcome() {
-  const { pushTab } = useTabContext();
+  const [showSettings, setShowSettings] = useState(false);
+  const { socket, pushTab, setActiveTab, closeTab } = useAppContext();
   const drops = useMemo(
     () => [
       {
@@ -112,25 +116,125 @@ export default function Welcome() {
   );
 
   /** Push Telegram Web into Tabs */
-  const pushTelegramWebTab = (v) => {
-    pushTab({
-      id: "telegram-web-" + v,
-      title: `Telegram Web ${v.toUpperCase()}`,
-      icon: v === "k" ? TelegramWebKIcon : TelegramWebAIcon,
-      component: <TelegramWeb version={v} />,
-    });
-  };
+  const pushTelegramWebTab = useCallback(
+    (v) => {
+      pushTab({
+        id: "telegram-web-" + v,
+        title: `Telegram Web ${v.toUpperCase()}`,
+        icon: v === "k" ? TelegramWebKIcon : TelegramWebAIcon,
+        component: <TelegramWeb version={v} />,
+      });
+    },
+    [pushTab]
+  );
 
   /** Open Telegram Web */
-  const openTelegramWeb = (v) => {
-    getSettings().then((settings) => {
-      if (settings.openTelegramWebWithinFarmer) {
-        pushTelegramWebTab(v);
-      } else {
-        navigateToWebVersion(v);
-      }
+  const openTelegramWeb = useCallback(
+    (v) => {
+      getSettings().then((settings) => {
+        if (settings.openTelegramWebWithinFarmer) {
+          pushTelegramWebTab(v);
+
+          socket.dispatch({
+            action: "app.push-telegram-web-tab",
+            data: {
+              version: v,
+            },
+          });
+        } else {
+          navigateToWebVersion(v);
+
+          socket.dispatch({
+            action: "app.navigate-to-telegram-web",
+            data: {
+              version: v,
+            },
+          });
+        }
+      });
+    },
+    [pushTelegramWebTab, navigateToWebVersion]
+  );
+
+  const pushAndDispatchTab = useCallback(
+    (drop) => {
+      pushTab(drop);
+
+      socket.dispatch({
+        action: "app.push-tab",
+        data: {
+          id: drop.id,
+        },
+      });
+    },
+    [pushTab]
+  );
+
+  const openInSeparateWindowAndDispatch = useCallback(() => {
+    openInSeparateWindow();
+
+    socket.dispatch({
+      action: "app.open-in-separate-window",
     });
-  };
+  }, [openInSeparateWindow]);
+
+  const toggleSettingsAndDispatch = useCallback(
+    (opened) => {
+      setShowSettings(opened);
+
+      socket.dispatch({
+        action: "app.toggle-settings",
+        data: {
+          opened: opened,
+        },
+      });
+    },
+    [setShowSettings]
+  );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "app.set-active-tab": (command) => {
+          setActiveTab(command.data.id);
+        },
+
+        "app.push-tab": (command) => {
+          pushTab(drops.find((item) => item.id === command.data.id));
+        },
+
+        "app.close-tab": (command) => {
+          closeTab(command.data.id);
+        },
+
+        "app.push-telegram-web-tab": (command) => {
+          pushTelegramWebTab(command.data.version);
+        },
+        "app.navigate-to-telegram-web": (command) => {
+          navigateToWebVersion(command.data.version);
+        },
+
+        "app.open-in-separate-window": () => {
+          openInSeparateWindow();
+        },
+
+        "app.toggle-settings": (command) => {
+          setShowSettings(command.data.opened);
+        },
+      }),
+      [
+        drops,
+        pushTab,
+        setActiveTab,
+        closeTab,
+        pushTelegramWebTab,
+        navigateToWebVersion,
+        openInSeparateWindow,
+        setShowSettings,
+      ]
+    )
+  );
 
   return (
     <div className="flex flex-col w-full gap-2 p-4 mx-auto max-w-96 grow">
@@ -139,14 +243,17 @@ export default function Welcome() {
         {/* Open in Separate Window */}
         <button
           title="Open in separate Window"
-          onClick={openInSeparateWindow}
+          onClick={openInSeparateWindowAndDispatch}
           className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
         >
           <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
         </button>
 
         {/* Settings */}
-        <Dialog.Root>
+        <Dialog.Root
+          open={showSettings}
+          onOpenChange={toggleSettingsAndDispatch}
+        >
           <Dialog.Trigger
             title="Settings"
             className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
@@ -171,6 +278,14 @@ export default function Welcome() {
           >
             v{chrome?.runtime?.getManifest().version}
           </span>
+        </p>
+        <p
+          className={cn(
+            "text-center",
+            socket.connected ? "text-green-500" : "text-red-500"
+          )}
+        >
+          {socket.connected ? "Connected" : "Disconnected"}
         </p>
 
         <div className="flex justify-center gap-1">
@@ -202,7 +317,7 @@ export default function Welcome() {
           {drops.map((drop, index) => (
             <button
               key={index}
-              onClick={() => pushTab(drop)}
+              onClick={() => pushAndDispatchTab(drop)}
               className={cn(
                 "flex flex-col justify-center items-center",
                 "gap-2 p-2 rounded-lg",

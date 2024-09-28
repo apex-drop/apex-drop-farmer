@@ -96,8 +96,8 @@ export default function Settings() {
               </form>
             </div>
             <div className="flex flex-col p-4 font-bold shrink-0">
-              <Dialog.Close className="p-2 text-white bg-black rounded-lg">
-                Close
+              <Dialog.Close className="p-2.5 text-white bg-black rounded-lg">
+                Cancel
               </Dialog.Close>
             </div>
           </>

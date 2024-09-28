@@ -131,101 +131,118 @@ export default function Welcome() {
   };
 
   return (
-    <div className="flex flex-col justify-center w-full gap-2 p-4 mx-auto max-w-96">
+    <div className="flex flex-col w-full gap-2 p-4 mx-auto max-w-96 grow">
       {/* Settings and New Window Button */}
-      <div className="flex justify-between">
+      <div className="flex justify-end gap-2">
+        {/* Open in Separate Window */}
+        <button
+          title="Open in separate Window"
+          onClick={openInSeparateWindow}
+          className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
+        >
+          <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
+        </button>
+
         {/* Settings */}
         <Dialog.Root>
-          <Dialog.Trigger title="Settings">
+          <Dialog.Trigger
+            title="Settings"
+            className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
+          >
             <HiOutlineCog6Tooth className="w-5 h-5" />
           </Dialog.Trigger>
 
           <Settings />
         </Dialog.Root>
-
-        {/* Open in Separate Window */}
-        <button
-          title="Open in separate Window"
-          onClick={openInSeparateWindow}
-          className="p-2 rounded-full "
-        >
-          <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
-        </button>
       </div>
 
-      <img src={AppIcon} className="mx-auto w-28 h-28" />
-      <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
-      <p className="text-lg text-center">
-        <span
-          className={cn(
-            "text-transparent font-bold",
-            "bg-clip-text",
-            "bg-gradient-to-r from-pink-500 to-violet-500"
-          )}
-        >
-          v{chrome?.runtime?.getManifest().version}
-        </span>
-      </p>
-
-      <div className="flex justify-center gap-1">
-        {["k", "a"].map((v, index) => (
-          <button
-            key={index}
-            onClick={() => openTelegramWeb(v)}
+      <div className="flex flex-col justify-center gap-2 grow">
+        <img src={AppIcon} className="mx-auto w-28 h-28" />
+        <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
+        <p className="text-lg text-center">
+          <span
             className={cn(
-              "p-2",
-              "rounded-full",
-              "bg-neutral-100",
-              "hover:bg-blue-500",
-              "hover:text-white",
-              "inline-flex items-center justify-center gap-1"
+              "text-transparent font-bold",
+              "bg-clip-text",
+              "bg-gradient-to-r from-pink-500 to-violet-500"
             )}
-            title={`Switch to Web${v.toUpperCase()}`}
           >
-            <img
-              src={v === "k" ? TelegramWebKIcon : TelegramWebAIcon}
-              className="w-6 h-6"
-            />
-            {`Web${v.toUpperCase()}`}
-          </button>
-        ))}
-      </div>
+            v{chrome?.runtime?.getManifest().version}
+          </span>
+        </p>
 
-      {/* Drops */}
-      <div className={cn("grid grid-cols-3", "gap-2 py-4")}>
-        {drops.map((drop, index) => (
-          <button
-            key={index}
-            onClick={() => pushTab(drop)}
-            className={cn(
-              "flex flex-col justify-center items-center",
-              "gap-2 p-2 rounded-lg",
-              "bg-neutral-100 hover:bg-neutral-200"
-            )}
-            title={drop.title}
+        <div className="flex justify-center gap-1">
+          {["k", "a"].map((v, index) => (
+            <button
+              key={index}
+              onClick={() => openTelegramWeb(v)}
+              className={cn(
+                "p-2",
+                "rounded-full",
+                "bg-neutral-100",
+                "hover:bg-blue-500",
+                "hover:text-white",
+                "inline-flex items-center justify-center gap-1"
+              )}
+              title={`Switch to Web${v.toUpperCase()}`}
+            >
+              <img
+                src={v === "k" ? TelegramWebKIcon : TelegramWebAIcon}
+                className="w-6 h-6"
+              />
+              {`Web${v.toUpperCase()}`}
+            </button>
+          ))}
+        </div>
+
+        {/* Drops */}
+        <div className={cn("grid grid-cols-3", "gap-2 py-4")}>
+          {drops.map((drop, index) => (
+            <button
+              key={index}
+              onClick={() => pushTab(drop)}
+              className={cn(
+                "flex flex-col justify-center items-center",
+                "gap-2 p-2 rounded-lg",
+                "bg-neutral-100 hover:bg-neutral-200"
+              )}
+              title={drop.title}
+            >
+              <img
+                src={drop.icon}
+                className="w-10 h-10 rounded-full shrink-0"
+              />
+              <h3 className={cn("min-w-0")}>{drop.title}</h3>
+            </button>
+          ))}
+        </div>
+
+        {/* Connect */}
+        <div className="flex items-center justify-center gap-2 text-xs">
+          <a
+            href="https://apexdrop.com.ng"
+            target="_blank"
+            className="text-blue-500 hover:underline"
           >
-            <img src={drop.icon} className="w-10 h-10 rounded-full shrink-0" />
-            <h3 className={cn("min-w-0")}>{drop.title}</h3>
-          </button>
-        ))}
-      </div>
-
-      {/* Connect */}
-      <div className="flex flex-col items-center gap-2 text-xs">
-        <a
-          href="https://t.me/Apex_Drop"
-          target="_blank"
-          className="text-blue-500 hover:underline"
-        >
-          Join Channel
-        </a>
-        <a
-          href="https://wa.me/2349018646163"
-          target="_blank"
-          className="text-blue-500 hover:underline"
-        >
-          Chat with Dev
-        </a>
+            Website
+          </a>
+          &bull;
+          <a
+            href="https://t.me/Apex_Drop"
+            target="_blank"
+            className="text-blue-500 hover:underline"
+          >
+            Channel
+          </a>
+          &bull;
+          <a
+            href="https://wa.me/2349018646163"
+            target="_blank"
+            className="text-blue-500 hover:underline"
+          >
+            Dev
+          </a>
+        </div>
       </div>
     </div>
   );

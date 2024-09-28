@@ -1,6 +1,6 @@
 const defaultSettings = {
-  openFarmerInNewWindow: true,
-  openTelegramWebWithinFarmer: true,
+  openFarmerInNewWindow: false,
+  openTelegramWebWithinFarmer: false,
 };
 
 export default defaultSettings;

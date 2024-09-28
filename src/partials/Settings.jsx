@@ -78,7 +78,7 @@ export default function Settings() {
                   }
                   checked={settings?.openFarmerInNewWindow}
                 >
-                  Open Farmer in New Window/Tab - (PC)
+                  Open Farmer in new Window - (PC)
                 </LabelToggle>
 
                 {/* Open Telegram Web within the Farmer */}

@@ -193,6 +193,7 @@ export default function Welcome() {
         chrome?.windows?.create({
           url: "index.html",
           width: 400,
+          type: "popup",
         });
 
         window.close();

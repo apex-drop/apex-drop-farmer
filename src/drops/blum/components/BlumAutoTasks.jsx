@@ -12,10 +12,12 @@ import useBlumClaimTaskMutation from "../hooks/useBlumClaimTaskMutation";
 import useBlumStartTaskMutation from "../hooks/useBlumStartTaskMutation";
 import useBlumTasksQuery from "../hooks/useBlumTasksQuery";
 import useBlumValidateTaskMutation from "../hooks/useBlumValidateTaskMutation";
+import BlumKeywordPrompt from "./BlumKeywordPrompt";
 
 export default function BlumAutoTasks() {
   const client = useQueryClient();
   const query = useBlumTasksQuery();
+  const [keywordPrompt, setKewordPrompt] = useState(null);
 
   /** Concat sub tasks */
   const reduceTasks = useCallback(
@@ -128,6 +130,32 @@ export default function BlumAutoTasks() {
     [client]
   );
 
+  /** Prompt Keyword */
+  const promptKeyword = useCallback(
+    (task) =>
+      new Promise((resolve, reject) => {
+        setKewordPrompt({
+          task,
+          callback: resolve,
+        });
+      }),
+    []
+  );
+
+  /** Handle Keyword Prompt Submit */
+  const handlePromptSubmit = useCallback(
+    (value) => {
+      const callback = keywordPrompt?.callback;
+
+      setKewordPrompt(null);
+
+      if (callback) {
+        callback(value);
+      }
+    },
+    [keywordPrompt, setKewordPrompt]
+  );
+
   /** Handle button click */
   const [handleAutoClaimClick, dispatchAndHandleAutoClaimClick] =
     useSocketDispatchCallback(
@@ -196,8 +224,14 @@ export default function BlumAutoTasks() {
             setTaskOffset(index);
             setCurrentTask(task);
             try {
-              let keyword = prompt(`Keyword: ${task.title}`);
-              await validateTaskMutation.mutateAsync({ id: task.id, keyword });
+              let keyword = await promptKeyword(task);
+
+              if (keyword) {
+                await validateTaskMutation.mutateAsync({
+                  id: task.id,
+                  keyword,
+                });
+              } else continue;
             } catch {}
 
             /** Delay */
@@ -238,88 +272,96 @@ export default function BlumAutoTasks() {
   }, [autoClaiming, action]);
 
   return (
-    <div className="flex flex-col py-2">
-      {query.isPending ? (
-        <h4 className="font-bold">Fetching tasks...</h4>
-      ) : query.isError ? (
-        <h4 className="font-bold text-red-500">Failed to fetch tasks...</h4>
-      ) : (
-        <>
-          {/* Tasks Info */}
-          <h4 className="font-bold">Total Tasks: {tasks.length}</h4>
-          <h4 className="font-bold text-blum-green-500">
-            Finished Tasks: {finishedTasks.length}
-          </h4>
-          <h4 className="font-bold text-yellow-500">
-            Pending Tasks: {pendingTasks.length}
-          </h4>
-          <h4 className="font-bold text-blue-500">
-            Unverified Tasks: {unverifiedTasks.length}
-          </h4>
+    <>
+      <div className="flex flex-col py-2">
+        {query.isPending ? (
+          <h4 className="font-bold">Fetching tasks...</h4>
+        ) : query.isError ? (
+          <h4 className="font-bold text-red-500">Failed to fetch tasks...</h4>
+        ) : (
+          <>
+            {/* Tasks Info */}
+            <h4 className="font-bold">Total Tasks: {tasks.length}</h4>
+            <h4 className="font-bold text-blum-green-500">
+              Finished Tasks: {finishedTasks.length}
+            </h4>
+            <h4 className="font-bold text-yellow-500">
+              Pending Tasks: {pendingTasks.length}
+            </h4>
+            <h4 className="font-bold text-blue-500">
+              Unverified Tasks: {unverifiedTasks.length}
+            </h4>
 
-          <h4 className="font-bold text-purple-500">
-            Unclaimed Tasks: {unclaimedTasks.length}
-          </h4>
+            <h4 className="font-bold text-purple-500">
+              Unclaimed Tasks: {unclaimedTasks.length}
+            </h4>
 
-          <div className="flex flex-col gap-2 py-2">
-            {/* Start Button */}
-            <BlumButton
-              color={autoClaiming ? "danger" : "primary"}
-              onClick={dispatchAndHandleAutoClaimClick}
-              disabled={
-                (pendingTasks.length === 0 && unclaimedTasks.length === 0) ||
-                autoClaiming
-              }
-            >
-              {autoClaiming ? "Stop" : "Start"}
-            </BlumButton>
+            <div className="flex flex-col gap-2 py-2">
+              {/* Start Button */}
+              <BlumButton
+                color={autoClaiming ? "danger" : "primary"}
+                onClick={dispatchAndHandleAutoClaimClick}
+                disabled={
+                  (pendingTasks.length === 0 && unclaimedTasks.length === 0) ||
+                  autoClaiming
+                }
+              >
+                {autoClaiming ? "Stop" : "Start"}
+              </BlumButton>
 
-            {autoClaiming && currentTask ? (
-              <div className="flex flex-col gap-2 p-4 rounded-lg bg-neutral-800">
-                <h4 className="font-bold">
-                  Current Mode:{" "}
-                  <span
-                    className={
-                      action === "start"
-                        ? "text-yellow-500"
-                        : "text-blum-green-500"
-                    }
+              {autoClaiming && currentTask ? (
+                <div className="flex flex-col gap-2 p-4 rounded-lg bg-neutral-800">
+                  <h4 className="font-bold">
+                    Current Mode:{" "}
+                    <span
+                      className={
+                        action === "start"
+                          ? "text-yellow-500"
+                          : "text-blum-green-500"
+                      }
+                    >
+                      {action === "start"
+                        ? "Starting Task"
+                        : action === "verify"
+                        ? "Verifying Task"
+                        : "Claiming Task"}{" "}
+                      {+taskOffset + 1}
+                    </span>
+                  </h4>
+                  <h5 className="font-bold">{currentTask.title}</h5>
+                  <p
+                    className={cn(
+                      "capitalize",
+                      {
+                        success: "text-blum-green-500",
+                        error: "text-red-500",
+                      }[
+                        action === "start"
+                          ? startTaskMutation.status
+                          : action === "verify"
+                          ? validateTaskMutation.status
+                          : claimTaskMutation.status
+                      ]
+                    )}
                   >
                     {action === "start"
-                      ? "Starting Task"
+                      ? startTaskMutation.status
                       : action === "verify"
-                      ? "Verifying Task"
-                      : "Claiming Task"}{" "}
-                    {+taskOffset + 1}
-                  </span>
-                </h4>
-                <h5 className="font-bold">{currentTask.title}</h5>
-                <p
-                  className={cn(
-                    "capitalize",
-                    {
-                      success: "text-blum-green-500",
-                      error: "text-red-500",
-                    }[
-                      action === "start"
-                        ? startTaskMutation.status
-                        : action === "verify"
-                        ? validateTaskMutation.status
-                        : claimTaskMutation.status
-                    ]
-                  )}
-                >
-                  {action === "start"
-                    ? startTaskMutation.status
-                    : action === "verify"
-                    ? validateTaskMutation.status
-                    : claimTaskMutation.status}
-                </p>
-              </div>
-            ) : null}
-          </div>
-        </>
-      )}
-    </div>
+                      ? validateTaskMutation.status
+                      : claimTaskMutation.status}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </>
+        )}
+      </div>
+      {keywordPrompt ? (
+        <BlumKeywordPrompt
+          task={keywordPrompt.task}
+          onSubmit={handlePromptSubmit}
+        />
+      ) : null}
+    </>
   );
 }

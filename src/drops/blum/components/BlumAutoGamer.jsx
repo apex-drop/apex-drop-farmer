@@ -29,7 +29,7 @@ export default function Blum() {
   const [autoPlaying, setAutoPlaying] = useState(false);
   const [countdown, setCountdown] = useState(null);
   const [desiredPoint, setDesiredPoint, dispatchAndSetDesiredPoint] =
-    useSocketState(INITIAL_POINT);
+    useSocketState("blum.game.desired-point", INITIAL_POINT);
 
   const tickets = query.data?.playPasses || 0;
   const points = Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint));

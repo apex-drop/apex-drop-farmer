@@ -6,42 +6,43 @@ import { useEffect } from "react";
 import { useState } from "react";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { useMemo } from "react";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import { useCallback } from "react";
-import useAppContext from "@/hooks/useAppContext";
 
 export default function Settings() {
-  const { socket } = useAppContext();
   const [settings, setSettings] = useState(null);
+  const [configureSettings, dispatchAndConfigureSettings] =
+    useSocketDispatchCallback(
+      /** Configure Settings */
+      useCallback(
+        (k, v) => {
+          const newSettings = {
+            ...settings,
+            [k]: v,
+          };
 
-  const configureSettings = useCallback(
-    (k, v) => {
-      const newSettings = {
-        ...settings,
-        [k]: v,
-      };
-
-      chrome?.storage?.local.set({
-        settings: newSettings,
-      });
-    },
-    [settings]
-  );
-
-  const configureSettingsAndDispatch = useCallback(
-    (k, v) => {
-      configureSettings(k, v);
-
-      socket.dispatch({
-        action: "settings.set-value",
-        data: {
-          key: k,
-          value: v,
+          chrome?.storage?.local.set({
+            settings: newSettings,
+          });
         },
-      });
-    },
-    [configureSettings]
-  );
+        [settings]
+      ),
 
+      /** Dispatch */
+      useCallback(
+        (socket, k, v) =>
+          socket.dispatch({
+            action: "settings.set-value",
+            data: {
+              key: k,
+              value: v,
+            },
+          }),
+        []
+      )
+    );
+
+  /** Set initial settings */
   useEffect(() => {
     getSettings().then((settings) => {
       setSettings(settings);
@@ -106,7 +107,7 @@ export default function Settings() {
                 {/* Open Farmer in new Window */}
                 <LabelToggle
                   onChange={(ev) =>
-                    configureSettingsAndDispatch(
+                    dispatchAndConfigureSettings(
                       "openFarmerInNewWindow",
                       ev.target.checked
                     )
@@ -119,7 +120,7 @@ export default function Settings() {
                 {/* Open Telegram Web within the Farmer */}
                 <LabelToggle
                   onChange={(ev) =>
-                    configureSettingsAndDispatch(
+                    dispatchAndConfigureSettings(
                       "openTelegramWebWithinFarmer",
                       ev.target.checked
                     )

@@ -1,11 +1,17 @@
+import useAppContext from "@/hooks/useAppContext";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import { useCallback, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
+
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
-import RouletteIcon from "../assets/images/roulette.svg";
-import useMajorGame from "../hooks/useMajorGame";
-import useMajorApi from "../hooks/useMajorApi";
 import MajorGameButton from "./MajorGameButton";
+import RouletteIcon from "../assets/images/roulette.svg";
+import useMajorApi from "../hooks/useMajorApi";
+import useMajorGame from "../hooks/useMajorGame";
 
 export default function MajorRoulette() {
+  const { socket } = useAppContext();
   const game = useMajorGame();
   const api = useMajorApi();
   const startMutation = useMutation({
@@ -23,12 +29,35 @@ export default function MajorRoulette() {
       api.post("https://major.bot/api/roulette/", null).then((res) => res.data),
   });
 
-  const handleButtonClick = () => {
-    game(
-      () => startMutation.mutateAsync(),
-      () => claimMutation.mutateAsync()
+  const [handleButtonClick, dispatchAndHandleButtonClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        game(
+          () => startMutation.mutateAsync(),
+          () => claimMutation.mutateAsync()
+        );
+      }, [game]),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "major.roulette",
+        });
+      }, [])
     );
-  };
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "major.roulette": () => {
+          handleButtonClick();
+        },
+      }),
+      [handleButtonClick]
+    )
+  );
 
   return (
     <>
@@ -36,7 +65,7 @@ export default function MajorRoulette() {
         icon={RouletteIcon}
         title={"Roulette"}
         reward={10000}
-        onClick={handleButtonClick}
+        onClick={dispatchAndHandleButtonClick}
       />
 
       {startMutation.isPending || claimMutation.isPending ? (

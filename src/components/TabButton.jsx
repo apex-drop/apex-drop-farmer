@@ -1,36 +1,64 @@
 import useAppContext from "@/hooks/useAppContext";
-import { cn } from "@/lib/utils";
-import { useRef } from "react";
-import { useEffect } from "react";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import { HiOutlineXMark } from "react-icons/hi2";
+import { cn } from "@/lib/utils";
+import { useCallback, useRef } from "react";
+import { useEffect } from "react";
 
 export default function TabButton({ tab, connected }) {
-  const { socket, setActiveTab, closeTab } = useAppContext();
+  const { setActiveTab, closeTab } = useAppContext();
   const buttonRef = useRef();
 
-  const handleTabClick = (ev) => {
-    setActiveTab(tab.id);
+  /** Button Click Handler */
+  const [, dispatchAndHandleTabClick] = useSocketDispatchCallback(
+    /** Main */
+    useCallback(() => {
+      setActiveTab(tab.id);
+    }, [tab, setActiveTab]),
 
-    socket.dispatch({
-      action: "app.set-active-tab",
-      data: {
-        id: tab.id,
+    /** Dispatch */
+    useCallback(
+      (socket) => {
+        socket.dispatch({
+          action: "app.set-active-tab",
+          data: {
+            id: tab.id,
+          },
+        });
       },
-    });
-  };
-  const handleCloseButtonClick = (ev) => {
-    ev.stopPropagation();
+      [tab]
+    )
+  );
 
-    closeTab(tab.id);
+  /** Close Button Click Handler */
+  const [, dispatchAndHandleCloseButtonClick] = useSocketDispatchCallback(
+    /** Main */
+    useCallback(
+      (ev) => {
+        /** Stop Propagation */
+        ev.stopPropagation();
 
-    socket.dispatch({
-      action: "app.close-tab",
-      data: {
-        id: tab.id,
+        /** Close Tab */
+        closeTab(tab.id);
       },
-    });
-  };
+      [tab, closeTab]
+    ),
 
+    /** Dispatch */
+    useCallback(
+      (socket) => {
+        socket.dispatch({
+          action: "app.close-tab",
+          data: {
+            id: tab.id,
+          },
+        });
+      },
+      [tab]
+    )
+  );
+
+  /** Scroll into View */
   useEffect(() => {
     if (tab.active) {
       buttonRef.current.scrollIntoView({
@@ -38,12 +66,12 @@ export default function TabButton({ tab, connected }) {
         behavior: "smooth",
       });
     }
-  }, [tab.active]);
+  }, [tab, buttonRef]);
 
   return (
     <div
       ref={buttonRef}
-      onClick={handleTabClick}
+      onClick={dispatchAndHandleTabClick}
       title={tab.title}
       className={cn(
         "cursor-pointer",
@@ -89,7 +117,7 @@ export default function TabButton({ tab, connected }) {
       {tab.active && tab.id !== "apex-drop-farmer" ? (
         <button
           className="inline-flex items-center justify-center w-7 h-7 shrink-0"
-          onClick={handleCloseButtonClick}
+          onClick={dispatchAndHandleCloseButtonClick}
         >
           <HiOutlineXMark className="w-5 h-5" />
         </button>

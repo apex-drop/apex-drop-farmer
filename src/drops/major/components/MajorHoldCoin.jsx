@@ -1,5 +1,9 @@
 import toast from "react-hot-toast";
+import useAppContext from "@/hooks/useAppContext";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { delay } from "@/lib/utils";
+import { useCallback, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import HoldCoinIcon from "../assets/images/hold-coin.svg";
@@ -9,6 +13,7 @@ import useMajorApi from "../hooks/useMajorApi";
 import useMajorGame from "../hooks/useMajorGame";
 
 export default function MajorHoldCoin() {
+  const { socket } = useAppContext();
   const game = useMajorGame();
   const api = useMajorApi();
 
@@ -26,9 +31,9 @@ export default function MajorHoldCoin() {
     mutationFn: () =>
       toast
         .promise(
-          delay(60_000),
+          delay(2_000),
           {
-            loading: "Delaying for 60 secs..",
+            loading: "Delaying for 2 secs..",
             success: "Done!",
             error: "Error!",
           },
@@ -42,12 +47,35 @@ export default function MajorHoldCoin() {
         .then((res) => res.data),
   });
 
-  const handleButtonClick = () => {
-    game(
-      () => startMutation.mutateAsync(),
-      () => claimMutation.mutateAsync()
+  const [handleButtonClick, dispatchAndHandleButtonClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        game(
+          () => startMutation.mutateAsync(),
+          () => claimMutation.mutateAsync()
+        );
+      }, [game]),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "major.hold-coin",
+        });
+      }, [])
     );
-  };
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "major.hold-coin": () => {
+          handleButtonClick();
+        },
+      }),
+      [handleButtonClick]
+    )
+  );
 
   return (
     <>
@@ -55,7 +83,7 @@ export default function MajorHoldCoin() {
         icon={HoldCoinIcon}
         title={"Hold Coin"}
         reward={915}
-        onClick={handleButtonClick}
+        onClick={dispatchAndHandleButtonClick}
       />
 
       {startMutation.isPending || claimMutation.isPending ? (

@@ -1,10 +1,14 @@
-import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import { cn } from "@/lib/utils";
+import { useCallback } from "react";
+import { useMemo } from "react";
+import { useState } from "react";
+
 import MajorIcon from "../assets/images/icon.png?format=webp";
 import PuzzleDurovIcon from "../assets/images/puzzle-durov.svg";
-
 import StarIcon from "../assets/images/star-amount.svg";
 
 const defaultChoices = () => Array(4).fill("");
@@ -12,32 +16,82 @@ const defaultChoices = () => Array(4).fill("");
 export default function MajorPuzzleDialog({ onSubmit, onOpenChange }) {
   const [choices, setChoices] = useState(defaultChoices);
 
-  const handleChoiceInput = (index, value) => {
-    if (value && (value < 1 || value > 16)) {
-      return;
-    }
-    setChoices((previous) =>
-      previous.map((choice, choiceIndex) =>
-        index === choiceIndex ? value && parseInt(value) : choice
-      )
+  const [handleChoiceInput, dispatchAndHandleChoiceInput] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(
+        (index, value) => {
+          if (value && (value < 1 || value > 16)) {
+            return;
+          }
+          setChoices((previous) =>
+            previous.map((choice, choiceIndex) =>
+              index === choiceIndex ? value && parseInt(value) : choice
+            )
+          );
+        },
+        [setChoices]
+      ),
+
+      /** Dispatch */
+      useCallback((socket, index, value) => {
+        socket.dispatch({
+          action: "major.puzzle.input",
+          data: {
+            index,
+            value,
+          },
+        });
+      }, [])
     );
-  };
 
-  const handleFormSubmit = (ev) => {
-    ev.preventDefault();
+  const [handleFormSubmit, dispatchAndHandleFormSubmit] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(
+        (ev) => {
+          ev?.preventDefault();
 
-    if (choices.some((choice) => !choice)) {
-      toast.error("Please enter all choice.", {
-        className: "font-bold font-sans",
-      });
-    } else {
-      onSubmit(
-        Object.fromEntries(
-          Object.entries(choices).map(([k, v]) => ["choice_" + (+k + 1), v])
-        )
-      );
-    }
-  };
+          if (choices.some((choice) => !choice)) {
+            toast.error("Please enter all choice.", {
+              className: "font-bold font-sans",
+            });
+          } else {
+            onSubmit(
+              Object.fromEntries(
+                Object.entries(choices).map(([k, v]) => [
+                  "choice_" + (+k + 1),
+                  v,
+                ])
+              )
+            );
+          }
+        },
+        [choices, onSubmit]
+      ),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "major.puzzle.submit",
+        });
+      }, [])
+    );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "major.puzzle.input": (command) => {
+          handleChoiceInput(command.data.index, command.data.value);
+        },
+        "major.puzzle.submit": () => {
+          handleFormSubmit();
+        },
+      }),
+      [handleChoiceInput, handleFormSubmit]
+    )
+  );
 
   return (
     <>
@@ -76,7 +130,10 @@ export default function MajorPuzzleDialog({ onSubmit, onOpenChange }) {
                 </span>
               </Dialog.Description>
 
-              <form onSubmit={handleFormSubmit} className="flex flex-col gap-2">
+              <form
+                onSubmit={dispatchAndHandleFormSubmit}
+                className="flex flex-col gap-2"
+              >
                 <div className="grid grid-cols-4 gap-2 my-2">
                   {choices.map((choice, index) => (
                     <input
@@ -90,7 +147,7 @@ export default function MajorPuzzleDialog({ onSubmit, onOpenChange }) {
                       )}
                       value={choice}
                       onChange={(ev) =>
-                        handleChoiceInput(index, ev.target.value)
+                        dispatchAndHandleChoiceInput(index, ev.target.value)
                       }
                       max={16}
                       min={1}

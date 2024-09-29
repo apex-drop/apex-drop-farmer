@@ -23,34 +23,16 @@ import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=
 import Truecoin from "@/drops/truecoin/Truecoin";
 import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import useAppContext from "@/hooks/useAppContext";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import {
   HiOutlineArrowTopRightOnSquare,
   HiOutlineCog6Tooth,
 } from "react-icons/hi2";
 import { cn, getSettings } from "@/lib/utils";
-import { useMemo } from "react";
-import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { useCallback } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
-
-/** Navigate to Telegram Web */
-const navigateToWebVersion = (v) =>
-  chrome?.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome?.tabs?.update(tabs[0].id, {
-      url: `https://web.telegram.org/${v}`,
-      active: true,
-    });
-  });
-
-/** Open Farmer in Separate Window */
-const openInSeparateWindow = () => {
-  chrome?.windows?.create({
-    url: "index.html",
-    width: 400,
-  });
-
-  window.close();
-};
 
 export default function Welcome() {
   const [showSettings, setShowSettings] = useState(false);
@@ -115,81 +97,133 @@ export default function Welcome() {
     []
   );
 
+  /** Navigate to Telegram Web */
+  const [navigateToWebVersion, dispatchAndNavigateToWebVersion] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(
+        (v) =>
+          chrome?.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
+            chrome?.tabs?.update(tabs[0].id, {
+              url: `https://web.telegram.org/${v}`,
+              active: true,
+            });
+          }),
+        []
+      ),
+
+      /** Dispatch */
+      useCallback(
+        (socket, v) =>
+          socket.dispatch({
+            action: "app.navigate-to-telegram-web",
+            data: {
+              version: v,
+            },
+          }),
+        []
+      )
+    );
+
   /** Push Telegram Web into Tabs */
-  const pushTelegramWebTab = useCallback(
-    (v) => {
-      pushTab({
-        id: "telegram-web-" + v,
-        title: `Telegram Web ${v.toUpperCase()}`,
-        icon: v === "k" ? TelegramWebKIcon : TelegramWebAIcon,
-        component: <TelegramWeb version={v} />,
-      });
-    },
-    [pushTab]
-  );
+  const [pushTelegramWebTab, dispatchAndPushTelegramWebTab] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(
+        (v) => {
+          pushTab({
+            id: "telegram-web-" + v,
+            title: `Telegram Web ${v.toUpperCase()}`,
+            icon: v === "k" ? TelegramWebKIcon : TelegramWebAIcon,
+            component: <TelegramWeb version={v} />,
+          });
+        },
+        [pushTab]
+      ),
+
+      /** Dispatch */
+      useCallback(
+        (socket, v) =>
+          socket.dispatch({
+            action: "app.push-telegram-web-tab",
+            data: {
+              version: v,
+            },
+          }),
+        []
+      )
+    );
 
   /** Open Telegram Web */
   const openTelegramWeb = useCallback(
     (v) => {
       getSettings().then((settings) => {
         if (settings.openTelegramWebWithinFarmer) {
-          pushTelegramWebTab(v);
-
-          socket.dispatch({
-            action: "app.push-telegram-web-tab",
-            data: {
-              version: v,
-            },
-          });
+          dispatchAndPushTelegramWebTab(v);
         } else {
-          navigateToWebVersion(v);
-
-          socket.dispatch({
-            action: "app.navigate-to-telegram-web",
-            data: {
-              version: v,
-            },
-          });
+          dispatchAndNavigateToWebVersion(v);
         }
       });
     },
-    [pushTelegramWebTab, navigateToWebVersion]
+    [dispatchAndPushTelegramWebTab, dispatchAndNavigateToWebVersion]
   );
 
-  const pushAndDispatchTab = useCallback(
-    (drop) => {
-      pushTab(drop);
+  const [, dispatchAndPushTab] = useSocketDispatchCallback(
+    /** Main */
+    pushTab,
 
-      socket.dispatch({
-        action: "app.push-tab",
-        data: {
-          id: drop.id,
-        },
-      });
-    },
-    [pushTab]
+    /** Dispatch */
+    useCallback(
+      (socket, drop) =>
+        socket.dispatch({
+          action: "app.push-tab",
+          data: {
+            id: drop.id,
+          },
+        }),
+      []
+    )
   );
 
-  const openInSeparateWindowAndDispatch = useCallback(() => {
-    openInSeparateWindow();
+  /** Open Farmer in Separate Window */
+  const [openInSeparateWindow, dispatchAndOpenInSeparateWindow] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        chrome?.windows?.create({
+          url: "index.html",
+          width: 400,
+        });
 
-    socket.dispatch({
-      action: "app.open-in-separate-window",
-    });
-  }, [openInSeparateWindow]);
+        window.close();
+      }, []),
 
-  const toggleSettingsAndDispatch = useCallback(
-    (opened) => {
-      setShowSettings(opened);
+      /** Dispatch */
+      useCallback(
+        (socket) =>
+          socket.dispatch({
+            action: "app.open-in-separate-window",
+          }),
+        []
+      )
+    );
 
-      socket.dispatch({
-        action: "app.toggle-settings",
-        data: {
-          opened: opened,
-        },
-      });
-    },
-    [setShowSettings]
+  /** Toggle Settings */
+  const [toggleSettings, dispatchAndToggleSettings] = useSocketDispatchCallback(
+    /** Main */
+    useCallback((opened) => setShowSettings(opened), [setShowSettings]),
+
+    /** Dispatch */
+    useCallback(
+      (socket, opened) =>
+        socket.dispatch({
+          action: "app.toggle-settings",
+          data: {
+            opened: opened,
+          },
+        }),
+      []
+    )
   );
 
   /** Handlers */
@@ -220,7 +254,7 @@ export default function Welcome() {
         },
 
         "app.toggle-settings": (command) => {
-          setShowSettings(command.data.opened);
+          toggleSettings(command.data.opened);
         },
       }),
       [
@@ -231,7 +265,7 @@ export default function Welcome() {
         pushTelegramWebTab,
         navigateToWebVersion,
         openInSeparateWindow,
-        setShowSettings,
+        toggleSettings,
       ]
     )
   );
@@ -243,7 +277,7 @@ export default function Welcome() {
         {/* Open in Separate Window */}
         <button
           title="Open in separate Window"
-          onClick={openInSeparateWindowAndDispatch}
+          onClick={dispatchAndOpenInSeparateWindow}
           className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
         >
           <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
@@ -252,7 +286,7 @@ export default function Welcome() {
         {/* Settings */}
         <Dialog.Root
           open={showSettings}
-          onOpenChange={toggleSettingsAndDispatch}
+          onOpenChange={dispatchAndToggleSettings}
         >
           <Dialog.Trigger
             title="Settings"
@@ -317,7 +351,7 @@ export default function Welcome() {
           {drops.map((drop, index) => (
             <button
               key={index}
-              onClick={() => pushAndDispatchTab(drop)}
+              onClick={() => dispatchAndPushTab(drop)}
               className={cn(
                 "flex flex-col justify-center items-center",
                 "gap-2 p-2 rounded-lg",

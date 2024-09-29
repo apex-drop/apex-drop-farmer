@@ -1,10 +1,14 @@
-import { CgSpinner } from "react-icons/cg";
-import useMajorTasksQuery from "../hooks/useMajorTasksQuery";
-import { useMemo } from "react";
-import { cn } from "@/lib/utils";
-import StarIcon from "../assets/images/star-amount.svg";
 import toast from "react-hot-toast";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import { CgSpinner } from "react-icons/cg";
+import { cn } from "@/lib/utils";
+import { useCallback } from "react";
+import { useMemo } from "react";
+
+import StarIcon from "../assets/images/star-amount.svg";
 import useMajorClaimTaskMutation from "../hooks/useMajorClaimTaskMutation";
+import useMajorTasksQuery from "../hooks/useMajorTasksQuery";
 import useMajorUserQuery from "../hooks/useMajorUserQuery";
 
 export default function MajorTasks() {
@@ -20,18 +24,43 @@ export default function MajorTasks() {
 
   const claimTaskMutation = useMajorClaimTaskMutation();
 
-  const claimTask = (id) => {
-    toast
-      .promise(claimTaskMutation.mutateAsync(id), {
-        loading: "Claiming Task...",
-        error: "Failed to Claim..",
-        success: "Claimed Successfully",
-      })
-      .then(() => {
-        tasksQuery.refetch();
-        userQuery.refetch();
+  const [claimTask, dispatchAndClaimTask] = useSocketDispatchCallback(
+    /** Main */
+    useCallback((id) => {
+      toast
+        .promise(claimTaskMutation.mutateAsync(id), {
+          loading: "Claiming Task...",
+          error: "Failed to Claim..",
+          success: "Claimed Successfully",
+        })
+        .then(() => {
+          tasksQuery.refetch();
+          userQuery.refetch();
+        });
+    }, []),
+
+    /** Dispatch */
+    useCallback((socket, id) => {
+      socket.dispatch({
+        action: "major.tasks.claim",
+        data: {
+          id,
+        },
       });
-  };
+    }, [])
+  );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "major.tasks.claim": (command) => {
+          claimTask(command.data.id);
+        },
+      }),
+      [claimTask]
+    )
+  );
 
   return tasksQuery.isPending ? (
     <CgSpinner className="w-5 h-5 mx-auto animate-spin" />
@@ -42,7 +71,7 @@ export default function MajorTasks() {
       {tasks.map((task) => (
         <button
           key={task.id}
-          onClick={() => claimTask(task.id)}
+          onClick={() => dispatchAndClaimTask(task.id)}
           disabled={task["is_completed"]}
           className={cn(
             "flex items-center gap-2 p-2 rounded-lg bg-neutral-50",

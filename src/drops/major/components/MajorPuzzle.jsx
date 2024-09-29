@@ -1,6 +1,10 @@
 import toast from "react-hot-toast";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import useSocketState from "@/hooks/useSocketState";
+import { useCallback } from "react";
+import { useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
 
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
 import MajorGameButton from "./MajorGameButton";
@@ -11,7 +15,11 @@ import useMajorGameErrorHandler from "../hooks/useMajorGameErrorHandler";
 import useMajorUserQuery from "../hooks/useMajorUserQuery";
 
 export default function MajorPuzzle() {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal, dispatchAndSetShowModal] = useSocketState(
+    "major.puzzle.modal",
+    false
+  );
+
   const userQuery = useMajorUserQuery();
   const api = useMajorApi();
   const handleError = useMajorGameErrorHandler();
@@ -31,36 +39,63 @@ export default function MajorPuzzle() {
       api.post("https://major.bot/api/durov/", data).then((res) => res.data),
   });
 
-  const handleButtonClick = () => {
-    startMutation
-      .mutateAsync()
-      .then(() => {
-        setShowModal(true);
-      })
-      .catch(handleError);
-  };
+  /** Handle Choice Submit */
+  const handleChoiceSubmit = useCallback(
+    (data) => {
+      setShowModal(false);
 
-  const handleChoiceSubmit = (data) => {
-    setShowModal(false);
+      claimMutation.mutateAsync(data).then(({ correct }) => {
+        if (correct.length === 4) {
+          /** Correct */
+          toast
+            .success("Claimed Successfully!", {
+              className: "font-bold font-sans",
+            })
+            .then(userQuery.refetch);
+        } else {
+          /** Failed */
+          toast
+            .error("Incorrect choices!", {
+              className: "font-bold font-sans",
+            })
+            .then(userQuery.refetch);
+        }
+      });
+    },
+    [setShowModal]
+  );
 
-    claimMutation.mutateAsync(data).then(({ correct }) => {
-      if (correct.length === 4) {
-        /** Correct */
-        toast
-          .success("Claimed Successfully!", {
-            className: "font-bold font-sans",
+  const [handleButtonClick, dispatchAndHandleButtonClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        startMutation
+          .mutateAsync()
+          .then(() => {
+            setShowModal(true);
           })
-          .then(userQuery.refetch);
-      } else {
-        /** Failed */
-        toast
-          .error("Incorrect choices!", {
-            className: "font-bold font-sans",
-          })
-          .then(userQuery.refetch);
-      }
-    });
-  };
+          .catch(handleError);
+      }, [setShowModal]),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "major.puzzle.start",
+        });
+      }, [])
+    );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "major.puzzle.start": () => {
+          handleButtonClick();
+        },
+      }),
+      [handleButtonClick]
+    )
+  );
 
   return (
     <>
@@ -68,7 +103,7 @@ export default function MajorPuzzle() {
         icon={PuzzleDurovIcon}
         title={"Puzzle Durov"}
         reward={5000}
-        onClick={handleButtonClick}
+        onClick={dispatchAndHandleButtonClick}
       />
 
       {startMutation.isPending || claimMutation.isPending ? (
@@ -78,7 +113,7 @@ export default function MajorPuzzle() {
       {showModal ? (
         <MajorPuzzleDialog
           onSubmit={handleChoiceSubmit}
-          onOpenChange={(open) => setShowModal(open)}
+          onOpenChange={(open) => dispatchAndSetShowModal(open)}
         />
       ) : null}
     </>

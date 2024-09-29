@@ -1,41 +1,52 @@
 import { io } from "socket.io-client";
+import { useCallback } from "react";
 import { useEffect } from "react";
+import { useMemo } from "react";
 import { useRef } from "react";
 import { useState } from "react";
 
 export default function useSocket() {
-  const socketRef = useRef();
+  const socketRef = useRef(null);
   const [connected, setConnected] = useState(false);
   const [commandHandlers, setCommandHandlers] = useState(new Map());
 
   /** Dispatch */
-  const dispatch = (data) => {
-    if (socketRef.current.connected) {
-      socketRef.current.send(data);
-    }
-  };
+  const dispatch = useCallback(
+    (data) => {
+      if (socketRef.current.connected) {
+        socketRef.current.send(data);
+      }
+    },
+    [socketRef]
+  );
 
   /** Set command handlers */
-  const addCommandHandlers = (handlersToAdd) => {
-    setCommandHandlers((prev) => {
-      const newMap = new Map(prev);
+  const addCommandHandlers = useCallback(
+    (handlersToAdd) => {
+      setCommandHandlers((prev) => {
+        const newMap = new Map(prev);
 
-      Object.entries(handlersToAdd).forEach(([k, v]) => newMap.set(k, v));
+        Object.entries(handlersToAdd).forEach(([k, v]) => newMap.set(k, v));
 
-      return newMap;
-    });
-  };
+        return newMap;
+      });
+    },
+    [setCommandHandlers]
+  );
 
   /** Remove command handlers */
-  const removeCommandHandlers = (handlersToRemove) => {
-    setCommandHandlers((prev) => {
-      const newMap = new Map(prev);
+  const removeCommandHandlers = useCallback(
+    (handlersToRemove) => {
+      setCommandHandlers((prev) => {
+        const newMap = new Map(prev);
 
-      Object.keys(handlersToRemove).forEach((k) => newMap.delete(k));
+        Object.keys(handlersToRemove).forEach((k) => newMap.delete(k));
 
-      return newMap;
-    });
-  };
+        return newMap;
+      });
+    },
+    [setCommandHandlers]
+  );
 
   /** Instantiate Socket */
   useEffect(() => {
@@ -56,6 +67,7 @@ export default function useSocket() {
     };
   }, []);
 
+  /** Handle Commands */
   useEffect(() => {
     const actionHandler = (arg) => {
       const callback = commandHandlers.get(arg.action);
@@ -69,12 +81,15 @@ export default function useSocket() {
     return () => {
       socketRef.current?.off("command", actionHandler);
     };
-  }, [commandHandlers]);
+  }, [socketRef, commandHandlers]);
 
-  return {
-    addCommandHandlers,
-    removeCommandHandlers,
-    connected,
-    dispatch,
-  };
+  return useMemo(
+    () => ({
+      addCommandHandlers,
+      removeCommandHandlers,
+      connected,
+      dispatch,
+    }),
+    [addCommandHandlers, removeCommandHandlers, connected, dispatch]
+  );
 }

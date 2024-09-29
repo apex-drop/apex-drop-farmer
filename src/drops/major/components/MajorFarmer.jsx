@@ -1,4 +1,5 @@
 import * as Tabs from "@radix-ui/react-tabs";
+import useSocketTabs from "@/hooks/useSocketTabs";
 import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +11,7 @@ import useMajorUserQuery from "../hooks/useMajorUserQuery";
 
 export default function MajorFarmer() {
   const userQuery = useMajorUserQuery();
+  const tabs = useSocketTabs("major.farmer-tabs", "games");
 
   return (
     <div className="flex flex-col gap-2 p-4">
@@ -26,7 +28,7 @@ export default function MajorFarmer() {
       {userQuery.isSuccess ? (
         <>
           <MajorBalanceDisplay />
-          <Tabs.Root defaultValue="games" className="flex flex-col gap-4">
+          <Tabs.Root {...tabs} className="flex flex-col gap-4">
             <Tabs.List className="grid grid-cols-2">
               {["games", "tasks"].map((value, index) => (
                 <Tabs.Trigger

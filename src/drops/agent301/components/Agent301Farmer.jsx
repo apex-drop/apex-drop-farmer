@@ -1,4 +1,5 @@
 import * as Tabs from "@radix-ui/react-tabs";
+import useSocketTabs from "@/hooks/useSocketTabs";
 import { cn } from "@/lib/utils";
 
 import Agent301BalanceDisplay from "./Agent301BalanceDisplay";
@@ -8,6 +9,8 @@ import Agent301Tasks from "./Agent301Tasks";
 import Agent301Wheel from "./Agent301Wheel";
 
 export default function Agent301Farmer() {
+  const tabs = useSocketTabs("agent301.farmer-tabs", "tickets");
+
   return (
     <div className="flex flex-col gap-2 py-4">
       {/* Header */}
@@ -19,7 +22,7 @@ export default function Agent301Farmer() {
       {/* Balance Display */}
       <Agent301BalanceDisplay />
 
-      <Tabs.Root defaultValue="tickets" className="flex flex-col gap-4">
+      <Tabs.Root {...tabs} className="flex flex-col gap-4">
         <Tabs.List className="grid grid-cols-3">
           {["tickets", "wheel", "tasks"].map((value, index) => (
             <Tabs.Trigger

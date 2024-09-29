@@ -11,7 +11,8 @@ const getSettings = () => {
 };
 
 /** Open Farmer */
-const openFarmerWindow = () => {
+const openFarmerWindow = async () => {
+  const display = await chrome.system.display.getInfo();
   chrome.windows.create({
     url: "index.html",
     width: 350,

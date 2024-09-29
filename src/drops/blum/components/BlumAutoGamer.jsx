@@ -46,14 +46,11 @@ export default function Blum() {
   const [handleAutoPlayClick, dispatchAndHandleAutoPlayClick] =
     useSocketDispatchCallback(
       /** Main */
-      useCallback(
-        () => () => {
-          setDesiredPoint(points);
-          setAutoPlaying((previous) => !previous);
-          setWorking(false);
-        },
-        [setDesiredPoint, setAutoPlaying, setWorking]
-      ),
+      useCallback(() => {
+        setDesiredPoint(points);
+        setAutoPlaying((previous) => !previous);
+        setWorking(false);
+      }, [setDesiredPoint, setAutoPlaying, setWorking]),
 
       /** Dispatch */
       useCallback((socket) => {

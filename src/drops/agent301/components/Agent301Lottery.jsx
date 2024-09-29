@@ -1,5 +1,9 @@
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
+import { useCallback } from "react";
 import { useEffect } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 
 import useAgent301BalanceQuery from "../hooks/useAgent301BalanceQuery";
@@ -16,11 +20,34 @@ export default function Agent301Lottery() {
   const spinMutation = useAgent301LotteryMutation();
 
   /** Handle button click */
-  const handleAutoSpinClick = () => {
-    setAutoSpin((previous) => !previous);
-    setWorking(false);
-  };
+  const [handleAutoSpinClick, dispatchAndHandleAutoSpinClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        setAutoSpin((previous) => !previous);
+        setWorking(false);
+      }, [setAutoSpin, setWorking]),
 
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "agent301.wheel.lottery",
+        });
+      }, [])
+    );
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "agent301.wheel.lottery": () => {
+          handleAutoSpinClick();
+        },
+      }),
+      [handleAutoSpinClick]
+    )
+  );
+
+  /** Use Effect */
   useEffect(() => {
     if (!autoSpin || working) return;
 
@@ -66,7 +93,7 @@ export default function Agent301Lottery() {
         <div className="flex flex-col gap-2">
           <button
             disabled={tickets < 1}
-            onClick={handleAutoSpinClick}
+            onClick={dispatchAndHandleAutoSpinClick}
             className={cn(
               "p-2 rounded-lg disabled:opacity-50",
               autoSpin ? "bg-red-500 text-black" : "bg-white text-black"

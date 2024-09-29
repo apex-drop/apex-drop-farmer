@@ -193,7 +193,7 @@ export default function Welcome() {
       useCallback(() => {
         chrome?.windows?.create({
           url: "index.html",
-          width: 350,
+          width: Math.max(350, window.outerWidth / 4),
           type: "popup",
         });
 

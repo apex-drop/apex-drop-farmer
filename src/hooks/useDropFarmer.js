@@ -44,7 +44,7 @@ export default function useDropFarmer({
     const interceptor = api.interceptors.response.use(
       (response) => Promise.resolve(response),
       (error) => {
-        if (error?.response?.status >= 400 && error?.response?.status < 500) {
+        if ([401, 403, 418].includes(error?.response?.status)) {
           configureAuthorization(null);
         }
         return Promise.reject(error);

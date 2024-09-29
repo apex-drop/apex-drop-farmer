@@ -1,11 +1,15 @@
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
-import useAgent301WheelQuery from "../hooks/useAgent301WheelQuery";
-import useAgent301CompleteWheelTaskMutation from "../hooks/useAgent301CompleteWheelTaskMutation";
-import { useState } from "react";
 import { formatRelative } from "date-fns";
+import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+
+import useAgent301CompleteWheelTaskMutation from "../hooks/useAgent301CompleteWheelTaskMutation";
+import useAgent301WheelQuery from "../hooks/useAgent301WheelQuery";
 
 export default function Agent301Wheel() {
   const client = useQueryClient();
@@ -33,16 +37,39 @@ export default function Agent301Wheel() {
   const [taskOffset, setTaskOffset] = useState(null);
   const [action, setAction] = useState(null);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setAction(null);
     setTaskOffset(null);
-  };
+  }, [setAction, setTaskOffset]);
 
   /** Handle button click */
-  const handleAutoTaskClick = () => {
-    reset();
-    setAutoClaiming((previous) => !previous);
-  };
+  const [handleAutoTaskClick, dispatchAndHandleAutoTaskClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        reset();
+        setAutoClaiming((previous) => !previous);
+      }, [reset, setAutoClaiming]),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "agent301.wheel.claim",
+        });
+      }, [])
+    );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "agent301.wheel.claim": () => {
+          handleAutoTaskClick();
+        },
+      }),
+      [handleAutoTaskClick]
+    )
+  );
 
   useEffect(() => {
     if (!autoClaiming) {
@@ -141,7 +168,7 @@ export default function Agent301Wheel() {
           </div>
           <button
             disabled={autoClaiming}
-            onClick={handleAutoTaskClick}
+            onClick={dispatchAndHandleAutoTaskClick}
             className={cn(
               "p-2 rounded-lg disabled:opacity-50",
               autoClaiming ? "bg-red-500 text-black" : "bg-white text-black"

@@ -1,4 +1,5 @@
 import * as Tabs from "@radix-ui/react-tabs";
+import useSocketTabs from "@/hooks/useSocketTabs";
 import { cn } from "@/lib/utils";
 
 import TapCatIcon from "../assets/images/icon.png?format=webp";
@@ -7,6 +8,8 @@ import TapCatProfileDisplay from "./TapCatProfileDisplay";
 import TapCatTasks from "./TapCatTasks";
 
 export default function TapCatFarmer() {
+  const tabs = useSocketTabs("tapcat.farmer-tabs", "slots");
+
   return (
     <div className="flex flex-col gap-2 py-4">
       {/* Header */}
@@ -22,7 +25,7 @@ export default function TapCatFarmer() {
       {/* Info */}
       <TapCatProfileDisplay />
 
-      <Tabs.Root defaultValue="slots" className="flex flex-col">
+      <Tabs.Root {...tabs} className="flex flex-col">
         <Tabs.List className="grid grid-cols-2">
           {["slots", "tasks"].map((value, index) => (
             <Tabs.Trigger

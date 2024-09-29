@@ -1,5 +1,7 @@
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useState } from "react";
 
 import EnergyIcon from "../assets/images/energy.png?format=webp";
@@ -17,10 +19,33 @@ export default function SlotcoinLottery() {
   const [working, setWorking] = useState(false);
 
   /** Handle button click */
-  const handleAutoSpinClick = () => {
-    setAutoSpin((previous) => !previous);
-    setWorking(false);
-  };
+  const [handleAutoSpinClick, dispatchAndHandleAutoSpinClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        setAutoSpin((previous) => !previous);
+        setWorking(false);
+      }, [setAutoSpin, setWorking]),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "slotcoin.spin",
+        });
+      }, [])
+    );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "slotcoin.spin": () => {
+          handleAutoSpinClick();
+        },
+      }),
+      [handleAutoSpinClick]
+    )
+  );
 
   useEffect(() => {
     if (!autoSpin || working) {
@@ -75,7 +100,7 @@ export default function SlotcoinLottery() {
           {/* Auto Spin Button */}
           <button
             disabled={energy < 1}
-            onClick={handleAutoSpinClick}
+            onClick={dispatchAndHandleAutoSpinClick}
             className={cn(
               "p-2 text-white rounded-lg disabled:opacity-50",
               autoSpin ? "bg-red-500" : "bg-purple-500",

@@ -8,16 +8,17 @@ import { useState } from "react";
 export default function useSocket() {
   const socketRef = useRef(null);
   const [connected, setConnected] = useState(false);
+  const [syncing, setSyncing] = useState(true);
   const [commandHandlers, setCommandHandlers] = useState(new Map());
 
   /** Dispatch */
   const dispatch = useCallback(
     (data) => {
-      if (socketRef.current.connected) {
+      if (syncing && socketRef.current.connected) {
         socketRef.current.send(data);
       }
     },
-    [socketRef]
+    [socketRef, syncing]
   );
 
   /** Set command handlers */
@@ -70,7 +71,10 @@ export default function useSocket() {
   /** Handle Commands */
   useEffect(() => {
     const actionHandler = (arg) => {
+      if (!syncing) return;
+
       const callback = commandHandlers.get(arg.action);
+
       if (callback) {
         callback(arg);
       }
@@ -81,15 +85,24 @@ export default function useSocket() {
     return () => {
       socketRef.current?.off("command", actionHandler);
     };
-  }, [socketRef, commandHandlers]);
+  }, [socketRef, commandHandlers, syncing]);
 
   return useMemo(
     () => ({
+      connected,
+      syncing,
+      dispatch,
+      setSyncing,
       addCommandHandlers,
       removeCommandHandlers,
-      connected,
-      dispatch,
     }),
-    [addCommandHandlers, removeCommandHandlers, connected, dispatch]
+    [
+      connected,
+      syncing,
+      dispatch,
+      setSyncing,
+      addCommandHandlers,
+      removeCommandHandlers,
+    ]
   );
 }

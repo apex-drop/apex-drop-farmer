@@ -25,6 +25,7 @@ import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=
 import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
+import useSocketState from "@/hooks/useSocketState";
 import {
   HiOutlineArrowTopRightOnSquare,
   HiOutlineCog6Tooth,
@@ -32,10 +33,10 @@ import {
 import { cn, getSettings } from "@/lib/utils";
 import { useCallback } from "react";
 import { useMemo } from "react";
-import { useState } from "react";
 
 export default function Welcome() {
-  const [showSettings, setShowSettings] = useState(false);
+  const [showSettings, setShowSettings, dispatchAndSetShowSettings] =
+    useSocketState("app.toggle-settings", false);
   const { socket, pushTab, setActiveTab, closeTab } = useAppContext();
   const drops = useMemo(
     () => [
@@ -192,7 +193,7 @@ export default function Welcome() {
       useCallback(() => {
         chrome?.windows?.create({
           url: "index.html",
-          width: 400,
+          width: 350,
           type: "popup",
         });
 
@@ -208,24 +209,6 @@ export default function Welcome() {
         []
       )
     );
-
-  /** Toggle Settings */
-  const [toggleSettings, dispatchAndToggleSettings] = useSocketDispatchCallback(
-    /** Main */
-    useCallback((opened) => setShowSettings(opened), [setShowSettings]),
-
-    /** Dispatch */
-    useCallback(
-      (socket, opened) =>
-        socket.dispatch({
-          action: "app.toggle-settings",
-          data: {
-            opened: opened,
-          },
-        }),
-      []
-    )
-  );
 
   /** Handlers */
   useSocketHandlers(
@@ -253,10 +236,6 @@ export default function Welcome() {
         "app.open-in-separate-window": () => {
           openInSeparateWindow();
         },
-
-        "app.toggle-settings": (command) => {
-          toggleSettings(command.data.opened);
-        },
       }),
       [
         drops,
@@ -266,7 +245,6 @@ export default function Welcome() {
         pushTelegramWebTab,
         navigateToWebVersion,
         openInSeparateWindow,
-        toggleSettings,
       ]
     )
   );
@@ -287,7 +265,7 @@ export default function Welcome() {
         {/* Settings */}
         <Dialog.Root
           open={showSettings}
-          onOpenChange={dispatchAndToggleSettings}
+          onOpenChange={dispatchAndSetShowSettings}
         >
           <Dialog.Trigger
             title="Settings"

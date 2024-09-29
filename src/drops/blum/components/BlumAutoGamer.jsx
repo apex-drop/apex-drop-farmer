@@ -1,5 +1,11 @@
 import Countdown from "react-countdown";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import useSocketState from "@/hooks/useSocketState";
+import { delay } from "@/lib/utils";
+import { useCallback } from "react";
 import { useEffect } from "react";
+import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -8,7 +14,6 @@ import BlumInput from "./BlumInput";
 import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
 import useBlumClaimGameMutation from "../hooks/useBlumClaimGameMutation";
 import useBlumStartGameMutation from "../hooks/useBlumStartGameMutation";
-import { delay } from "@/lib/utils";
 
 const GAME_DURATION = 30_000;
 const EXTRA_DELAY = 3_000;
@@ -23,7 +28,8 @@ export default function Blum() {
   const [working, setWorking] = useState(false);
   const [autoPlaying, setAutoPlaying] = useState(false);
   const [countdown, setCountdown] = useState(null);
-  const [desiredPoint, setDesiredPoint] = useState(INITIAL_POINT);
+  const [desiredPoint, setDesiredPoint, dispatchAndSetDesiredPoint] =
+    useSocketState(INITIAL_POINT);
 
   const tickets = query.data?.playPasses || 0;
   const points = Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint));
@@ -37,11 +43,37 @@ export default function Blum() {
   );
 
   /** Handle button click */
-  const handleAutoPlayClick = () => {
-    setDesiredPoint(points);
-    setAutoPlaying((previous) => !previous);
-    setWorking(false);
-  };
+  const [handleAutoPlayClick, dispatchAndHandleAutoPlayClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(
+        () => () => {
+          setDesiredPoint(points);
+          setAutoPlaying((previous) => !previous);
+          setWorking(false);
+        },
+        [setDesiredPoint, setAutoPlaying, setWorking]
+      ),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "blum.autoplay",
+        });
+      }, [])
+    );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "blum.autoplay": () => {
+          handleAutoPlayClick();
+        },
+      }),
+      [handleAutoPlayClick]
+    )
+  );
 
   useEffect(() => {
     if (!autoPlaying || working) {
@@ -94,7 +126,7 @@ export default function Blum() {
           <BlumInput
             disabled={autoPlaying || tickets < 1}
             value={desiredPoint}
-            onInput={(ev) => setDesiredPoint(ev.target.value)}
+            onInput={(ev) => dispatchAndSetDesiredPoint(ev.target.value)}
             type="number"
             min={MIN_POINT}
             max={MAX_POINT}
@@ -110,7 +142,7 @@ export default function Blum() {
       <BlumButton
         color={autoPlaying ? "danger" : "primary"}
         disabled={tickets < 1}
-        onClick={handleAutoPlayClick}
+        onClick={dispatchAndHandleAutoPlayClick}
       >
         {autoPlaying ? "Stop" : "Start"}
       </BlumButton>

@@ -1,4 +1,5 @@
 import * as Tabs from "@radix-ui/react-tabs";
+import useSocketTabs from "@/hooks/useSocketTabs";
 import { cn } from "@/lib/utils";
 
 import BlumAutoGamer from "./BlumAutoGamer";
@@ -8,13 +9,15 @@ import BlumFarmerHeader from "./BlumFarmerHeader";
 import BlumUsernameDisplay from "./BlumUsernameDisplay";
 
 export default function BlumFarmer() {
+  const tabs = useSocketTabs("blum.farmer-tabs", "game");
+
   return (
     <div className="flex flex-col p-4">
       <BlumFarmerHeader />
       <BlumUsernameDisplay />
       <BlumBalanceDisplay />
 
-      <Tabs.Root defaultValue="game" className="flex flex-col gap-4">
+      <Tabs.Root {...tabs} className="flex flex-col gap-4">
         <Tabs.List className="grid grid-cols-2">
           {["game", "tasks"].map((value, index) => (
             <Tabs.Trigger

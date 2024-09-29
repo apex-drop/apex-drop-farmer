@@ -1,4 +1,7 @@
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
+import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,19 +13,24 @@ import useBlumStartTaskMutation from "../hooks/useBlumStartTaskMutation";
 import useBlumTasksQuery from "../hooks/useBlumTasksQuery";
 import useBlumValidateTaskMutation from "../hooks/useBlumValidateTaskMutation";
 
-const reduceTasks = (tasks) =>
-  tasks.reduce((items, current) => {
-    if (current.subTasks) {
-      return items.concat(reduceTasks(current.subTasks));
-    }
-
-    return items.concat(current);
-  }, []);
-
 export default function BlumAutoTasks() {
   const client = useQueryClient();
   const query = useBlumTasksQuery();
 
+  /** Concat sub tasks */
+  const reduceTasks = useCallback(
+    (tasks) =>
+      tasks.reduce((items, current) => {
+        if (current.subTasks) {
+          return items.concat(reduceTasks(current.subTasks));
+        }
+
+        return items.concat(current);
+      }, []),
+    []
+  );
+
+  /** Join all subsections */
   const rawTasks = useMemo(
     () =>
       query.data
@@ -42,7 +50,7 @@ export default function BlumAutoTasks() {
           }
           return tasks;
         }, []) || [],
-    [query.data]
+    [query.data, reduceTasks]
   );
 
   const tasks = useMemo(
@@ -90,31 +98,64 @@ export default function BlumAutoTasks() {
   const claimTaskMutation = useBlumClaimTaskMutation();
   const validateTaskMutation = useBlumValidateTaskMutation();
 
-  const resetTask = () => {
+  /** Reset Task */
+  const resetTask = useCallback(() => {
     setCurrentTask(null);
     setTaskOffset(null);
-  };
+  }, [setCurrentTask, setTaskOffset]);
 
-  const reset = () => {
+  /** Reset */
+  const reset = useCallback(() => {
     resetTask();
     setAction(null);
-  };
+  }, [resetTask, setAction]);
+
+  /** Refetch Tasks */
+  const refetchTasks = useCallback(
+    () =>
+      client.refetchQueries({
+        queryKey: ["blum", "tasks"],
+      }),
+    [client]
+  );
+
+  /** Refetch Balance */
+  const refetchBalance = useCallback(
+    () =>
+      client.refetchQueries({
+        queryKey: ["blum", "balance"],
+      }),
+    [client]
+  );
 
   /** Handle button click */
-  const handleAutoClaimClick = () => {
-    reset();
-    setAutoClaiming((previous) => !previous);
-  };
+  const [handleAutoClaimClick, dispatchAndHandleAutoClaimClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        reset();
+        setAutoClaiming((previous) => !previous);
+      }, [reset, setAutoClaiming]),
 
-  const refetchTasks = () =>
-    client.refetchQueries({
-      queryKey: ["blum", "tasks"],
-    });
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "blum.tasks.claim",
+        });
+      }, [])
+    );
 
-  const refetchBalance = () =>
-    client.refetchQueries({
-      queryKey: ["blum", "balance"],
-    });
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "blum.tasks.claim": () => {
+          handleAutoClaimClick();
+        },
+      }),
+      [handleAutoClaimClick]
+    )
+  );
 
   useEffect(() => {
     if (!autoClaiming) {
@@ -224,7 +265,7 @@ export default function BlumAutoTasks() {
             {/* Start Button */}
             <BlumButton
               color={autoClaiming ? "danger" : "primary"}
-              onClick={handleAutoClaimClick}
+              onClick={dispatchAndHandleAutoClaimClick}
               disabled={
                 (pendingTasks.length === 0 && unclaimedTasks.length === 0) ||
                 autoClaiming

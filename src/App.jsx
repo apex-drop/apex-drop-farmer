@@ -1,8 +1,9 @@
 import { Toaster } from "react-hot-toast";
 
 import AppContext from "./contexts/AppContext";
-import TabContent from "./components/TabContent";
+import SyncControl from "./partials/SyncControl";
 import TabButtonList from "./components/TabButtonList";
+import TabContent from "./components/TabContent";
 import useApp from "./hooks/useApp";
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
             <TabContent key={tab.id} tab={tab} />
           ))}
         </div>
+
+        <SyncControl />
       </div>
       <Toaster position="top-center" />
     </AppContext.Provider>

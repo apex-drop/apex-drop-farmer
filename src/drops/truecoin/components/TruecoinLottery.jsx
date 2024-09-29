@@ -1,7 +1,11 @@
 import toast from "react-hot-toast";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { HiOutlineArrowPath } from "react-icons/hi2";
 import { cn, delay } from "@/lib/utils";
+import { useCallback } from "react";
 import { useEffect } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 
 import CoinIcon from "../assets/images/coin.png?format=webp";
@@ -20,19 +24,57 @@ export default function TruecoinLottery() {
   const [autoSpin, setAutoSpin] = useState(false);
   const [working, setWorking] = useState(false);
 
-  const handle50BoostClick = () => {
-    toast.promise(boostMutation.mutateAsync(), {
-      loading: "Please wait",
-      error: "Failed to Claim 50 Spins",
-      success: "50 Spins Claimed",
-    });
-  };
+  /** Handle button click */
+  const [handle50BoostClick, dispatchAndHandle50BoostClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        toast.promise(boostMutation.mutateAsync(), {
+          loading: "Please wait",
+          error: "Failed to Claim 50 Spins",
+          success: "50 Spins Claimed",
+        });
+      }, []),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "truecoin.50-boost",
+        });
+      }, [])
+    );
 
   /** Handle button click */
-  const handleAutoSpinClick = () => {
-    setAutoSpin((previous) => !previous);
-    setWorking(false);
-  };
+  const [handleAutoSpinClick, dispatchAndHandleAutoSpinClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        setAutoSpin((previous) => !previous);
+        setWorking(false);
+      }, [setAutoSpin, setWorking]),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "truecoin.spin",
+        });
+      }, [])
+    );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "truecoin.spin": () => {
+          handleAutoSpinClick();
+        },
+        "truecoin.50-boost": () => {
+          handle50BoostClick();
+        },
+      }),
+      [handleAutoSpinClick, handle50BoostClick]
+    )
+  );
 
   useEffect(() => {
     if (!autoSpin || working) {
@@ -69,7 +111,7 @@ export default function TruecoinLottery() {
       {/* Auto Spin Button */}
       <div className="flex gap-2">
         <button
-          onClick={handleAutoSpinClick}
+          onClick={dispatchAndHandleAutoSpinClick}
           className={cn(
             "grow p-2 text-white rounded-lg disabled:opacity-50",
             autoSpin ? "bg-red-500" : "bg-purple-500",
@@ -79,8 +121,9 @@ export default function TruecoinLottery() {
           {autoSpin ? "Stop" : "Start"}
         </button>
 
+        {/* 50 Boost Click */}
         <button
-          onClick={handle50BoostClick}
+          onClick={dispatchAndHandle50BoostClick}
           className={cn(
             "p-2 text-black rounded-lg disabled:opacity-50",
             "bg-purple-100",

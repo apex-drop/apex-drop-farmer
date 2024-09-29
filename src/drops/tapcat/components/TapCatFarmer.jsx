@@ -1,8 +1,9 @@
+import * as Tabs from "@radix-ui/react-tabs";
 import { cn } from "@/lib/utils";
+
 import TapCatIcon from "../assets/images/icon.png?format=webp";
 import TapCatLottery from "./TapCatLottery";
 import TapCatProfileDisplay from "./TapCatProfileDisplay";
-import * as Tabs from "@radix-ui/react-tabs";
 import TapCatTasks from "./TapCatTasks";
 
 export default function TapCatFarmer() {

@@ -1,5 +1,9 @@
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
+import { useCallback } from "react";
 import { useEffect } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 
 import usePumpadLotteryMutation from "../hooks/usePumpadLotteryMutation";
@@ -15,10 +19,33 @@ export default function PumpadLottery() {
   const [autoSpin, setAutoSpin] = useState(false);
 
   /** Handle button click */
-  const handleAutoSpinClick = () => {
-    setAutoSpin((previous) => !previous);
-    setWorking(false);
-  };
+  const [handleAutoSpinClick, dispatchAndHandleAutoSpinClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        setAutoSpin((previous) => !previous);
+        setWorking(false);
+      }, [setAutoSpin, setWorking]),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "pumpad.spin",
+        });
+      }, [])
+    );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "pumpad.spin": () => {
+          handleAutoSpinClick();
+        },
+      }),
+      [handleAutoSpinClick]
+    )
+  );
 
   useEffect(() => {
     if (!autoSpin || working) {
@@ -71,7 +98,7 @@ export default function PumpadLottery() {
           {/* Auto Spin Button */}
           <button
             disabled={!drawCount}
-            onClick={handleAutoSpinClick}
+            onClick={dispatchAndHandleAutoSpinClick}
             className={cn(
               "p-2 text-black rounded-lg disabled:opacity-50",
               autoSpin ? "bg-red-500" : "bg-pumpad-green-500",

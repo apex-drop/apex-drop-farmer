@@ -13,11 +13,11 @@ import useBlumStartTaskMutation from "../hooks/useBlumStartTaskMutation";
 import useBlumTasksQuery from "../hooks/useBlumTasksQuery";
 import useBlumValidateTaskMutation from "../hooks/useBlumValidateTaskMutation";
 import BlumKeywordPrompt from "./BlumKeywordPrompt";
+import useValueTasks from "@/hooks/useValueTasks";
 
 export default function BlumAutoTasks() {
   const client = useQueryClient();
   const query = useBlumTasksQuery();
-  const [keywordPrompt, setKewordPrompt] = useState(null);
 
   /** Concat sub tasks */
   const reduceTasks = useCallback(
@@ -55,6 +55,7 @@ export default function BlumAutoTasks() {
     [query.data, reduceTasks]
   );
 
+  /** All Tasks */
   const tasks = useMemo(
     () =>
       rawTasks.reduce((tasks, item) => {
@@ -66,11 +67,13 @@ export default function BlumAutoTasks() {
     [rawTasks]
   );
 
+  /** Finished Tasks */
   const finishedTasks = useMemo(
     () => tasks.filter((item) => item.status === "FINISHED"),
     [tasks]
   );
 
+  /** Pending Tasks */
   const pendingTasks = useMemo(
     () =>
       tasks.filter(
@@ -80,12 +83,13 @@ export default function BlumAutoTasks() {
       ),
     [tasks]
   );
-
+  /** Unclaimed Tasks */
   const unclaimedTasks = useMemo(
     () => tasks.filter((item) => item.status === "READY_FOR_CLAIM"),
     [tasks]
   );
 
+  /** Unverified Tasks */
   const unverifiedTasks = useMemo(
     () => tasks.filter((item) => item.status === "READY_FOR_VERIFY"),
     [tasks]
@@ -95,6 +99,23 @@ export default function BlumAutoTasks() {
   const [currentTask, setCurrentTask] = useState(null);
   const [taskOffset, setTaskOffset] = useState(null);
   const [action, setAction] = useState(null);
+
+  /** Keyword Tasks */
+  const {
+    valuePrompt,
+    dispatchAndPrompt,
+    dispatchAndSubmitPrompt,
+    getResolvedValue,
+  } = useValueTasks("blum.keywords");
+
+  /** Prompted Task */
+  const promptedTask = useMemo(
+    () =>
+      valuePrompt
+        ? unverifiedTasks.find((item) => item.id === valuePrompt?.id)
+        : null,
+    [unverifiedTasks, valuePrompt]
+  );
 
   const startTaskMutation = useBlumStartTaskMutation();
   const claimTaskMutation = useBlumClaimTaskMutation();
@@ -130,32 +151,6 @@ export default function BlumAutoTasks() {
     [client]
   );
 
-  /** Prompt Keyword */
-  const promptKeyword = useCallback(
-    (task) =>
-      new Promise((resolve, reject) => {
-        setKewordPrompt({
-          task,
-          callback: resolve,
-        });
-      }),
-    []
-  );
-
-  /** Handle Keyword Prompt Submit */
-  const handlePromptSubmit = useCallback(
-    (value) => {
-      const callback = keywordPrompt?.callback;
-
-      setKewordPrompt(null);
-
-      if (callback) {
-        callback(value);
-      }
-    },
-    [keywordPrompt, setKewordPrompt]
-  );
-
   /** Handle button click */
   const [handleAutoClaimClick, dispatchAndHandleAutoClaimClick] =
     useSocketDispatchCallback(
@@ -185,6 +180,7 @@ export default function BlumAutoTasks() {
     )
   );
 
+  /** Run Tasks */
   useEffect(() => {
     if (!autoClaiming) {
       return;
@@ -224,7 +220,9 @@ export default function BlumAutoTasks() {
             setTaskOffset(index);
             setCurrentTask(task);
             try {
-              let keyword = await promptKeyword(task);
+              let keyword =
+                (await getResolvedValue(task.id)) ||
+                (await dispatchAndPrompt(task.id));
 
               if (keyword) {
                 await validateTaskMutation.mutateAsync({
@@ -269,7 +267,7 @@ export default function BlumAutoTasks() {
       resetTask();
       setAutoClaiming(false);
     })();
-  }, [autoClaiming, action]);
+  }, [autoClaiming, action, getResolvedValue, dispatchAndPrompt]);
 
   return (
     <>
@@ -356,10 +354,12 @@ export default function BlumAutoTasks() {
           </>
         )}
       </div>
-      {keywordPrompt ? (
+
+      {/* Prompt Task */}
+      {promptedTask ? (
         <BlumKeywordPrompt
-          task={keywordPrompt.task}
-          onSubmit={handlePromptSubmit}
+          task={promptedTask}
+          onSubmit={dispatchAndSubmitPrompt}
         />
       ) : null}
     </>

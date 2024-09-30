@@ -10,7 +10,7 @@ export default function useSocketDispatchCallback(main, dispatch) {
   const dispatchAndCallMain = useCallback(
     (...args) => {
       dispatch(socket, ...args);
-      main(...args);
+      return main(...args);
     },
     [main, dispatch, socket]
   );

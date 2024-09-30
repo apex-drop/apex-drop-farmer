@@ -33,7 +33,7 @@ export default function Blum() {
 
   const tickets = query.data?.playPasses || 0;
   const points = useMemo(
-    Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint)),
+    () => Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint)),
     [desiredPoint]
   );
 

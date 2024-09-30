@@ -32,7 +32,7 @@ export default function Tomarket() {
 
   const tickets = query.data?.["play_passes"] || 0;
   const points = useMemo(
-    Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint)),
+    () => Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint)),
     [desiredPoint]
   );
 

@@ -298,7 +298,10 @@ export default function Welcome() {
               v{chrome?.runtime?.getManifest().version}
             </span>
           </p>
-          <p className="font-bold text-center text-blue-500">
+          <p
+            onClick={() => setShowSettings(true)}
+            className="font-bold text-center text-blue-500 cursor-pointer"
+          >
             {settings.farmerTitle || defaultSettings.farmerTitle}
           </p>
           <p

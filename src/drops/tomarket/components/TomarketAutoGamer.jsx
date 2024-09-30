@@ -1,5 +1,5 @@
 import Countdown from "react-countdown";
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useState } from "react";
 
 import TomarketButton from "./TomarketButton";
@@ -9,9 +9,12 @@ import useTomarketClaimGameMutation from "../hooks/useTomarketClaimGameMutation"
 import useTomarketStartGameMutation from "../hooks/useTomarketStartGameMutation";
 import { CgSpinner } from "react-icons/cg";
 import { delay } from "@/lib/utils";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import useSocketState from "@/hooks/useSocketState";
 
-const GAME_DURATION = 30_1000;
-const EXTRA_DELAY = 3_1000;
+const GAME_DURATION = 30_000;
+const EXTRA_DELAY = 3_000;
 const MIN_POINT = 100;
 const INITIAL_POINT = 220;
 const MAX_POINT = 390;
@@ -24,10 +27,14 @@ export default function Tomarket() {
   const [working, setWorking] = useState(false);
   const [autoPlaying, setAutoPlaying] = useState(false);
   const [countdown, setCountdown] = useState(null);
-  const [desiredPoint, setDesiredPoint] = useState(INITIAL_POINT);
+  const [desiredPoint, setDesiredPoint, dispatchAndSetDesiredPoint] =
+    useSocketState("tomarket.game.desired-point", INITIAL_POINT);
 
   const tickets = query.data?.["play_passes"] || 0;
-  const points = Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint));
+  const points = useMemo(
+    Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint)),
+    [desiredPoint]
+  );
 
   const startGameMutation = useTomarketStartGameMutation(tomarket?.drop);
   const claimGameMutation = useTomarketClaimGameMutation(
@@ -40,22 +47,48 @@ export default function Tomarket() {
     <span className="text-xl font-bold">{seconds}</span>
   );
 
-  /** Handle button click */
-  const handleAutoPlayClick = () => {
-    setDesiredPoint(points);
-    setAutoPlaying((previous) => !previous);
-    setWorking(false);
-  };
-
   /** Configure Tomarket */
-  const configureTomarket = (data, store = true) => {
-    if (store) {
-      chrome?.storage?.local.set({
-        tomarket: data,
-      });
-    }
-    setTomarket(data);
-  };
+  const configureTomarket = useCallback(
+    (data, store = true) => {
+      if (store) {
+        chrome?.storage?.local.set({
+          tomarket: data,
+        });
+      }
+      setTomarket(data);
+    },
+    [setTomarket]
+  );
+
+  /** Handle button click */
+  const [handleAutoPlayClick, dispatchAndHandleAutoPlayClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        setDesiredPoint(points);
+        setAutoPlaying((previous) => !previous);
+        setWorking(false);
+      }, [points, setDesiredPoint, setAutoPlaying, setWorking]),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "tomarket.autoplay",
+        });
+      }, [])
+    );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "tomarket.autoplay": () => {
+          handleAutoPlayClick();
+        },
+      }),
+      [handleAutoPlayClick]
+    )
+  );
 
   useEffect(() => {
     const watchStorage = ({ tomarket: data }) => {
@@ -132,7 +165,7 @@ export default function Tomarket() {
           <TomarketInput
             disabled={autoPlaying || tickets < 1}
             value={desiredPoint}
-            onInput={(ev) => setDesiredPoint(ev.target.value)}
+            onInput={(ev) => dispatchAndSetDesiredPoint(ev.target.value)}
             type="number"
             min={MIN_POINT}
             max={MAX_POINT}
@@ -148,7 +181,7 @@ export default function Tomarket() {
       <TomarketButton
         color={autoPlaying ? "danger" : "primary"}
         disabled={tickets < 1}
-        onClick={handleAutoPlayClick}
+        onClick={dispatchAndHandleAutoPlayClick}
       >
         {autoPlaying ? "Stop" : "Start"}
       </TomarketButton>

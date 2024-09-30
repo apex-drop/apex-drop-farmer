@@ -3,6 +3,7 @@ import Welcome from "@/pages/Welcome";
 import { createElement, useCallback } from "react";
 import { useState } from "react";
 
+import useSettings from "./useSettings";
 import useSocket from "./useSocket";
 
 const defaultTabs = () => [
@@ -16,6 +17,7 @@ const defaultTabs = () => [
 ];
 
 export default function useApp() {
+  const { settings, configureSettings } = useSettings();
   const socket = useSocket();
 
   const [tabs, setTabs] = useState(defaultTabs);
@@ -66,6 +68,8 @@ export default function useApp() {
   );
 
   return {
+    settings,
+    configureSettings,
     socket,
     tabs,
     setActiveTab,

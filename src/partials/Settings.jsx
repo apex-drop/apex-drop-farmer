@@ -1,67 +1,32 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import LabelToggle from "@/components/LabelToggle";
 import { CgSpinner } from "react-icons/cg";
-import { cn, getSettings } from "@/lib/utils";
-import { useEffect } from "react";
-import { useState } from "react";
+import { cn } from "@/lib/utils";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { useMemo } from "react";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import { useCallback } from "react";
+import useAppContext from "@/hooks/useAppContext";
 
 export default function Settings() {
-  const [settings, setSettings] = useState(null);
-  const [configureSettings, dispatchAndConfigureSettings] =
-    useSocketDispatchCallback(
-      /** Configure Settings */
-      useCallback(
-        (k, v) => {
-          const newSettings = {
-            ...settings,
-            [k]: v,
-          };
+  const { settings, configureSettings } = useAppContext();
+  const [, dispatchAndConfigureSettings] = useSocketDispatchCallback(
+    /** Configure Settings */
+    configureSettings,
 
-          chrome?.storage?.local.set({
-            settings: newSettings,
-          });
-        },
-        [settings]
-      ),
-
-      /** Dispatch */
-      useCallback(
-        (socket, k, v) =>
-          socket.dispatch({
-            action: "settings.set-value",
-            data: {
-              key: k,
-              value: v,
-            },
-          }),
-        []
-      )
-    );
-
-  /** Set initial settings */
-  useEffect(() => {
-    getSettings().then((settings) => {
-      setSettings(settings);
-    });
-
-    const watchStorage = ({ settings }) => {
-      if (settings) {
-        setSettings(settings.newValue);
-      }
-    };
-
-    /** Listen for change */
-    chrome?.storage?.local?.onChanged.addListener(watchStorage);
-
-    return () => {
-      /** Remove Listener */
-      chrome?.storage?.local?.onChanged.removeListener(watchStorage);
-    };
-  }, []);
+    /** Dispatch */
+    useCallback(
+      (socket, k, v) =>
+        socket.dispatch({
+          action: "settings.set-value",
+          data: {
+            key: k,
+            value: v,
+          },
+        }),
+      []
+    )
+  );
 
   /** Handlers */
   useSocketHandlers(
@@ -103,19 +68,19 @@ export default function Settings() {
                 Configure the Farmer
               </Dialog.Description>
 
-              <form className="flex flex-col gap-2 py-4">
-                {/* Open Farmer in new Window */}
-                <LabelToggle
+              <form
+                onSubmit={(ev) => ev.preventDefault()}
+                className="flex flex-col gap-2 py-4"
+              >
+                {/* Farmer Title */}
+                <input
+                  className="p-2.5 mb-2 rounded-lg bg-neutral-100 font-bold"
+                  value={settings?.farmerTitle}
                   onChange={(ev) =>
-                    dispatchAndConfigureSettings(
-                      "openFarmerInNewWindow",
-                      ev.target.checked
-                    )
+                    configureSettings("farmerTitle", ev.target.value)
                   }
-                  checked={settings?.openFarmerInNewWindow}
-                >
-                  Open Farmer in new Window - (PC)
-                </LabelToggle>
+                  placeholder="Farmer Title"
+                />
 
                 {/* Open Telegram Web within the Farmer */}
                 <LabelToggle
@@ -129,10 +94,23 @@ export default function Settings() {
                 >
                   Launch Telegram Web within the Farmer
                 </LabelToggle>
+
+                {/* Open Farmer in new Window */}
+                <LabelToggle
+                  onChange={(ev) =>
+                    dispatchAndConfigureSettings(
+                      "openFarmerInNewWindow",
+                      ev.target.checked
+                    )
+                  }
+                  checked={settings?.openFarmerInNewWindow}
+                >
+                  Open Farmer in new Window - (PC)
+                </LabelToggle>
               </form>
             </div>
             <div className="flex flex-col p-4 font-bold shrink-0">
-              <Dialog.Close className="p-2.5 text-white bg-black rounded-xl">
+              <Dialog.Close className="p-2.5 text-white bg-blue-500 rounded-xl">
                 Close
               </Dialog.Close>
             </div>

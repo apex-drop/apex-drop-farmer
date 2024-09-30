@@ -30,14 +30,16 @@ import {
   HiOutlineArrowTopRightOnSquare,
   HiOutlineCog6Tooth,
 } from "react-icons/hi2";
-import { cn, getSettings } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useCallback } from "react";
 import { useMemo } from "react";
+import { Helmet } from "react-helmet";
+import defaultSettings from "@/default-settings";
 
 export default function Welcome() {
   const [showSettings, setShowSettings, dispatchAndSetShowSettings] =
     useSocketState("app.toggle-settings", false);
-  const { socket, pushTab, setActiveTab, closeTab } = useAppContext();
+  const { settings, socket, pushTab, setActiveTab, closeTab } = useAppContext();
   const drops = useMemo(
     () => [
       {
@@ -158,15 +160,13 @@ export default function Welcome() {
   /** Open Telegram Web */
   const openTelegramWeb = useCallback(
     (v) => {
-      getSettings().then((settings) => {
-        if (settings.openTelegramWebWithinFarmer) {
-          dispatchAndPushTelegramWebTab(v);
-        } else {
-          dispatchAndNavigateToWebVersion(v);
-        }
-      });
+      if (settings.openTelegramWebWithinFarmer) {
+        dispatchAndPushTelegramWebTab(v);
+      } else {
+        dispatchAndNavigateToWebVersion(v);
+      }
     },
-    [dispatchAndPushTelegramWebTab, dispatchAndNavigateToWebVersion]
+    [settings, dispatchAndPushTelegramWebTab, dispatchAndNavigateToWebVersion]
   );
 
   const [, dispatchAndPushTab] = useSocketDispatchCallback(
@@ -250,130 +250,140 @@ export default function Welcome() {
   );
 
   return (
-    <div className="flex flex-col w-full gap-2 p-4 mx-auto max-w-96 grow">
-      {/* Settings and New Window Button */}
-      <div className="flex justify-end gap-2">
-        {/* Open in Separate Window */}
-        <button
-          title="Open in separate Window"
-          onClick={dispatchAndOpenInSeparateWindow}
-          className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
-        >
-          <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
-        </button>
-
-        {/* Settings */}
-        <Dialog.Root
-          open={showSettings}
-          onOpenChange={dispatchAndSetShowSettings}
-        >
-          <Dialog.Trigger
-            title="Settings"
+    <>
+      <Helmet>
+        <title>{`${settings.farmerTitle || defaultSettings.farmerTitle} - ${
+          chrome?.runtime?.getManifest().name
+        }`}</title>
+      </Helmet>
+      <div className="flex flex-col w-full gap-2 p-4 mx-auto max-w-96 grow">
+        {/* Settings and New Window Button */}
+        <div className="flex justify-end gap-2">
+          {/* Open in Separate Window */}
+          <button
+            title="Open in separate Window"
+            onClick={dispatchAndOpenInSeparateWindow}
             className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
           >
-            <HiOutlineCog6Tooth className="w-5 h-5" />
-          </Dialog.Trigger>
+            <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
+          </button>
 
-          <Settings />
-        </Dialog.Root>
-      </div>
+          {/* Settings */}
+          <Dialog.Root
+            open={showSettings}
+            onOpenChange={dispatchAndSetShowSettings}
+          >
+            <Dialog.Trigger
+              title="Settings"
+              className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
+            >
+              <HiOutlineCog6Tooth className="w-5 h-5" />
+            </Dialog.Trigger>
 
-      <div className="flex flex-col justify-center gap-2 grow">
-        <img src={AppIcon} className="mx-auto w-28 h-28" />
-        <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
-        <p className="text-lg text-center">
-          <span
+            <Settings />
+          </Dialog.Root>
+        </div>
+
+        <div className="flex flex-col justify-center gap-2 grow">
+          <img src={AppIcon} className="mx-auto w-28 h-28" />
+          <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
+          <p className="text-lg text-center">
+            <span
+              className={cn(
+                "text-transparent font-bold",
+                "bg-clip-text",
+                "bg-gradient-to-r from-pink-500 to-violet-500"
+              )}
+            >
+              v{chrome?.runtime?.getManifest().version}
+            </span>
+          </p>
+          <p className="font-bold text-center text-blue-500">
+            {settings.farmerTitle || defaultSettings.farmerTitle}
+          </p>
+          <p
             className={cn(
-              "text-transparent font-bold",
-              "bg-clip-text",
-              "bg-gradient-to-r from-pink-500 to-violet-500"
+              "text-center",
+              socket.connected ? "text-green-500" : "text-red-500"
             )}
           >
-            v{chrome?.runtime?.getManifest().version}
-          </span>
-        </p>
-        <p
-          className={cn(
-            "text-center",
-            socket.connected ? "text-green-500" : "text-red-500"
-          )}
-        >
-          {socket.connected ? "Connected" : "Disconnected"}
-        </p>
+            {socket.connected ? "Connected" : "Disconnected"}
+          </p>
 
-        <div className="flex justify-center gap-1">
-          {["k", "a"].map((v, index) => (
-            <button
-              key={index}
-              onClick={() => openTelegramWeb(v)}
-              className={cn(
-                "p-2",
-                "rounded-full",
-                "bg-neutral-100",
-                "hover:bg-blue-500",
-                "hover:text-white",
-                "inline-flex items-center justify-center gap-1"
-              )}
-              title={`Switch to Web${v.toUpperCase()}`}
+          <div className="flex justify-center gap-1">
+            {["k", "a"].map((v, index) => (
+              <button
+                key={index}
+                onClick={() => openTelegramWeb(v)}
+                className={cn(
+                  "p-2",
+                  "rounded-full",
+                  "bg-neutral-100",
+                  "hover:bg-blue-500",
+                  "hover:text-white",
+                  "inline-flex items-center justify-center gap-1"
+                )}
+                title={`Switch to Web${v.toUpperCase()}`}
+              >
+                <img
+                  src={v === "k" ? TelegramWebKIcon : TelegramWebAIcon}
+                  className="w-6 h-6"
+                />
+                {`Web${v.toUpperCase()}`}
+              </button>
+            ))}
+          </div>
+
+          {/* Drops */}
+          <div className={cn("grid grid-cols-3", "gap-2 py-4")}>
+            {drops.map((drop, index) => (
+              <button
+                key={index}
+                onClick={() => dispatchAndPushTab(drop)}
+                className={cn(
+                  "flex flex-col justify-center items-center",
+                  "gap-2 p-2 rounded-lg",
+                  "bg-neutral-100 hover:bg-neutral-200"
+                )}
+                title={drop.title}
+              >
+                <img
+                  src={drop.icon}
+                  className="w-10 h-10 rounded-full shrink-0"
+                />
+                <h3 className={cn("min-w-0")}>{drop.title}</h3>
+              </button>
+            ))}
+          </div>
+
+          {/* Connect */}
+          <div className="flex items-center justify-center gap-2 text-xs">
+            <a
+              href="https://apexdrop.com.ng"
+              target="_blank"
+              className="text-blue-500 hover:underline"
             >
-              <img
-                src={v === "k" ? TelegramWebKIcon : TelegramWebAIcon}
-                className="w-6 h-6"
-              />
-              {`Web${v.toUpperCase()}`}
-            </button>
-          ))}
-        </div>
-
-        {/* Drops */}
-        <div className={cn("grid grid-cols-3", "gap-2 py-4")}>
-          {drops.map((drop, index) => (
-            <button
-              key={index}
-              onClick={() => dispatchAndPushTab(drop)}
-              className={cn(
-                "flex flex-col justify-center items-center",
-                "gap-2 p-2 rounded-lg",
-                "bg-neutral-100 hover:bg-neutral-200"
-              )}
-              title={drop.title}
+              Website
+            </a>
+            &bull;
+            <a
+              href="https://t.me/Apex_Drop"
+              target="_blank"
+              className="text-blue-500 hover:underline"
             >
-              <img
-                src={drop.icon}
-                className="w-10 h-10 rounded-full shrink-0"
-              />
-              <h3 className={cn("min-w-0")}>{drop.title}</h3>
-            </button>
-          ))}
-        </div>
-
-        {/* Connect */}
-        <div className="flex items-center justify-center gap-2 text-xs">
-          <a
-            href="https://apexdrop.com.ng"
-            target="_blank"
-            className="text-blue-500 hover:underline"
-          >
-            Website
-          </a>
-          &bull;
-          <a
-            href="https://t.me/Apex_Drop"
-            target="_blank"
-            className="text-blue-500 hover:underline"
-          >
-            Channel
-          </a>
-          &bull;
-          <a
-            href="https://wa.me/2349018646163"
-            target="_blank"
-            className="text-blue-500 hover:underline"
-          >
-            Dev
-          </a>
+              Channel
+            </a>
+            &bull;
+            <a
+              href="https://wa.me/2349018646163"
+              target="_blank"
+              className="text-blue-500 hover:underline"
+            >
+              Dev
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

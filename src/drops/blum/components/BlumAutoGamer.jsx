@@ -32,14 +32,18 @@ export default function Blum() {
     useSocketState("blum.game.desired-point", INITIAL_POINT);
 
   const tickets = query.data?.playPasses || 0;
-  const points = Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint));
+  const points = useMemo(
+    Math.max(MIN_POINT, Math.min(MAX_POINT, desiredPoint)),
+    [desiredPoint]
+  );
 
   const startGameMutation = useBlumStartGameMutation();
   const claimGameMutation = useBlumClaimGameMutation(points);
 
   /** Countdown renderer */
-  const countdownRenderer = ({ seconds }) => (
-    <span className="text-xl font-bold">{seconds}</span>
+  const countdownRenderer = useCallback(
+    ({ seconds }) => <span className="text-xl font-bold">{seconds}</span>,
+    []
   );
 
   /** Handle button click */
@@ -50,7 +54,7 @@ export default function Blum() {
         setDesiredPoint(points);
         setAutoPlaying((previous) => !previous);
         setWorking(false);
-      }, [setDesiredPoint, setAutoPlaying, setWorking]),
+      }, [points, setDesiredPoint, setAutoPlaying, setWorking]),
 
       /** Dispatch */
       useCallback((socket) => {

@@ -14,8 +14,8 @@ const getSettings = () => {
 const openFarmerWindow = async () => {
   chrome.windows.create({
     url: "index.html",
-    width: 300,
     type: "popup",
+    state: "maximized",
   });
 };
 

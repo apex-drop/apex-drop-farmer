@@ -5,9 +5,19 @@ import SyncControl from "./partials/SyncControl";
 import TabButtonList from "./components/TabButtonList";
 import TabContent from "./components/TabContent";
 import useApp from "./hooks/useApp";
+import { useEffect } from "react";
 
 function App() {
   const app = useApp();
+
+  useEffect(() => {
+    chrome.windows.getCurrent().then((currentWindow) => {
+      chrome.windows.update(currentWindow.id, {
+        state: "normal",
+        width: Math.floor(currentWindow.width / 5),
+      });
+    });
+  }, []);
 
   return (
     <AppContext.Provider value={app}>

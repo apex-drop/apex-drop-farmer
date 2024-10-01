@@ -190,16 +190,14 @@ export default function Welcome() {
   const [openInSeparateWindow, dispatchAndOpenInSeparateWindow] =
     useSocketDispatchCallback(
       /** Main */
-      useCallback(() => {
-        chrome?.windows
-          ?.create({
-            url: "index.html",
-            width: 300,
-            type: "popup",
-          })
-          .then(() => {
-            window.close();
-          });
+      useCallback(async () => {
+        await chrome?.windows?.create({
+          url: "index.html",
+          type: "popup",
+          state: "maximized",
+        });
+
+        window.close();
       }, []),
 
       /** Dispatch */

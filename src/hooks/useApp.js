@@ -1,31 +1,23 @@
-import AppIcon from "@/assets/images/icon-wrapped.png?format=webp&w=80";
-import Welcome from "@/pages/Welcome";
-import { createElement, useCallback } from "react";
+import tabs from "@/tabs";
+import { useCallback } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 
 import useSettings from "./useSettings";
 import useSocket from "./useSocket";
 
-const defaultTabs = () => [
-  {
-    id: "apex-drop-farmer",
-    title: "Apex Drop Farmer",
-    icon: AppIcon,
-    component: createElement(Welcome),
-    active: true,
-  },
-];
+const defaultOpenedTabs = () => [{ ...tabs[0], active: true }];
 
 export default function useApp() {
   const { settings, configureSettings } = useSettings();
   const socket = useSocket();
 
-  const [tabs, setTabs] = useState(defaultTabs);
+  const [openedTabs, setOpenedTabs] = useState(defaultOpenedTabs);
 
   const setActiveTab = useCallback(
     (id) => {
-      if (tabs.find((item) => item.id === id)) {
-        setTabs((previous) =>
+      if (openedTabs.find((item) => item.id === id)) {
+        setOpenedTabs((previous) =>
           previous.map((item) => ({ ...item, active: item.id === id }))
         );
         return true;
@@ -33,25 +25,25 @@ export default function useApp() {
 
       return false;
     },
-    [tabs]
+    [openedTabs]
   );
 
   const pushTab = useCallback(
     (tab) => {
       if (!setActiveTab(tab.id)) {
         /** Push a new Tab */
-        setTabs((previous) => [
+        setOpenedTabs((previous) => [
           ...previous.map((item) => ({ ...item, active: false })),
           { ...tab, active: true },
         ]);
       }
     },
-    [tabs, setActiveTab]
+    [openedTabs, setActiveTab]
   );
 
   const closeTab = useCallback(
     (id) => {
-      setTabs((previous) => {
+      setOpenedTabs((previous) => {
         const previousIndex = previous.findIndex((tab) => tab.id === id);
 
         const newTabs = previous
@@ -64,16 +56,27 @@ export default function useApp() {
         return newTabs;
       });
     },
-    [tabs]
+    [openedTabs]
   );
 
-  return {
-    settings,
-    configureSettings,
-    socket,
-    tabs,
-    setActiveTab,
-    closeTab,
-    pushTab,
-  };
+  return useMemo(
+    () => ({
+      settings,
+      configureSettings,
+      socket,
+      openedTabs,
+      setActiveTab,
+      closeTab,
+      pushTab,
+    }),
+    [
+      settings,
+      configureSettings,
+      socket,
+      openedTabs,
+      setActiveTab,
+      closeTab,
+      pushTab,
+    ]
+  );
 }

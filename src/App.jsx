@@ -10,6 +10,7 @@ import { useEffect } from "react";
 function App() {
   const app = useApp();
 
+  /** Resize window */
   useEffect(() => {
     chrome?.windows?.getCurrent().then((currentWindow) => {
       if (currentWindow.state === "maximized") {
@@ -24,11 +25,13 @@ function App() {
   return (
     <AppContext.Provider value={app}>
       <div className="flex flex-col h-dvh">
-        {app.tabs.length > 1 ? <TabButtonList tabs={app.tabs} /> : null}
+        {app.openedTabs.length > 1 ? (
+          <TabButtonList tabs={app.openedTabs} />
+        ) : null}
 
         {/* Tabs Contents Wrapper */}
         <div className="relative min-w-0 min-h-0 overflow-auto grow">
-          {app.tabs.map((tab) => (
+          {app.openedTabs.map((tab) => (
             <TabContent key={tab.id} tab={tab} />
           ))}
         </div>

@@ -1,27 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import Agent301 from "@/drops/agent301/Agent301";
-import Agent301Icon from "@/drops/agent301/assets/images/icon.png?format=webp&w=80";
 import AppIcon from "@/assets/images/icon.png?format=webp&w=224";
-import Blum from "@/drops/blum/Blum";
-import BlumIcon from "@/drops/blum/assets/images/icon.png?format=webp&w=80";
-import Goats from "@/drops/goats/Goats";
-import GoatsIcon from "@/drops/goats/assets/images/icon.png?format=webp&w=80";
-import Major from "@/drops/major/Major";
-import MajorIcon from "@/drops/major/assets/images/icon.png?format=webp&w=80";
-import Pumpad from "@/drops/pumpad/Pumpad";
-import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
 import Settings from "@/partials/Settings";
-import Slotcoin from "@/drops/slotcoin/Slotcoin";
-import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
-import TapCat from "@/drops/tapcat/TapCat";
-import TapCatIcon from "@/drops/tapcat/assets/images/icon.png?format=webp&w=80";
-import TelegramWeb from "@/TelegramWeb";
 import TelegramWebAIcon from "@/assets/images/telegram-web-a.png?format=webp&w=80";
 import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=80";
-import Tomarket from "@/drops/tomarket/Tomarket";
-import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
-import Truecoin from "@/drops/truecoin/Truecoin";
-import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
@@ -35,69 +16,41 @@ import { useCallback } from "react";
 import { useMemo } from "react";
 import { Helmet } from "react-helmet";
 import defaultSettings from "@/default-settings";
+import tabs from "./tabs";
 
 export default function Welcome() {
   const [showSettings, setShowSettings, dispatchAndSetShowSettings] =
     useSocketState("app.toggle-settings", false);
-  const { settings, socket, pushTab, setActiveTab, closeTab } = useAppContext();
+
+  const { settings, socket, pushTab, closeTab } = useAppContext();
+
+  /** Drops List */
   const drops = useMemo(
-    () => [
-      {
-        id: "major",
-        title: "Major",
-        icon: MajorIcon,
-        component: <Major />,
-      },
-      {
-        title: "Blum",
-        id: "blum",
-        icon: BlumIcon,
-        component: <Blum />,
-      },
-      {
-        title: "Tomarket",
-        id: "tomarket",
-        icon: TomarketIcon,
-        component: <Tomarket />,
-      },
-      {
-        title: "Pumpad",
-        id: "pumpad",
-        icon: PumpadIcon,
-        component: <Pumpad />,
-      },
-      {
-        title: "Slotcoin",
-        id: "slotcoin",
-        icon: SlotcoinIcon,
-        component: <Slotcoin />,
-      },
-      {
-        title: "Agent 301",
-        id: "agent301",
-        icon: Agent301Icon,
-        component: <Agent301 />,
-      },
-      {
-        title: "Tap Cat",
-        id: "tapcat",
-        icon: TapCatIcon,
-        component: <TapCat />,
-      },
-      {
-        title: "Goats",
-        id: "goats",
-        icon: GoatsIcon,
-        component: <Goats />,
-      },
-      {
-        title: "Truecoin",
-        id: "truecoin",
-        icon: TruecoinIcon,
-        component: <Truecoin />,
-      },
-    ],
-    []
+    () =>
+      tabs.filter(
+        (item) =>
+          !["apex-drop-farmer", "telegram-web-k", "telegram-web-a"].includes(
+            item.id
+          )
+      ),
+    [tabs]
+  );
+
+  const [, dispatchAndPushTab] = useSocketDispatchCallback(
+    /** Main */
+    pushTab,
+
+    /** Dispatch */
+    useCallback(
+      (socket, drop) =>
+        socket.dispatch({
+          action: "app.push-tab",
+          data: {
+            id: drop.id,
+          },
+        }),
+      []
+    )
   );
 
   /** Navigate to Telegram Web */
@@ -128,62 +81,16 @@ export default function Welcome() {
       )
     );
 
-  /** Push Telegram Web into Tabs */
-  const [pushTelegramWebTab, dispatchAndPushTelegramWebTab] =
-    useSocketDispatchCallback(
-      /** Main */
-      useCallback(
-        (v) => {
-          pushTab({
-            id: "telegram-web-" + v,
-            title: `Telegram Web ${v.toUpperCase()}`,
-            icon: v === "k" ? TelegramWebKIcon : TelegramWebAIcon,
-            component: <TelegramWeb version={v} />,
-          });
-        },
-        [pushTab]
-      ),
-
-      /** Dispatch */
-      useCallback(
-        (socket, v) =>
-          socket.dispatch({
-            action: "app.push-telegram-web-tab",
-            data: {
-              version: v,
-            },
-          }),
-        []
-      )
-    );
-
   /** Open Telegram Web */
   const openTelegramWeb = useCallback(
     (v) => {
       if (settings.openTelegramWebWithinFarmer) {
-        dispatchAndPushTelegramWebTab(v);
+        dispatchAndPushTab(`telegram-web-${v}`);
       } else {
         dispatchAndNavigateToWebVersion(v);
       }
     },
-    [settings, dispatchAndPushTelegramWebTab, dispatchAndNavigateToWebVersion]
-  );
-
-  const [, dispatchAndPushTab] = useSocketDispatchCallback(
-    /** Main */
-    pushTab,
-
-    /** Dispatch */
-    useCallback(
-      (socket, drop) =>
-        socket.dispatch({
-          action: "app.push-tab",
-          data: {
-            id: drop.id,
-          },
-        }),
-      []
-    )
+    [settings, dispatchAndPushTab, dispatchAndNavigateToWebVersion]
   );
 
   /** Open Farmer in Separate Window */
@@ -210,29 +117,30 @@ export default function Welcome() {
       )
     );
 
+  /** Find And Push Tab */
+  const findAndPushTab = useCallback(
+    (id) => {
+      pushTab(tabs.find((item) => item.id === id));
+    },
+    [tabs, pushTab]
+  );
+
   /** Handlers */
   useSocketHandlers(
     useMemo(
       () => ({
         "app.set-active-tab": (command) => {
-          if (["telegram-web-k", "telegram-web-a"].includes(command.data.id)) {
-            pushTelegramWebTab(command.data.id.substr(-1, 1));
-          } else {
-            pushTab(drops.find((item) => item.id === command.data.id));
-          }
+          findAndPushTab(command.data.id);
         },
 
         "app.push-tab": (command) => {
-          pushTab(drops.find((item) => item.id === command.data.id));
+          findAndPushTab(command.data.id);
         },
 
         "app.close-tab": (command) => {
           closeTab(command.data.id);
         },
 
-        "app.push-telegram-web-tab": (command) => {
-          pushTelegramWebTab(command.data.version);
-        },
         "app.navigate-to-telegram-web": (command) => {
           navigateToWebVersion(command.data.version);
         },
@@ -241,15 +149,7 @@ export default function Welcome() {
           openInSeparateWindow();
         },
       }),
-      [
-        drops,
-        pushTab,
-        setActiveTab,
-        closeTab,
-        pushTelegramWebTab,
-        navigateToWebVersion,
-        openInSeparateWindow,
-      ]
+      [findAndPushTab, closeTab, navigateToWebVersion, openInSeparateWindow]
     )
   );
 

@@ -5,11 +5,14 @@ import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useMemo } from "react";
+import { HiArrowPath, HiCheck } from "react-icons/hi2";
+import defaultSettings from "@/default-settings";
 
 export default function Settings() {
   const { settings, configureSettings } = useAppContext();
+  const [syncServer, setSyncServer] = useState(settings.syncServer);
   const [, dispatchAndConfigureSettings] = useSocketDispatchCallback(
     /** Configure Settings */
     configureSettings,
@@ -85,14 +88,42 @@ export default function Settings() {
 
                 {/* Sync Server */}
                 <label className="text-neutral-500">Sync Server</label>
-                <input
-                  className="p-2.5 rounded-lg bg-neutral-100 font-bold"
-                  value={settings?.syncServer}
-                  onChange={(ev) =>
-                    dispatchAndConfigureSettings("syncServer", ev.target.value)
-                  }
-                  placeholder="Sync Server"
-                />
+                <div className="flex gap-2">
+                  <input
+                    className="p-2.5 rounded-lg bg-neutral-100 font-bold grow"
+                    value={syncServer}
+                    onChange={(ev) => setSyncServer(ev.target.value)}
+                    placeholder="Sync Server"
+                  />
+
+                  {/* Reset Button */}
+                  <button
+                    type="button"
+                    onClick={() => setSyncServer(defaultSettings.syncServer)}
+                    className={cn(
+                      "inline-flex items-center justify-center",
+                      "px-4 rounded-lg shrink-0",
+                      "bg-neutral-100"
+                    )}
+                  >
+                    <HiArrowPath className="w-4 h-4 " />
+                  </button>
+
+                  {/* Set Button */}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      dispatchAndConfigureSettings("syncServer", syncServer)
+                    }
+                    className={cn(
+                      "inline-flex items-center justify-center",
+                      "px-4 rounded-lg shrink-0",
+                      "text-white bg-blue-500"
+                    )}
+                  >
+                    <HiCheck className="w-4 h-4 " />
+                  </button>
+                </div>
 
                 <h4 className="text-neutral-500">Options</h4>
 

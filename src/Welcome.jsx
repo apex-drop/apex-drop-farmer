@@ -126,6 +126,7 @@ export default function Welcome() {
           url: "index.html",
           type: "popup",
           state: "maximized",
+          focused: true,
         });
 
         window.close();

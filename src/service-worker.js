@@ -16,6 +16,7 @@ const openFarmerWindow = async () => {
     url: "index.html",
     type: "popup",
     state: "maximized",
+    focused: true,
   });
 };
 

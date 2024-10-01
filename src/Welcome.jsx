@@ -14,9 +14,9 @@ import {
 import { cn } from "@/lib/utils";
 import { useCallback } from "react";
 import { useMemo } from "react";
-import { Helmet } from "react-helmet";
 import defaultSettings from "@/default-settings";
 import tabs from "./tabs";
+import { useEffect } from "react";
 
 export default function Welcome() {
   const [showSettings, setShowSettings, dispatchAndSetShowSettings] =
@@ -153,13 +153,15 @@ export default function Welcome() {
     )
   );
 
+  /** Update Title */
+  useEffect(() => {
+    document.title = `${
+      settings.farmerTitle || defaultSettings.farmerTitle
+    } - ${chrome?.runtime?.getManifest().name}`;
+  }, [settings]);
+
   return (
     <>
-      <Helmet>
-        <title>{`${settings.farmerTitle || defaultSettings.farmerTitle} - ${
-          chrome?.runtime?.getManifest().name
-        }`}</title>
-      </Helmet>
       <div className="flex flex-col w-full gap-2 p-4 mx-auto max-w-96 grow">
         {/* Settings and New Window Button */}
         <div className="flex justify-end gap-2">

@@ -99,13 +99,26 @@ export default function Settings() {
                 <LabelToggle
                   onChange={(ev) =>
                     dispatchAndConfigureSettings(
+                      "openFarmerOnStartup",
+                      ev.target.checked
+                    )
+                  }
+                  checked={settings?.openFarmerOnStartup}
+                >
+                  Open Farmer on Startup
+                </LabelToggle>
+
+                {/* Open Farmer in new Window */}
+                <LabelToggle
+                  onChange={(ev) =>
+                    dispatchAndConfigureSettings(
                       "openFarmerInNewWindow",
                       ev.target.checked
                     )
                   }
                   checked={settings?.openFarmerInNewWindow}
                 >
-                  Open Farmer in new Window - (PC)
+                  Open Farmer in new Window - (Desktop)
                 </LabelToggle>
               </form>
             </div>

@@ -50,6 +50,16 @@ chrome.storage.local.onChanged.addListener(({ settings }) => {
   }
 });
 
+/** Open Farmer on Startup */
+chrome.runtime.onStartup.addListener(async () => {
+  const settings = await getSettings();
+
+  if (settings.openFarmerOnStartup) {
+    openFarmerWindow();
+  }
+});
+
+/** Configure Extension */
 getSettings().then((settings) => {
   configureExtension(settings);
 });

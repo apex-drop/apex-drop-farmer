@@ -54,8 +54,31 @@ export default function Welcome() {
     )
   );
 
+  /** Find And Push Tab */
+  const [findAndPushTab, dispatchThenFindAndPushTab] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(
+        (id) => {
+          pushTab(farmerTabs.find((item) => item.id === id));
+        },
+        [farmerTabs, pushTab]
+      ),
+
+      /** Dispatch */
+      useCallback(
+        (socket, id) =>
+          socket.dispatch({
+            action: "app.push-tab",
+            data: {
+              id,
+            },
+          }),
+        []
+      )
+    );
   /** Navigate to Telegram Web */
-  const [navigateToWebVersion, dispatchAndNavigateToWebVersion] =
+  const [navigateToTelegramWeb, dispatchAndNavigateToTelegramWeb] =
     useSocketDispatchCallback(
       /** Main */
       useCallback(
@@ -86,12 +109,12 @@ export default function Welcome() {
   const openTelegramWeb = useCallback(
     (v) => {
       if (settings.openTelegramWebWithinFarmer) {
-        dispatchAndPushTab(`telegram-web-${v}`);
+        dispatchThenFindAndPushTab(`telegram-web-${v}`);
       } else {
-        dispatchAndNavigateToWebVersion(v);
+        dispatchAndNavigateToTelegramWeb(v);
       }
     },
-    [settings, dispatchAndPushTab, dispatchAndNavigateToWebVersion]
+    [settings, dispatchThenFindAndPushTab, dispatchAndNavigateToTelegramWeb]
   );
 
   /** Open Farmer in Separate Window */
@@ -118,14 +141,6 @@ export default function Welcome() {
       )
     );
 
-  /** Find And Push Tab */
-  const findAndPushTab = useCallback(
-    (id) => {
-      pushTab(farmerTabs.find((item) => item.id === id));
-    },
-    [farmerTabs, pushTab]
-  );
-
   /** Handlers */
   useSocketHandlers(
     useMemo(
@@ -143,14 +158,14 @@ export default function Welcome() {
         },
 
         "app.navigate-to-telegram-web": (command) => {
-          navigateToWebVersion(command.data.version);
+          navigateToTelegramWeb(command.data.version);
         },
 
         "app.open-in-separate-window": () => {
           openInSeparateWindow();
         },
       }),
-      [findAndPushTab, closeTab, navigateToWebVersion, openInSeparateWindow]
+      [findAndPushTab, closeTab, navigateToTelegramWeb, openInSeparateWindow]
     )
   );
 
@@ -158,7 +173,7 @@ export default function Welcome() {
   useEffect(() => {
     document.title = `${
       settings.farmerTitle || defaultSettings.farmerTitle
-    } - ${chrome?.runtime?.getManifest().name}`;
+    } - Apex Drop Farmer`;
   }, [settings]);
 
   return (

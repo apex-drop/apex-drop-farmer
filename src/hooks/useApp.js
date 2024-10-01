@@ -50,13 +50,13 @@ export default function useApp() {
           .filter((item) => item.id !== id)
           .map((item, index) => ({
             ...item,
-            active: index === previousIndex - 1,
+            active: index === Math.max(previousIndex - 1, 0),
           }));
 
         return newTabs;
       });
     },
-    [openedTabs]
+    [setOpenedTabs]
   );
 
   return useMemo(

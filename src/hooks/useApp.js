@@ -1,4 +1,4 @@
-import tabs from "@/tabs";
+import farmerTabs from "@/farmerTabs";
 import { useCallback } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
@@ -6,7 +6,7 @@ import { useState } from "react";
 import useSettings from "./useSettings";
 import useSocket from "./useSocket";
 
-const defaultOpenedTabs = () => [{ ...tabs[0], active: true }];
+const defaultOpenedTabs = () => [{ ...farmerTabs[0], active: true }];
 
 export default function useApp() {
   const { settings, configureSettings } = useSettings();

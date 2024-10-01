@@ -6,6 +6,7 @@ export default function Toggle({ className, ...props }) {
       <input {...props} type="checkbox" className="sr-only peer" />
       <div
         className={cn(
+          "shrink-0",
           "relative rounded-full",
           "inline-flex h-6 w-11 items-center",
           "peer-checked:bg-blue-500 bg-neutral-200",

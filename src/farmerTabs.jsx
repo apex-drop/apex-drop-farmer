@@ -22,7 +22,7 @@ import Truecoin from "@/drops/truecoin/Truecoin";
 import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import Welcome from "@/Welcome";
 
-const tabs = [
+const farmerTabs = [
   {
     id: "apex-drop-farmer",
     title: "Apex Drop Farmer",
@@ -97,4 +97,4 @@ const tabs = [
   },
 ];
 
-export default tabs;
+export default farmerTabs;

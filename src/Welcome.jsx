@@ -3,6 +3,7 @@ import AppIcon from "@/assets/images/icon.png?format=webp&w=224";
 import Settings from "@/partials/Settings";
 import TelegramWebAIcon from "@/assets/images/telegram-web-a.png?format=webp&w=80";
 import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=80";
+import defaultSettings from "@/default-settings";
 import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
@@ -13,10 +14,10 @@ import {
 } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
 import { useCallback } from "react";
-import { useMemo } from "react";
-import defaultSettings from "@/default-settings";
-import tabs from "./tabs";
 import { useEffect } from "react";
+import { useMemo } from "react";
+
+import farmerTabs from "./farmerTabs";
 
 export default function Welcome() {
   const [showSettings, setShowSettings, dispatchAndSetShowSettings] =
@@ -27,13 +28,13 @@ export default function Welcome() {
   /** Drops List */
   const drops = useMemo(
     () =>
-      tabs.filter(
+      farmerTabs.filter(
         (item) =>
           !["apex-drop-farmer", "telegram-web-k", "telegram-web-a"].includes(
             item.id
           )
       ),
-    [tabs]
+    [farmerTabs]
   );
 
   const [, dispatchAndPushTab] = useSocketDispatchCallback(
@@ -120,9 +121,9 @@ export default function Welcome() {
   /** Find And Push Tab */
   const findAndPushTab = useCallback(
     (id) => {
-      pushTab(tabs.find((item) => item.id === id));
+      pushTab(farmerTabs.find((item) => item.id === id));
     },
-    [tabs, pushTab]
+    [farmerTabs, pushTab]
   );
 
   /** Handlers */

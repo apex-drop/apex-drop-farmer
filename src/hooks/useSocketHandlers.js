@@ -11,5 +11,5 @@ export default function useSocketHandlers(handlers) {
     return () => {
       socket.removeCommandHandlers(handlers);
     };
-  }, [handlers]);
+  }, [socket, handlers]);
 }

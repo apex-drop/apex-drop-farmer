@@ -152,7 +152,7 @@ export default function useValueTasks(key) {
         submitPrompt(value);
       }
     },
-    [valuePrompt, storeResolvedValue]
+    [valuePrompt, storeResolvedValue, submitPrompt]
   );
 
   /** Handlers */

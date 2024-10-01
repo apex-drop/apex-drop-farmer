@@ -191,13 +191,15 @@ export default function Welcome() {
     useSocketDispatchCallback(
       /** Main */
       useCallback(() => {
-        chrome?.windows?.create({
-          url: "index.html",
-          width: Math.max(350, window.outerWidth / 4),
-          type: "popup",
-        });
-
-        window.close();
+        chrome?.windows
+          ?.create({
+            url: "index.html",
+            width: 300,
+            type: "popup",
+          })
+          .then(() => {
+            window.close();
+          });
       }, []),
 
       /** Dispatch */
@@ -215,7 +217,11 @@ export default function Welcome() {
     useMemo(
       () => ({
         "app.set-active-tab": (command) => {
-          setActiveTab(command.data.id);
+          if (["telegram-web-k", "telegram-web-a"].includes(command.data.id)) {
+            pushTelegramWebTab(command.data.id.substr(-1, 1));
+          } else {
+            pushTab(drops.find((item) => item.id === command.data.id));
+          }
         },
 
         "app.push-tab": (command) => {

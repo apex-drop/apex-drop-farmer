@@ -14,7 +14,7 @@ function App() {
     chrome.windows.getCurrent().then((currentWindow) => {
       chrome.windows.update(currentWindow.id, {
         state: "normal",
-        width: Math.floor(currentWindow.width / 5),
+        width: Math.max(300, Math.floor(currentWindow.width / 5)),
       });
     });
   }, []);

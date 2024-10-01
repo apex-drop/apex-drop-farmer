@@ -11,8 +11,8 @@ function App() {
   const app = useApp();
 
   useEffect(() => {
-    chrome.windows.getCurrent().then((currentWindow) => {
-      chrome.windows.update(currentWindow.id, {
+    chrome?.windows?.getCurrent().then((currentWindow) => {
+      chrome?.windows?.update(currentWindow.id, {
         state: "normal",
         width: Math.max(300, Math.floor(currentWindow.width / 5)),
       });

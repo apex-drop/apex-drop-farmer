@@ -12,10 +12,12 @@ function App() {
 
   useEffect(() => {
     chrome?.windows?.getCurrent().then((currentWindow) => {
-      chrome?.windows?.update(currentWindow.id, {
-        state: "normal",
-        width: Math.max(300, Math.floor(currentWindow.width / 5)),
-      });
+      if (currentWindow.state === "maximized") {
+        chrome?.windows?.update(currentWindow.id, {
+          state: "normal",
+          width: Math.max(300, Math.floor(currentWindow.width / 5)),
+        });
+      }
     });
   }, []);
 

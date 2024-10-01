@@ -1,8 +1,8 @@
+import useAppContext from "@/hooks/useAppContext";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 
 import TabButton from "./TabButton";
-import useAppContext from "@/hooks/useAppContext";
 
 export default function TabButtonList({ tabs }) {
   const { socket } = useAppContext();
@@ -11,6 +11,7 @@ export default function TabButtonList({ tabs }) {
   return (
     <div
       className={cn(
+        "relative z-0",
         "flex shrink-0 py-2 pr-2",
         "overflow-auto border-b scrollbar-thin"
       )}

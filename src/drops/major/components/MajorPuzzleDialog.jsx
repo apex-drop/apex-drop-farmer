@@ -99,7 +99,7 @@ export default function MajorPuzzleDialog({ onSubmit, onOpenChange }) {
         <Dialog.Portal>
           <Dialog.Overlay
             className={cn(
-              "fixed inset-0 z-20",
+              "fixed inset-0 z-40",
               "flex items-center justify-center",
               "p-4 overflow-auto bg-black/50"
             )}

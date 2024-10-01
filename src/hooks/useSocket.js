@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useRef } from "react";
 import { useState } from "react";
 
-export default function useSocket() {
+export default function useSocket(server = "127.0.0.1:7777") {
   const socketRef = useRef(null);
   const [connected, setConnected] = useState(false);
   const [syncing, setSyncing] = useState(true);
@@ -14,7 +14,7 @@ export default function useSocket() {
   /** Dispatch */
   const dispatch = useCallback(
     (data) => {
-      if (syncing && socketRef.current.connected) {
+      if (syncing && socketRef.current?.connected) {
         socketRef.current.send(data);
       }
     },
@@ -51,7 +51,7 @@ export default function useSocket() {
 
   /** Instantiate Socket */
   useEffect(() => {
-    const socket = (socketRef.current = io("ws://127.0.0.1:7777"));
+    const socket = (socketRef.current = io(`ws://${server}`));
 
     socket.on("connect", () => {
       setConnected(true);
@@ -66,7 +66,7 @@ export default function useSocket() {
       socket.close();
       socketRef.current = null;
     };
-  }, []);
+  }, [server]);
 
   /** Handle Commands */
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function useSocket() {
     return () => {
       socketRef.current?.off("command", actionHandler);
     };
-  }, [socketRef, commandHandlers, syncing]);
+  }, [commandHandlers, syncing]);
 
   return useMemo(
     () => ({

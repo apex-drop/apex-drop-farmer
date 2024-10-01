@@ -10,7 +10,7 @@ const defaultOpenedTabs = () => [{ ...farmerTabs[0], active: true }];
 
 export default function useApp() {
   const { settings, configureSettings } = useSettings();
-  const socket = useSocket();
+  const socket = useSocket(settings.syncServer);
 
   const [openedTabs, setOpenedTabs] = useState(defaultOpenedTabs);
 

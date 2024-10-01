@@ -1,12 +1,12 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import LabelToggle from "@/components/LabelToggle";
+import useAppContext from "@/hooks/useAppContext";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
-import useSocketHandlers from "@/hooks/useSocketHandlers";
-import { useMemo } from "react";
-import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import { useCallback } from "react";
-import useAppContext from "@/hooks/useAppContext";
+import { useMemo } from "react";
 
 export default function Settings() {
   const { settings, configureSettings } = useAppContext();
@@ -42,10 +42,10 @@ export default function Settings() {
 
   return (
     <Dialog.Portal>
-      <Dialog.Overlay className="fixed inset-0 bg-black/50" />
+      <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50" />
       <Dialog.Content
         className={cn(
-          "fixed inset-x-0 bottom-0 flex flex-col bg-white h-3/4 rounded-t-xl",
+          "fixed z-50 inset-x-0 bottom-0 flex flex-col bg-white h-3/4 rounded-t-xl",
           "flex flex-col"
         )}
         onOpenAutoFocus={(ev) => ev.preventDefault()}
@@ -73,14 +73,28 @@ export default function Settings() {
                 className="flex flex-col gap-2 py-4"
               >
                 {/* Farmer Title */}
+                <label className="text-neutral-500">Farmer Title</label>
                 <input
-                  className="p-2.5 mb-2 rounded-lg bg-neutral-100 font-bold"
+                  className="p-2.5 rounded-lg bg-neutral-100 font-bold"
                   value={settings?.farmerTitle}
                   onChange={(ev) =>
                     configureSettings("farmerTitle", ev.target.value)
                   }
                   placeholder="Farmer Title"
                 />
+
+                {/* Sync Server */}
+                <label className="text-neutral-500">Sync Server</label>
+                <input
+                  className="p-2.5 rounded-lg bg-neutral-100 font-bold"
+                  value={settings?.syncServer}
+                  onChange={(ev) =>
+                    dispatchAndConfigureSettings("syncServer", ev.target.value)
+                  }
+                  placeholder="Sync Server"
+                />
+
+                <h4 className="text-neutral-500">Options</h4>
 
                 {/* Open Telegram Web within the Farmer */}
                 <LabelToggle

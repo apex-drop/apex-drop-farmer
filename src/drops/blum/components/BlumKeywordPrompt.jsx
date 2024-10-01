@@ -1,11 +1,12 @@
-import { cn } from "@/lib/utils";
 import * as Dialog from "@radix-ui/react-dialog";
+import { HiArrowTopRightOnSquare } from "react-icons/hi2";
+import { cn } from "@/lib/utils";
+import { useCallback } from "react";
+import { useState } from "react";
+
 import BlumButton from "./BlumButton";
 import BlumIcon from "../assets/images/icon.png?format=webp";
 import BlumInput from "./BlumInput";
-import { useState } from "react";
-import { HiArrowTopRightOnSquare } from "react-icons/hi2";
-import { useCallback } from "react";
 
 export default function BlumKeywordPrompt({ task, onSubmit }) {
   const [keyword, setKeyword] = useState("");
@@ -27,7 +28,7 @@ export default function BlumKeywordPrompt({ task, onSubmit }) {
       <Dialog.Portal>
         <Dialog.Overlay
           className={cn(
-            "fixed inset-0 z-20",
+            "fixed inset-0 z-40",
             "flex items-center justify-center",
             "p-4 overflow-auto bg-black/50"
           )}

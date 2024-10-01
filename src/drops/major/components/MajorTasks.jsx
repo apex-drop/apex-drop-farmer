@@ -83,7 +83,7 @@ export default function MajorTasks() {
             src={"https://major.bot" + task["icon_url"]}
             className="w-10 h-10 shrink-0"
           />
-          <div className="flex flex-col min-w-0 grow">
+          <div className="flex flex-col min-w-0 min-h-0 grow">
             <h1 className="font-bold">{task["title"]}</h1>
             <p className="text-orange-500">
               +{Intl.NumberFormat().format(task["award"])}{" "}

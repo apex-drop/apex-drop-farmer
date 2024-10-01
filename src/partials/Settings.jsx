@@ -55,7 +55,7 @@ export default function Settings() {
       >
         {settings ? (
           <>
-            <div className="flex flex-col gap-2 p-4 overflow-auto grow">
+            <div className="flex flex-col min-w-0 min-h-0 gap-2 p-4 overflow-auto grow">
               <Dialog.Title className="text-lg font-bold text-center">
                 <span
                   className={cn(
@@ -90,7 +90,7 @@ export default function Settings() {
                 <label className="text-neutral-500">Sync Server</label>
                 <div className="flex gap-2">
                   <input
-                    className="p-2.5 rounded-lg bg-neutral-100 font-bold grow"
+                    className="p-2.5 rounded-lg bg-neutral-100 font-bold grow min-h-0 min-w-0"
                     value={syncServer}
                     onChange={(ev) => setSyncServer(ev.target.value)}
                     placeholder="Sync Server"
@@ -174,7 +174,7 @@ export default function Settings() {
             </div>
           </>
         ) : (
-          <div className="flex items-center justify-center grow">
+          <div className="flex items-center justify-center min-w-0 min-h-0 grow">
             <CgSpinner className="w-5 h-5 mx-auto animate-spin" />
           </div>
         )}

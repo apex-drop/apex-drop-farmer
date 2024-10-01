@@ -7,7 +7,7 @@ function Tomarket() {
   const farmer = useTomarketFarmer();
 
   return (
-    <div className="flex flex-col grow">
+    <div className="flex flex-col min-w-0 min-h-0 grow">
       <TomarketFarmerContext.Provider value={farmer}>
         {farmer.auth ? <TomarketFarmer /> : <TomarketAuthDetect />}
       </TomarketFarmerContext.Provider>

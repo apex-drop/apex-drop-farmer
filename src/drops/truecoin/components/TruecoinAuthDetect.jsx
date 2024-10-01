@@ -2,7 +2,7 @@ import TruecoinIcon from "../assets/images/icon.png?format=webp";
 
 export default function TruecoinAuthDetect() {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 p-4 grow">
+    <div className="flex flex-col items-center justify-center min-w-0 min-h-0 gap-4 p-4 grow">
       <img
         src={TruecoinIcon}
         alt="Truecoin Farmer"

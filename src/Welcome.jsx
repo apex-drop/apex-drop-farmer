@@ -179,7 +179,7 @@ export default function Welcome() {
 
   return (
     <>
-      <div className="flex flex-col w-full gap-2 p-4 mx-auto max-w-96 grow">
+      <div className="flex flex-col w-full min-w-0 min-h-0 gap-2 p-4 mx-auto max-w-96 grow">
         {/* Settings and New Window Button */}
         <div className="flex justify-end gap-2">
           {/* Open in Separate Window */}
@@ -207,7 +207,7 @@ export default function Welcome() {
           </Dialog.Root>
         </div>
 
-        <div className="flex flex-col justify-center gap-2 grow">
+        <div className="flex flex-col justify-center gap-2 grow min-h-0 min-w-0">
           <img src={AppIcon} className="mx-auto w-28 h-28" />
           <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
           <p className="text-lg text-center">

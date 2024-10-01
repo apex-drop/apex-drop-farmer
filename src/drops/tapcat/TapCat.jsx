@@ -6,7 +6,7 @@ import useTapCatFarmer from "./hooks/useTapCatFarmer";
 function TapCat() {
   const farmer = useTapCatFarmer();
   return (
-    <div className="flex flex-col text-white bg-rose-500 grow">
+    <div className="flex flex-col min-w-0 min-h-0 text-white bg-rose-500 grow">
       <TapCatFarmerContext.Provider value={farmer}>
         {farmer.auth ? <TapCatFarmer /> : <TapCatAuthDetect />}
       </TapCatFarmerContext.Provider>

@@ -113,7 +113,7 @@ export default function TruecoinLottery() {
         <button
           onClick={dispatchAndHandleAutoSpinClick}
           className={cn(
-            "grow p-2 text-white rounded-lg disabled:opacity-50",
+            "grow min-h-0 min-w-0 p-2 text-white rounded-lg disabled:opacity-50",
             autoSpin ? "bg-red-500" : "bg-purple-500",
             "font-bold"
           )}

@@ -8,7 +8,11 @@ function Blum() {
   return (
     <div className="flex flex-col min-w-0 min-h-0 text-white bg-black grow">
       <BlumFarmerContext.Provider value={farmer}>
-        {farmer.auth ? <BlumFarmer /> : <BlumAuthDetect />}
+        {farmer.auth ? (
+          <BlumFarmer />
+        ) : (
+          <BlumAuthDetect status={farmer.status} />
+        )}
       </BlumFarmerContext.Provider>
     </div>
   );

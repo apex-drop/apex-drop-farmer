@@ -5,11 +5,17 @@ import MajorIcon from "../assets/images/icon.png?format=webp";
 export default function useMajorFarmer() {
   return useDropFarmer({
     id: "major",
-    urls: ["*://major.bot/*"],
+    host: "major.bot",
     notification: {
       icon: MajorIcon,
       title: "Major Farmer",
-      message: "Major Auth Detected",
     },
+    fetchAuth: (api, telegramWebApp) =>
+      api
+        .post("https://major.bot/api/auth/tg/", {
+          init_data: telegramWebApp.initData,
+        })
+        .then((res) => res.data),
+    extractAuth: (data) => `Bearer ${data?.["access_token"]}`,
   });
 }

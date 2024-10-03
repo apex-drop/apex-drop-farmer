@@ -179,9 +179,9 @@ export default function Welcome() {
 
   return (
     <>
-      <div className="flex flex-col w-full min-w-0 min-h-0 gap-2 p-4 mx-auto max-w-96 grow">
-        {/* Settings and New Window Button */}
-        <div className="flex justify-end gap-2">
+      {/* Settings and New Window Button */}
+      <div className="p-4 shrink-0">
+        <div className="flex justify-end w-full gap-2 mx-auto max-w-96">
           {/* Open in Separate Window */}
           <button
             title="Open in separate Window"
@@ -206,8 +206,10 @@ export default function Welcome() {
             <Settings />
           </Dialog.Root>
         </div>
+      </div>
 
-        <div className="flex flex-col justify-center gap-2 grow min-h-0 min-w-0">
+      <div className="flex flex-col p-4 overflow-auto grow">
+        <div className="flex flex-col w-full gap-2 mx-auto my-auto max-w-96">
           <img src={AppIcon} className="mx-auto w-28 h-28" />
           <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
           <p className="text-lg text-center">

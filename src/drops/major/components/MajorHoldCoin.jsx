@@ -42,9 +42,10 @@ export default function MajorHoldCoin() {
           }
         )
         .then(() =>
-          api.post("https://major.bot/api/bonuses/coins/", { coins: 915 })
-        )
-        .then((res) => res.data),
+          api
+            .post("https://major.bot/api/bonuses/coins/", { coins: 915 })
+            .then((res) => res.data)
+        ),
   });
 
   const [handleButtonClick, dispatchAndHandleButtonClick] =

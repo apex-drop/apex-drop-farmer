@@ -7,7 +7,11 @@ function Major() {
   const farmer = useMajorFarmer();
   return (
     <MajorFarmerContext.Provider value={farmer}>
-      {farmer.auth ? <MajorFarmer /> : <MajorAuthDetect />}
+      {farmer.auth ? (
+        <MajorFarmer />
+      ) : (
+        <MajorAuthDetect status={farmer.status} />
+      )}
     </MajorFarmerContext.Provider>
   );
 }

@@ -33,9 +33,9 @@ export default function MajorTasks() {
           error: "Failed to Claim..",
           success: "Claimed Successfully",
         })
-        .then(() => {
-          tasksQuery.refetch();
-          userQuery.refetch();
+        .then(async () => {
+          await tasksQuery.refetch();
+          await userQuery.refetch();
         });
     }, []),
 

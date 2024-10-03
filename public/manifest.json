@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -14,9 +14,10 @@
     "tabs",
     "storage",
     "sidePanel",
+    "notifications",
     "webRequest",
-    "declarativeNetRequest",
-    "notifications"
+    "webNavigation",
+    "declarativeNetRequest"
   ],
   "action": {
     "default_icon": "icon-48.png",
@@ -30,13 +31,20 @@
     "service_worker": "service-worker.js",
     "type": "module"
   },
-  "host_permissions": ["*://*/*"],
+  "host_permissions": ["*://*/*", "wss://*/*"],
   "content_scripts": [
     {
       "matches": ["*://*/*"],
-      "js": ["content-script.js"],
+      "js": ["content-script-world.js"],
       "run_at": "document_start",
       "world": "MAIN",
+      "all_frames": true
+    },
+    {
+      "matches": ["*://*/*"],
+      "js": ["content-script-isolated.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED",
       "all_frames": true
     },
     {
@@ -57,9 +65,55 @@
   "declarative_net_request": {
     "rule_resources": [
       {
-        "id": "declarative_net_request_ruleset",
+        "id": "core",
         "enabled": true,
-        "path": "declarative_net_request_rules.json"
+        "path": "rule_resources/core.json"
+      },
+      {
+        "id": "major",
+        "enabled": true,
+        "path": "rule_resources/major.json"
+      },
+      {
+        "id": "blum",
+        "enabled": true,
+        "path": "rule_resources/blum.json"
+      },
+
+      {
+        "id": "slotcoin",
+        "enabled": true,
+        "path": "rule_resources/slotcoin.json"
+      },
+      {
+        "id": "truecoin",
+        "enabled": true,
+        "path": "rule_resources/truecoin.json"
+      },
+      {
+        "id": "tomarket",
+        "enabled": true,
+        "path": "rule_resources/tomarket.json"
+      },
+      {
+        "id": "pumpad",
+        "enabled": true,
+        "path": "rule_resources/pumpad.json"
+      },
+      {
+        "id": "agent301",
+        "enabled": true,
+        "path": "rule_resources/agent301.json"
+      },
+      {
+        "id": "goats",
+        "enabled": true,
+        "path": "rule_resources/goats.json"
+      },
+      {
+        "id": "birdton",
+        "enabled": true,
+        "path": "rule_resources/birdton.json"
       }
     ]
   }

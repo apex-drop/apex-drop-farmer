@@ -7,7 +7,11 @@ function Pumpad() {
   const farmer = usePumpadFarmer();
   return (
     <PumpadFarmerContext.Provider value={farmer}>
-      {farmer.auth ? <PumpadFarmer /> : <PumpadAuthDetect />}
+      {farmer.auth ? (
+        <PumpadFarmer />
+      ) : (
+        <PumpadAuthDetect status={farmer.status} />
+      )}
     </PumpadFarmerContext.Provider>
   );
 }

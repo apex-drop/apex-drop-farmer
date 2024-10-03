@@ -7,7 +7,11 @@ function Slotcoin() {
   const farmer = useSlotcoinFarmer();
   return (
     <SlotcoinFarmerContext.Provider value={farmer}>
-      {farmer.auth ? <SlotcoinFarmer /> : <SlotcoinAuthDetect />}
+      {farmer.auth ? (
+        <SlotcoinFarmer />
+      ) : (
+        <SlotcoinAuthDetect status={farmer.status} />
+      )}
     </SlotcoinFarmerContext.Provider>
   );
 }

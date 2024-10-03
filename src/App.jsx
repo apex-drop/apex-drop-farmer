@@ -1,25 +1,30 @@
 import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
 
 import AppContext from "./contexts/AppContext";
 import SyncControl from "./partials/SyncControl";
 import TabButtonList from "./components/TabButtonList";
 import TabContent from "./components/TabContent";
 import useApp from "./hooks/useApp";
-import { useEffect } from "react";
 
 function App() {
   const app = useApp();
 
   /** Resize window */
   useEffect(() => {
-    chrome?.windows?.getCurrent().then((currentWindow) => {
-      if (currentWindow.state === "maximized") {
+    (async function () {
+      const currentWindow = await chrome?.windows?.getCurrent();
+
+      if (
+        currentWindow.type === "popup" &&
+        currentWindow.state === "maximized"
+      ) {
         chrome?.windows?.update(currentWindow.id, {
           state: "normal",
           width: Math.max(300, Math.floor(currentWindow.width / 5)),
         });
       }
-    });
+    })();
   }, []);
 
   return (

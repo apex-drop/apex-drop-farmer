@@ -5,11 +5,13 @@ import PumpadIcon from "../assets/images/icon.png?format=webp";
 export default function usePumpadFarmer() {
   return useDropFarmer({
     id: "pumpad",
-    urls: ["*://tg.pumpad.io/*"],
+    host: "tg.pumpad.io",
     notification: {
       icon: PumpadIcon,
       title: "Pumpad Farmer",
-      message: "Pumpad Auth Detected",
     },
+    fetchAuth: (api, telegramWebApp) =>
+      Promise.resolve({ auth: telegramWebApp.initData }),
+    extractAuth: (data) => `tma ${data.auth}`,
   });
 }

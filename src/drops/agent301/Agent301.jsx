@@ -8,7 +8,11 @@ function Agent301() {
   return (
     <div className="flex flex-col min-w-0 min-h-0 text-white bg-black grow">
       <Agent301FarmerContext.Provider value={farmer}>
-        {farmer.auth ? <Agent301Farmer /> : <Agent301AuthDetect />}
+        {farmer.auth ? (
+          <Agent301Farmer />
+        ) : (
+          <Agent301AuthDetect status={farmer.status} />
+        )}
       </Agent301FarmerContext.Provider>
     </div>
   );

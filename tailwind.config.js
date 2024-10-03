@@ -10,6 +10,20 @@ export default {
         sans: ["Product Sans", ...defaultTheme.fontFamily.sans],
       },
       colors: {
+        "birdton-blue": {
+          DEFAULT: "#4DC5FF",
+          50: "#FFFFFF",
+          100: "#F0FAFF",
+          200: "#C7EDFF",
+          300: "#9FE0FF",
+          400: "#76D2FF",
+          500: "#4DC5FF",
+          600: "#15B3FF",
+          700: "#0094DC",
+          800: "#006EA4",
+          900: "#00496C",
+          950: "#003650",
+        },
         "blum-green": {
           DEFAULT: "#BAEE52",
           50: "#FDFEF9",

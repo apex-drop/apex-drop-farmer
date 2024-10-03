@@ -7,7 +7,11 @@ function Truecoin() {
   const farmer = useTruecoinFarmer();
   return (
     <TruecoinFarmerContext.Provider value={farmer}>
-      {farmer.auth ? <TruecoinFarmer /> : <TruecoinAuthDetect />}
+      {farmer.auth ? (
+        <TruecoinFarmer />
+      ) : (
+        <TruecoinAuthDetect status={farmer.status} />
+      )}
     </TruecoinFarmerContext.Provider>
   );
 }

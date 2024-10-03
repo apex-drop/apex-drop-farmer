@@ -1,17 +1,9 @@
+import FarmerDetect from "@/components/FarmerDetect";
+
 import PumpadIcon from "../assets/images/icon.png?format=webp";
 
-export default function PumpadAuthDetect() {
+export default function PumpadAuthDetect({ status }) {
   return (
-    <div className="flex flex-col items-center justify-center min-w-0 min-h-0 gap-4 p-4 grow">
-      <img
-        src={PumpadIcon}
-        alt="Pumpad Farmer"
-        className="w-16 h-16 rounded-full"
-      />
-      <h3 className="font-bold text-center">Detecting Auth...</h3>
-      <p className="text-center text-neutral-500">
-        Try switching between sections back and forth.
-      </p>
-    </div>
+    <FarmerDetect title={"Pumpad Farmer"} icon={PumpadIcon} status={status} />
   );
 }

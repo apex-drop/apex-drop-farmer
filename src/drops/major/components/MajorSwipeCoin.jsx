@@ -4,6 +4,7 @@ import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { delay } from "@/lib/utils";
 import { useCallback, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
+
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
 import MajorGameButton from "./MajorGameButton";
 import SwipeCoinIcon from "../assets/images/swipe-coin.svg";
@@ -38,11 +39,12 @@ export default function MajorSwipeCoin() {
           }
         )
         .then(() =>
-          api.post("https://major.bot/api/swipe_coin/", {
-            coins: 1100 + Math.floor(Math.random() * 20),
-          })
-        )
-        .then((res) => res.data),
+          api
+            .post("https://major.bot/api/swipe_coin/", {
+              coins: 1100 + Math.floor(Math.random() * 20),
+            })
+            .then((res) => res.data)
+        ),
   });
 
   const [handleButtonClick, dispatchAndHandleButtonClick] =

@@ -47,22 +47,21 @@ export default function MajorPuzzle() {
       claimMutation.mutateAsync(data).then(({ correct }) => {
         if (correct.length === 4) {
           /** Correct */
-          toast
-            .success("Claimed Successfully!", {
-              className: "font-bold font-sans",
-            })
-            .then(userQuery.refetch);
+          toast.success("Claimed Successfully!", {
+            className: "font-bold font-sans",
+          });
         } else {
           /** Failed */
-          toast
-            .error("Incorrect choices!", {
-              className: "font-bold font-sans",
-            })
-            .then(userQuery.refetch);
+          toast.error("Incorrect choices!", {
+            className: "font-bold font-sans",
+          });
         }
+
+        /** Refetch Balance */
+        userQuery.refetch();
       });
     },
-    [setShowModal]
+    [toast, userQuery, setShowModal]
   );
 
   const [handleButtonClick, dispatchAndHandleButtonClick] =

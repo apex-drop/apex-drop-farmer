@@ -20,7 +20,14 @@ export default defineConfig({
       input: {
         index: path.resolve(__dirname, "./index.html"),
         "service-worker": path.resolve(__dirname, "./src/service-worker.js"),
-        "content-script": path.resolve(__dirname, "./src/content-script.js"),
+        "content-script-world": path.resolve(
+          __dirname,
+          "./src/content-script-world.js"
+        ),
+        "content-script-isolated": path.resolve(
+          __dirname,
+          "./src/content-script-isolated.js"
+        ),
 
         /** Tomarket Content Scripts */
         "tomarket-isolated": path.resolve(

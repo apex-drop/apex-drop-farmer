@@ -41,10 +41,11 @@ export default function useTelegramWebApp(host) {
     chrome?.storage?.local.get(storageKey).then(({ [storageKey]: data }) => {
       if (data) {
         configureTelegramWebApp(data, false);
-      } else {
-        chrome?.runtime?.onMessage.addListener(getTelegramWebApp);
       }
     });
+
+    /** Add Listener */
+    chrome?.runtime?.onMessage.addListener(getTelegramWebApp);
 
     return () => {
       /** Remove Listener */

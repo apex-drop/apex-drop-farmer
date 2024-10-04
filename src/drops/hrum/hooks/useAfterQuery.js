@@ -7,14 +7,14 @@ export default function useHrumAllQuery() {
   const { api, telegramWebApp } = useHrumFarmerContext();
 
   return useQuery({
-    queryKey: ["hrum", "all"],
+    queryKey: ["hrum", "after"],
     queryFn: ({ signal }) => {
       const body = {
-        data: {},
+        data: { lang: "en" },
       };
 
       return api
-        .post("https://api.hrum.me/user/data/all", body, {
+        .post("https://api.hrum.me/user/data/after", body, {
           signal,
           headers: getHrumHeaders(body, telegramWebApp.initDataUnsafe["hash"]),
         })

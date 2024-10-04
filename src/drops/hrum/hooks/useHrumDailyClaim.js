@@ -10,7 +10,7 @@ export default function useHrumDailyClaim() {
   const dailyClaimMutation = useHrumDailyClaimMutation();
 
   useEffect(() => {
-    if (dailyQuery.status === "success") {
+    if (dailyQuery.data) {
       const day = Object.entries(dailyQuery.data).find(
         ([k, v]) => v === "canTake"
       );
@@ -23,5 +23,5 @@ export default function useHrumDailyClaim() {
         });
       }
     }
-  }, [dailyQuery.status]);
+  }, [dailyQuery.data]);
 }

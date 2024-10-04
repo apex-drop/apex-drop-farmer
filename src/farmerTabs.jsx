@@ -3,6 +3,7 @@ import AppIcon from "@/assets/images/icon-wrapped.png?format=webp&w=80";
 import BirdTonIcon from "@/drops/birdton/assets/images/icon.png?format=webp&w=80";
 import BlumIcon from "@/drops/blum/assets/images/icon.png?format=webp&w=80";
 import GoatsIcon from "@/drops/goats/assets/images/icon.png?format=webp&w=80";
+import HrumIcon from "@/drops/hrum/assets/images/icon.png?format=webp&w=80";
 import MajorIcon from "@/drops/major/assets/images/icon.png?format=webp&w=80";
 import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
 import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
@@ -12,6 +13,7 @@ import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=8
 import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
 import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import Welcome from "@/Welcome";
+
 import Farmer from "./Farmer";
 
 const farmerTabs = [
@@ -24,12 +26,14 @@ const farmerTabs = [
   {
     id: "telegram-web-k",
     title: "Telegram WebK",
+    reloadable: true,
     icon: TelegramWebKIcon,
     component: <TelegramWeb version="k" />,
   },
   {
     id: "telegram-web-a",
     title: "Telegram WebA",
+    reloadable: true,
     icon: TelegramWebAIcon,
     component: <TelegramWeb version="a" />,
   },
@@ -38,6 +42,12 @@ const farmerTabs = [
     title: "Major",
     icon: MajorIcon,
     component: <Farmer farmer="Major" />,
+  },
+  {
+    id: "hrum",
+    title: "Hrum",
+    icon: HrumIcon,
+    component: <Farmer farmer="Hrum" />,
   },
   {
     id: "blum",

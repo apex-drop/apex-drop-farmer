@@ -10,7 +10,7 @@
           "value": "https://birdton.site"
         },
         {
-          "header": "referrer",
+          "header": "referer",
           "operation": "set",
           "value": "https://birdton.site/"
         }

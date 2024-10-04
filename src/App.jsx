@@ -16,6 +16,7 @@ function App() {
       const currentWindow = await chrome?.windows?.getCurrent();
 
       if (
+        currentWindow &&
         currentWindow.type === "popup" &&
         currentWindow.state === "maximized"
       ) {
@@ -37,7 +38,10 @@ function App() {
         {/* Tabs Contents Wrapper */}
         <div className="relative min-w-0 min-h-0 overflow-auto grow">
           {app.openedTabs.map((tab) => (
-            <TabContent key={tab.id} tab={tab} />
+            <TabContent
+              key={tab.reloadedAt ? `${tab.id}-${tab.reloadedAt}` : tab.id}
+              tab={tab}
+            />
           ))}
         </div>
 

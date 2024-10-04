@@ -10,7 +10,7 @@
           "value": "https://major.bot"
         },
         {
-          "header": "referrer",
+          "header": "referer",
           "operation": "set",
           "value": "https://major.bot/"
         }

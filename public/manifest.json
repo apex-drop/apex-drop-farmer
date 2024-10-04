@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -114,6 +114,11 @@
         "id": "birdton",
         "enabled": true,
         "path": "rule_resources/birdton.json"
+      },
+      {
+        "id": "hrum",
+        "enabled": true,
+        "path": "rule_resources/hrum.json"
       }
     ]
   }

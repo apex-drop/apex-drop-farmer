@@ -10,7 +10,7 @@
           "value": "https://telegram.blum.codes"
         },
         {
-          "header": "referrer",
+          "header": "referer",
           "operation": "set",
           "value": "https://telegram.blum.codes/"
         }

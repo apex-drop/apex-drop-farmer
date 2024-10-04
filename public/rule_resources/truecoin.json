@@ -10,7 +10,7 @@
           "value": "https://bot.true.world"
         },
         {
-          "header": "referrer",
+          "header": "referer",
           "operation": "set",
           "value": "https://bot.true.world/"
         }

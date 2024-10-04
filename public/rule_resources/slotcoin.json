@@ -10,7 +10,7 @@
           "value": "https://app.slotcoin.app"
         },
         {
-          "header": "referrer",
+          "header": "referer",
           "operation": "set",
           "value": "https://app.slotcoin.app/"
         }

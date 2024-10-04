@@ -10,7 +10,7 @@
           "value": "https://telegram.agent301.org"
         },
         {
-          "header": "referrer",
+          "header": "referer",
           "operation": "set",
           "value": "https://telegram.agent301.org/"
         }

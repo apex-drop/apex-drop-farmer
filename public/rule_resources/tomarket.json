@@ -10,7 +10,7 @@
           "value": "https://mini-app.tomarket.ai"
         },
         {
-          "header": "referrer",
+          "header": "referer",
           "operation": "set",
           "value": "https://mini-app.tomarket.ai/"
         }

@@ -1,14 +1,14 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import LabelToggle from "@/components/LabelToggle";
+import defaultSettings from "@/default-settings";
 import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { CgSpinner } from "react-icons/cg";
-import { cn } from "@/lib/utils";
-import { useCallback, useState } from "react";
-import { useMemo } from "react";
 import { HiArrowPath, HiCheck } from "react-icons/hi2";
-import defaultSettings from "@/default-settings";
+import { cn } from "@/lib/utils";
+import { useCallback, useEffect, useState } from "react";
+import { useMemo } from "react";
 
 export default function Settings() {
   const { settings, configureSettings } = useAppContext();
@@ -42,6 +42,11 @@ export default function Settings() {
       [configureSettings]
     )
   );
+
+  /** Update Sync Server */
+  useEffect(() => {
+    setSyncServer(settings.syncServer);
+  }, [settings.syncServer, setSyncServer]);
 
   return (
     <Dialog.Portal>

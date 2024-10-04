@@ -1,13 +1,18 @@
 import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
-import { HiOutlineXMark } from "react-icons/hi2";
+import { HiOutlineArrowPath, HiOutlineXMark } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
 import { useCallback, useRef } from "react";
 import { useEffect } from "react";
 
 export default function TabButton({ tab, connected }) {
-  const { setActiveTab, closeTab } = useAppContext();
+  const { setActiveTab, closeTab, reloadTab } = useAppContext();
   const buttonRef = useRef();
+
+  /** Reload Tab */
+  const handleReloadTab = useCallback(() => {
+    reloadTab(tab.id);
+  }, [tab, reloadTab]);
 
   /** Button Click Handler */
   const [, dispatchAndHandleTabClick] = useSocketDispatchCallback(
@@ -75,7 +80,7 @@ export default function TabButton({ tab, connected }) {
       title={tab.title}
       className={cn(
         "cursor-pointer",
-        "flex gap-2 items-center",
+        "flex gap-1 items-center",
         "p-1.5 rounded-full shrink-0",
         tab.active ? "bg-neutral-100" : null
       )}
@@ -113,10 +118,26 @@ export default function TabButton({ tab, connected }) {
         {tab.title}
       </span>
 
+      {/* Reload Button */}
+      {tab.active && tab.reloadable ? (
+        <button
+          className={cn(
+            "inline-flex items-center justify-center",
+            "rounded-full w-7 h-7 shrink-0 hover:bg-neutral-200"
+          )}
+          onClick={handleReloadTab}
+        >
+          <HiOutlineArrowPath className="w-5 h-5" />
+        </button>
+      ) : null}
+
       {/* Close Button */}
       {tab.active && tab.id !== "apex-drop-farmer" ? (
         <button
-          className="inline-flex items-center justify-center w-7 h-7 shrink-0"
+          className={cn(
+            "inline-flex items-center justify-center",
+            "rounded-full w-7 h-7 shrink-0 hover:bg-neutral-200"
+          )}
           onClick={dispatchAndHandleCloseButtonClick}
         >
           <HiOutlineXMark className="w-5 h-5" />

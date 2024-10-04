@@ -38,7 +38,7 @@ export default function useApp() {
         ]);
       }
     },
-    [openedTabs, setActiveTab]
+    [setActiveTab, setOpenedTabs]
   );
 
   const closeTab = useCallback(
@@ -59,6 +59,19 @@ export default function useApp() {
     [setOpenedTabs]
   );
 
+  const reloadTab = useCallback(
+    (id) => {
+      setOpenedTabs((previous) => {
+        const newTabs = previous.map((item) =>
+          item.id === id ? { ...item, reloadedAt: Date.now() } : item
+        );
+
+        return newTabs;
+      });
+    },
+    [setOpenedTabs]
+  );
+
   return useMemo(
     () => ({
       settings,
@@ -68,6 +81,7 @@ export default function useApp() {
       setActiveTab,
       closeTab,
       pushTab,
+      reloadTab,
     }),
     [
       settings,
@@ -77,6 +91,7 @@ export default function useApp() {
       setActiveTab,
       closeTab,
       pushTab,
+      reloadTab,
     ]
   );
 }

@@ -93,7 +93,7 @@ export default function useDropFarmer({
   useEffect(() => {
     if (auth) {
       /** Create Notification */
-      chrome.notifications.create(`${id}-farmer`, {
+      chrome?.notifications?.create(`${id}-farmer`, {
         iconUrl: notification.icon,
         title: notification.title,
         message: "Farmer Started",
@@ -102,7 +102,7 @@ export default function useDropFarmer({
     }
 
     return () => {
-      chrome.notifications.clear(`${id}-farmer`);
+      chrome?.notifications?.clear(`${id}-farmer`);
     };
   }, [id, auth]);
 

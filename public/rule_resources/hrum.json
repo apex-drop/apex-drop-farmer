@@ -7,17 +7,17 @@
         {
           "header": "origin",
           "operation": "set",
-          "value": "https://dev.goatsbot.xyz"
+          "value": "https://game.hrum.me"
         },
         {
           "header": "referer",
           "operation": "set",
-          "value": "https://dev.goatsbot.xyz/"
+          "value": "https://game.hrum.me/"
         }
       ]
     },
     "condition": {
-      "requestDomains": ["goatsbot.xyz"]
+      "requestDomains": ["hrum.me"]
     }
   }
 ]

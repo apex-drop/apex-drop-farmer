@@ -8,10 +8,15 @@ import HrumBalanceDisplay from "./HrumBalanceDisplay";
 import HrumIcon from "../assets/images/icon.png";
 import HrumRiddleTask from "./HrumRiddleTask";
 import useHrumAllQuery from "../hooks/useHrumAllQuery";
+import useHrumDailyClaim from "../hooks/useHrumDailyClaim";
+import HrumOpenButton from "./HrumOpenButton";
 
 export default function () {
   const allQuery = useHrumAllQuery();
+  const hero = allQuery.data?.hero;
   const tabs = useSocketTabs("hrum.farmer-tabs", "daily");
+
+  useHrumDailyClaim();
 
   return allQuery.isPending ? (
     <div className="flex items-center justify-center grow">
@@ -30,6 +35,9 @@ export default function () {
       </div>
       {/* Balance */}
       <HrumBalanceDisplay balance={allQuery.data.hero.token} />
+
+      {/* Open Button */}
+      <HrumOpenButton hero={hero} />
 
       {/* Cookie Icon */}
       <img src={CookieIcon} className="w-20 h-20 mx-auto my-4" />

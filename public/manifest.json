@@ -70,55 +70,9 @@
         "path": "rule_resources/core.json"
       },
       {
-        "id": "major",
+        "id": "farmers",
         "enabled": true,
-        "path": "rule_resources/major.json"
-      },
-      {
-        "id": "blum",
-        "enabled": true,
-        "path": "rule_resources/blum.json"
-      },
-
-      {
-        "id": "slotcoin",
-        "enabled": true,
-        "path": "rule_resources/slotcoin.json"
-      },
-      {
-        "id": "truecoin",
-        "enabled": true,
-        "path": "rule_resources/truecoin.json"
-      },
-      {
-        "id": "tomarket",
-        "enabled": true,
-        "path": "rule_resources/tomarket.json"
-      },
-      {
-        "id": "pumpad",
-        "enabled": true,
-        "path": "rule_resources/pumpad.json"
-      },
-      {
-        "id": "agent301",
-        "enabled": true,
-        "path": "rule_resources/agent301.json"
-      },
-      {
-        "id": "goats",
-        "enabled": true,
-        "path": "rule_resources/goats.json"
-      },
-      {
-        "id": "birdton",
-        "enabled": true,
-        "path": "rule_resources/birdton.json"
-      },
-      {
-        "id": "hrum",
-        "enabled": true,
-        "path": "rule_resources/hrum.json"
+        "path": "rule_resources/farmers.json"
       }
     ]
   }

@@ -6,23 +6,29 @@ import { cn } from "@/lib/utils";
 import CookieIcon from "../assets/images/cookie.png";
 import HrumBalanceDisplay from "./HrumBalanceDisplay";
 import HrumIcon from "../assets/images/icon.png";
-import HrumRiddleTask from "./HrumRiddleTask";
-import useHrumAllQuery from "../hooks/useHrumAllQuery";
-import useHrumDailyClaim from "../hooks/useHrumDailyClaim";
 import HrumOpenButton from "./HrumOpenButton";
+import HrumRiddleTask from "./HrumRiddleTask";
+import useHrumDailyClaim from "../hooks/useHrumDailyClaim";
+import useHrumDataQueries from "../hooks/useHrumDataQueries";
 
 export default function () {
-  const allQuery = useHrumAllQuery();
-  const hero = allQuery.data?.hero;
+  const dataQueries = useHrumDataQueries();
+
+  const hero = dataQueries.data?.[0]?.hero;
   const tabs = useSocketTabs("hrum.farmer-tabs", "daily");
 
+  /** Run Daily Claim */
   useHrumDailyClaim();
 
-  return allQuery.isPending ? (
+  return dataQueries.isPending ? (
     <div className="flex items-center justify-center grow">
       <CgSpinner className="w-5 h-5 mx-auto animate-spin" />
     </div>
-  ) : allQuery.isSuccess ? (
+  ) : dataQueries.isError ? (
+    <div className="flex items-center justify-center text-red-500 grow">
+      Error...
+    </div>
+  ) : (
     <div className="flex flex-col gap-2 p-4">
       {/* Header */}
       <div className="flex items-center justify-center gap-2 p-2">
@@ -34,7 +40,7 @@ export default function () {
         <h1 className="font-bold">Hrum Farmer</h1>
       </div>
       {/* Balance */}
-      <HrumBalanceDisplay balance={allQuery.data.hero.token} />
+      <HrumBalanceDisplay balance={hero.token} />
 
       {/* Open Button */}
       <HrumOpenButton hero={hero} />
@@ -60,14 +66,10 @@ export default function () {
         </Tabs.List>
         <Tabs.Content value="daily">
           {/* Hrum Riddle */}
-          <HrumRiddleTask />
+          <HrumRiddleTask queries={dataQueries} />
         </Tabs.Content>
         <Tabs.Content value="tasks"></Tabs.Content>
       </Tabs.Root>
-    </div>
-  ) : (
-    <div className="flex items-center justify-center text-red-500 grow">
-      Error...
     </div>
   );
 }

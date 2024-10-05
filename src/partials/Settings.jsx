@@ -1,6 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import LabelToggle from "@/components/LabelToggle";
 import defaultSettings from "@/default-settings";
+import toast from "react-hot-toast";
 import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
@@ -30,6 +31,11 @@ export default function Settings() {
       []
     )
   );
+
+  const handleSetSyncServer = useCallback(() => {
+    dispatchAndConfigureSettings("syncServer", syncServer);
+    toast.success("Sync Server Updated");
+  }, [toast, syncServer, dispatchAndConfigureSettings]);
 
   /** Handlers */
   useSocketHandlers(
@@ -117,9 +123,7 @@ export default function Settings() {
                   {/* Set Button */}
                   <button
                     type="button"
-                    onClick={() =>
-                      dispatchAndConfigureSettings("syncServer", syncServer)
-                    }
+                    onClick={handleSetSyncServer}
                     className={cn(
                       "inline-flex items-center justify-center",
                       "px-4 rounded-lg shrink-0",

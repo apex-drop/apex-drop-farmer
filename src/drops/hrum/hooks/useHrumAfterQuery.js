@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import useHrumFarmerContext from "./useHrumFarmerContext";
 import { getHrumHeaders } from "../lib/utils";
 
-export default function useHrumAllQuery() {
+export default function useHrumAfterQuery() {
   const { api, telegramWebApp } = useHrumFarmerContext();
 
   return useQuery({

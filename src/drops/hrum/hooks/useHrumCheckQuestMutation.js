@@ -3,11 +3,11 @@ import { useMutation } from "@tanstack/react-query";
 import useHrumFarmerContext from "./useHrumFarmerContext";
 import { getHrumHeaders } from "../lib/utils";
 
-export default function useHrumRiddleCheckMutation() {
+export default function useHrumCheckQuestMutation(key) {
   const { api, telegramWebApp } = useHrumFarmerContext();
 
   return useMutation({
-    mutationKey: ["hrum", "quests", "riddle", "check"],
+    mutationKey: ["hrum", "quests", key, "check"],
     mutationFn: (data) => {
       const body = {
         data,

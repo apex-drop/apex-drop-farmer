@@ -6,7 +6,6 @@ import useHrumDailyQuery from "./useHrumDailyQuery";
 
 export default function useHrumDailyClaim() {
   const dailyQuery = useHrumDailyQuery();
-
   const dailyClaimMutation = useHrumDailyClaimMutation();
 
   useEffect(() => {

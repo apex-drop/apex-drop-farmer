@@ -4,6 +4,7 @@ import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
 
 import CookieIcon from "../assets/images/cookie.png";
+import HrumAutoTasks from "./HrumAutoTasks";
 import HrumBalanceDisplay from "./HrumBalanceDisplay";
 import HrumIcon from "../assets/images/icon.png";
 import HrumOpenButton from "./HrumOpenButton";
@@ -42,11 +43,11 @@ export default function () {
       {/* Balance */}
       <HrumBalanceDisplay balance={hero.token} />
 
-      {/* Open Button */}
-      <HrumOpenButton hero={hero} />
-
       {/* Cookie Icon */}
       <img src={CookieIcon} className="w-20 h-20 mx-auto my-4" />
+
+      {/* Open Button */}
+      <HrumOpenButton queries={dataQueries} />
 
       <Tabs.Root {...tabs} className="flex flex-col gap-4">
         <Tabs.List className="grid grid-cols-2">
@@ -68,7 +69,10 @@ export default function () {
           {/* Hrum Riddle */}
           <HrumRiddleTask queries={dataQueries} />
         </Tabs.Content>
-        <Tabs.Content value="tasks"></Tabs.Content>
+        <Tabs.Content value="tasks">
+          {/* Hrum Tasks */}
+          <HrumAutoTasks queries={dataQueries} />
+        </Tabs.Content>
       </Tabs.Root>
     </div>
   );

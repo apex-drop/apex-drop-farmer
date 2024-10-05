@@ -20,6 +20,7 @@ export default function useHrumDataQueries() {
     combine,
     queries: [
       {
+        refetchInterval: 10_000,
         queryKey: ["hrum", "all"],
         queryFn: ({ signal }) => {
           const body = {
@@ -38,6 +39,7 @@ export default function useHrumDataQueries() {
         },
       },
       {
+        refetchInterval: 10_000,
         queryKey: ["hrum", "after"],
         queryFn: ({ signal }) => {
           const body = {

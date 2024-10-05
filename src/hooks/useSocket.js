@@ -5,11 +5,17 @@ import { useMemo } from "react";
 import { useRef } from "react";
 import { useState } from "react";
 
+import useMapState from "./useMapState";
+
 export default function useSocket(server = "127.0.0.1:7777") {
   const socketRef = useRef(null);
   const [connected, setConnected] = useState(false);
   const [syncing, setSyncing] = useState(true);
-  const [commandHandlers, setCommandHandlers] = useState(new Map());
+  const {
+    map: commandHandlers,
+    addMapItems: addCommandHandlers,
+    removeMapItems: removeCommandHandlers,
+  } = useMapState();
 
   /** Dispatch */
   const dispatch = useCallback(
@@ -19,34 +25,6 @@ export default function useSocket(server = "127.0.0.1:7777") {
       }
     },
     [socketRef, syncing]
-  );
-
-  /** Set command handlers */
-  const addCommandHandlers = useCallback(
-    (handlersToAdd) => {
-      setCommandHandlers((prev) => {
-        const newMap = new Map(prev);
-
-        Object.entries(handlersToAdd).forEach(([k, v]) => newMap.set(k, v));
-
-        return newMap;
-      });
-    },
-    [setCommandHandlers]
-  );
-
-  /** Remove command handlers */
-  const removeCommandHandlers = useCallback(
-    (handlersToRemove) => {
-      setCommandHandlers((prev) => {
-        const newMap = new Map(prev);
-
-        Object.keys(handlersToRemove).forEach((k) => newMap.delete(k));
-
-        return newMap;
-      });
-    },
-    [setCommandHandlers]
   );
 
   /** Instantiate Socket */

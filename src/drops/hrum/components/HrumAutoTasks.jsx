@@ -95,11 +95,13 @@ export default function HrumAutoTasks({ queries }) {
       process.lock();
 
       for (let [index, task] of Object.entries(pendingTasks)) {
-        if (process.controller.aborted) return;
+        if (process.signal.aborted) return;
 
+        /** Set Current Task */
         setCurrentTask(task);
 
         try {
+          /** Claim */
           await claimTaskMutation.mutateAsync([task.key, null]);
         } catch {}
 

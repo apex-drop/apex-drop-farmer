@@ -1,27 +1,24 @@
-import axios from "axios";
-import useTelegramWebApp from "@/hooks/useTelegramWebApp";
+import useMapState from "@/hooks/useMapState";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { useState } from "react";
 
-export default function useBirdTon() {
-  const birdTonWebApp = useTelegramWebApp("birdton.site");
+export default function useBirdTon(farmer) {
   const [connected, setConnected] = useState(false);
   const socketRef = useRef();
 
+  const {
+    map: messageHandlers,
+    addMapItems: addMessageHandlers,
+    removeMapItems: removeMessageHandlers,
+  } = useMapState();
+
+  /** Event Data */
   const [eventData, setEventData] = useState(() => new Map());
 
-  const api = useMemo(
-    () =>
-      axios.create({
-        withCredentials: true,
-      }),
-    []
-  );
-
+  /** Send Message */
   const sendMessage = useCallback(
     (message) => {
       socketRef.current?.send(JSON.stringify(message));
@@ -29,85 +26,115 @@ export default function useBirdTon() {
     [socketRef]
   );
 
-  const authQuery = useQuery({
-    enabled: Boolean(birdTonWebApp),
-    queryKey: ["birdton", "auth"],
-    queryFn: () =>
-      api
-        .post("https://birdton.site/auth", birdTonWebApp)
-        .then((res) => res.data),
-  });
+  /** Send Auth */
+  const sendAuth = useCallback(() => {
+    sendMessage({
+      event_type: "auth",
+      data: JSON.stringify(farmer.telegramWebApp),
+    });
+  }, [sendMessage, farmer.telegramWebApp]);
 
+  /** Ping */
+  const ping = useCallback(() => {
+    if (socketRef.current?.OPEN) {
+      socketRef.current?.send("ping");
+    }
+  }, [socketRef]);
+
+  /** Handle Messages */
   useEffect(() => {
-    if (authQuery.status !== "success") return;
-
+    /** Ping Timeout */
     let pingTimeout;
 
-    const socket = (socketRef.current = new WebSocket(
-      `wss://birdton.site/ws?auth=${encodeURIComponent(
-        authQuery.data["auth_key"]
-      )}`
-    ));
+    /** Message Controller */
+    const messageController = (message) => {
+      if (message.data === "pong") {
+        pingTimeout = setTimeout(ping, 5000);
+        return;
+      }
 
-    const ping = () => {
-      if (socket.OPEN) {
-        socket.send("ping");
+      /** Message */
+      const data = JSON.parse(message.data);
+
+      /** Get Message Handler */
+      const callback = messageHandlers.get(data["event_type"]);
+
+      if (callback) {
+        callback(data);
+      } else {
+        setEventData((prev) => {
+          const newMap = new Map(prev);
+
+          newMap.set(data["event_type"], data["data"]);
+
+          return newMap;
+        });
       }
     };
+
+    /** Add Message Listener */
+    socketRef.current?.addEventListener("message", messageController);
+
+    /** Set Ping Timeout */
+    pingTimeout = setTimeout(ping, 5000);
+
+    return () => {
+      /** Clear Ping Timeout */
+      clearTimeout(pingTimeout);
+
+      /** Remove Message Listener */
+      socketRef.current?.removeEventListener("message", messageController);
+    };
+  }, [connected, messageHandlers, ping, setEventData]);
+
+  /** Instantiate the Socket */
+  useEffect(() => {
+    if (farmer.authQuery.status !== "success") return;
+
+    /** Create Socker */
+    const socket = (socketRef.current = new WebSocket(
+      `wss://birdton.site/ws?auth=${encodeURIComponent(
+        farmer.authQuery.data["auth_key"]
+      )}`
+    ));
 
     /** Add Event Listener for Open */
     socket.addEventListener("open", () => {
       setConnected(true);
 
       /** Send Auth */
-      sendMessage({
-        event_type: "auth",
-        data: JSON.stringify(birdTonWebApp),
-      });
-
-      pingTimeout = setTimeout(ping, 5000);
-    });
-
-    /** Add Event Listener for Message */
-    socket.addEventListener("message", (message) => {
-      if (message.data === "pong") {
-        pingTimeout = setTimeout(ping, 5000);
-        return;
-      }
-
-      const data = JSON.parse(message.data);
-
-      setEventData((prev) => {
-        const newMap = new Map(prev);
-
-        newMap.set(data["event_type"], data["data"]);
-
-        return newMap;
-      });
+      sendAuth();
     });
 
     /** Add Event Listener for Close */
     socket.addEventListener("close", () => {
-      clearTimeout(pingTimeout);
-      setConnected(false);
-      authQuery.refetch();
+      /** Reset Auth */
+      farmer.resetAuth();
     });
 
     return () => {
-      clearTimeout(pingTimeout);
       socketRef.current?.close();
     };
-  }, [
-    socketRef,
-    birdTonWebApp,
-    authQuery.status,
-    setConnected,
-    setEventData,
-    sendMessage,
-  ]);
+  }, [farmer.authQuery.status]);
 
   return useMemo(
-    () => ({ eventData, birdTonWebApp, connected, authQuery, sendMessage }),
-    [eventData, birdTonWebApp, connected, authQuery, sendMessage]
+    () => ({
+      ...farmer,
+      eventData,
+      connected,
+      sendAuth,
+      sendMessage,
+      addMessageHandlers,
+      removeMessageHandlers,
+    }),
+    [
+      farmer,
+      eventData,
+      connected,
+      sendAuth,
+      sendMessage,
+      addMessageHandlers,
+      removeMessageHandlers,
+    ]
   );
 }

@@ -6,53 +6,74 @@ export default function useProcessLock() {
   const [controller, setController] = useState(null);
   const [started, setStarted] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [process, setProcess] = useState({
+    started: false,
+    locked: false,
+    controller: null,
+    signal: null,
+  });
 
   /** Start Process */
   const start = useCallback(() => {
-    controller?.abort();
-    setController(new AbortController());
-    setStarted(true);
-    setLocked(false);
-  }, [controller, setController, setStarted, setLocked]);
+    setProcess((prev) => {
+      prev?.controller?.abort();
+      const controller = new AbortController();
+      return {
+        started: true,
+        locked: false,
+        controller,
+        signal: controller.signal,
+      };
+    });
+  }, [setProcess]);
 
   /** Stop Process */
   const stop = useCallback(() => {
-    controller?.abort();
-    setController(null);
-    setStarted(false);
-    setLocked(false);
-  }, [controller, setController, setStarted, setLocked]);
+    setProcess((prev) => {
+      prev?.controller?.abort();
+      return {
+        started: false,
+        locked: false,
+        controller: null,
+        signal: null,
+      };
+    });
+  }, [setProcess]);
 
   /** Toggle */
   const toggle = useCallback(() => {
-    if (!started) {
+    if (!process.started) {
       start();
     } else {
       stop();
     }
-  }, [started, start, stop]);
+  }, [process, start, stop]);
 
   /** Lock Process */
   const lock = useCallback(() => {
-    setLocked(true);
-  }, [setLocked]);
+    setProcess((prev) => ({
+      ...prev,
+      locked: true,
+    }));
+  }, [setProcess]);
 
   /** Unlock Process */
   const unlock = useCallback(() => {
-    setLocked(false);
-  }, [setLocked]);
+    setProcess((prev) => ({
+      ...prev,
+      locked: false,
+    }));
+  }, [setProcess]);
 
   return useMemo(
     () => ({
-      started,
-      locked,
-      controller,
+      ...process,
       start,
       stop,
       toggle,
       lock,
       unlock,
     }),
-    [started, locked, controller, start, stop, toggle, lock, unlock]
+    [process, start, stop, toggle, lock, unlock]
   );
 }

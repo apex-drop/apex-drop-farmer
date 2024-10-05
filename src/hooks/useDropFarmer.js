@@ -20,6 +20,9 @@ export default function useDropFarmer({
   /** QueryClient */
   const queryClient = useQueryClient();
 
+  /** Query Key */
+  const queryKey = useMemo(() => [id, "auth"], [id]);
+
   /** TelegramWebApp */
   const telegramWebApp = useTelegramWebApp(host);
 
@@ -47,9 +50,16 @@ export default function useDropFarmer({
   /** Auth */
   const authQuery = useQuery({
     enabled: Boolean(telegramWebApp),
-    queryKey: [id, "auth"],
+    queryKey,
     queryFn,
   });
+
+  /** Reset Auth */
+  const resetAuth = useCallback(() => {
+    queryClient.resetQueries({
+      queryKey,
+    });
+  }, [queryClient, queryKey]);
 
   /** Response Interceptor */
   useEffect(() => {
@@ -58,7 +68,7 @@ export default function useDropFarmer({
       (error) => {
         if ([401, 403, 418].includes(error?.response?.status)) {
           queryClient.resetQueries({
-            queryKey: [id, "auth"],
+            queryKey,
             exact: true,
           });
         }
@@ -108,7 +118,25 @@ export default function useDropFarmer({
 
   /** Return API and Auth */
   return useMemo(
-    () => ({ api, auth, authQuery, telegramWebApp, status }),
-    [api, auth, authQuery, telegramWebApp, status]
+    () => ({
+      api,
+      auth,
+      authQuery,
+      queryClient,
+      queryKey,
+      resetAuth,
+      telegramWebApp,
+      status,
+    }),
+    [
+      api,
+      auth,
+      authQuery,
+      queryClient,
+      queryKey,
+      resetAuth,
+      telegramWebApp,
+      status,
+    ]
   );
 }

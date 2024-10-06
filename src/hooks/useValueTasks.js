@@ -39,22 +39,45 @@ export default function useValueTasks(key) {
       new Promise((res, rej) => {
         getValues()
           .then((values) => {
-            /** Return if value is stored */
-            if (id in values) return res(values);
-            else {
-              /** Update the values */
-              chrome?.storage?.local
-                .set({
-                  [key]: {
-                    ...values,
-                    [id]: value,
-                  },
-                })
-                .then(res)
-                .catch(rej);
-            }
+            /** New Values */
+            const newValues = { ...values };
+
+            /** Set Id Value */
+            newValues[id] = value;
+
+            /** Update the values */
+            chrome?.storage?.local
+              .set({
+                [key]: newValues,
+              })
+              .then(res)
+              .catch(rej);
           })
           .catch(rej);
+      }),
+    [key, getValues]
+  );
+
+  /** Remove Value */
+  const removeResolvedValue = useCallback(
+    (id) =>
+      new Promise((resolve, reject) => {
+        getValues()
+          .then((values) => {
+            const newValues = { ...values };
+
+            /** Remove Id */
+            delete newValues[id];
+
+            /** Update the values */
+            chrome?.storage?.local
+              .set({
+                [key]: newValues,
+              })
+              .then(resolve)
+              .catch(reject);
+          })
+          .catch(reject);
       }),
     [key, getValues]
   );
@@ -176,7 +199,14 @@ export default function useValueTasks(key) {
       dispatchAndPrompt,
       dispatchAndSubmitPrompt,
       getResolvedValue,
+      removeResolvedValue,
     }),
-    [valuePrompt, dispatchAndPrompt, dispatchAndSubmitPrompt, getResolvedValue]
+    [
+      valuePrompt,
+      dispatchAndPrompt,
+      dispatchAndSubmitPrompt,
+      getResolvedValue,
+      removeResolvedValue,
+    ]
   );
 }

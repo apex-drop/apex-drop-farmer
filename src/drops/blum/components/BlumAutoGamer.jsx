@@ -1,4 +1,5 @@
 import Countdown from "react-countdown";
+import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import useSocketState from "@/hooks/useSocketState";
@@ -25,8 +26,8 @@ export default function Blum() {
   const query = useBlumBalanceQuery();
   const client = useQueryClient();
 
-  const [working, setWorking] = useState(false);
-  const [autoPlaying, setAutoPlaying] = useState(false);
+  const process = useProcessLock();
+
   const [countdown, setCountdown] = useState(null);
   const [desiredPoint, setDesiredPoint, dispatchAndSetDesiredPoint] =
     useSocketState("blum.game.desired-point", INITIAL_POINT);
@@ -46,50 +47,66 @@ export default function Blum() {
     []
   );
 
-  /** Handle button click */
-  const [handleAutoPlayClick, dispatchAndHandleAutoPlayClick] =
-    useSocketDispatchCallback(
-      /** Main */
-      useCallback(() => {
-        setDesiredPoint(points);
-        setAutoPlaying((previous) => !previous);
-        setWorking(false);
-      }, [points, setDesiredPoint, setAutoPlaying, setWorking]),
+  /** Handle start button click */
+  const [startPlaying, dispatchAndStartPlaying] = useSocketDispatchCallback(
+    /** Main */
+    useCallback(() => {
+      setDesiredPoint(points);
+      process.start();
+    }, [points, setDesiredPoint, process]),
 
-      /** Dispatch */
-      useCallback((socket) => {
-        socket.dispatch({
-          action: "blum.autoplay",
-        });
-      }, [])
-    );
+    /** Dispatch */
+    useCallback((socket) => {
+      socket.dispatch({
+        action: "blum.autoplay.start",
+      });
+    }, [])
+  );
+
+  /** Handle stop button click */
+  const [stopPlaying, dispatchAndStopPlaying] = useSocketDispatchCallback(
+    /** Main */
+    useCallback(() => {
+      setDesiredPoint(points);
+      process.stop();
+    }, [points, setDesiredPoint, process]),
+
+    /** Dispatch */
+    useCallback((socket) => {
+      socket.dispatch({
+        action: "blum.autoplay.stop",
+      });
+    }, [])
+  );
 
   /** Handlers */
   useSocketHandlers(
     useMemo(
       () => ({
-        "blum.autoplay": () => {
-          handleAutoPlayClick();
+        "blum.autoplay.start": () => {
+          startPlaying();
+        },
+        "blum.autoplay.stop": () => {
+          stopPlaying();
         },
       }),
-      [handleAutoPlayClick]
+      [startPlaying, stopPlaying]
     )
   );
 
   useEffect(() => {
-    if (!autoPlaying || working) {
+    if (!process.canExecute) {
       return;
     }
 
     if (tickets < 1) {
-      setAutoPlaying(false);
-      setWorking(false);
+      process.stop();
       return;
     }
 
     (async function () {
       /** Lock Process */
-      setWorking(true);
+      process.lock();
 
       try {
         const game = await startGameMutation.mutateAsync();
@@ -116,16 +133,16 @@ export default function Blum() {
       } catch {}
 
       /** Release Lock */
-      setWorking(false);
+      process.unlock();
     })();
-  }, [autoPlaying, tickets, working]);
+  }, [tickets, process]);
 
   return (
     <div className="flex flex-col gap-2">
       {tickets > 0 ? (
         <>
           <BlumInput
-            disabled={autoPlaying || tickets < 1}
+            disabled={process.started || tickets < 1}
             value={desiredPoint}
             onInput={(ev) => dispatchAndSetDesiredPoint(ev.target.value)}
             type="number"
@@ -141,14 +158,16 @@ export default function Blum() {
 
       {/* Start or Stop Button  */}
       <BlumButton
-        color={autoPlaying ? "danger" : "primary"}
+        color={process.started ? "danger" : "primary"}
         disabled={tickets < 1}
-        onClick={dispatchAndHandleAutoPlayClick}
+        onClick={
+          !process.started ? dispatchAndStartPlaying : dispatchAndStopPlaying
+        }
       >
-        {autoPlaying ? "Stop" : "Start"}
+        {process.started ? "Stop" : "Start"}
       </BlumButton>
 
-      {autoPlaying ? (
+      {process.started ? (
         <div className="flex flex-col gap-2 p-4 rounded-lg bg-neutral-800">
           {/* Game Start */}
           {startGameMutation.isPending ? (

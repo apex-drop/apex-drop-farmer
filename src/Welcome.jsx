@@ -4,6 +4,7 @@ import Settings from "@/partials/Settings";
 import TelegramWebAIcon from "@/assets/images/telegram-web-a.png?format=webp&w=80";
 import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=80";
 import defaultSettings from "@/default-settings";
+import toast from "react-hot-toast";
 import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
@@ -11,12 +12,15 @@ import useSocketState from "@/hooks/useSocketState";
 import {
   HiOutlineArrowTopRightOnSquare,
   HiOutlineCog6Tooth,
+  HiOutlinePower,
 } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
+import { useState } from "react";
 
+import Shutdown from "./partials/Shutdown";
 import farmerTabs from "./farmerTabs";
 
 export default function Welcome() {
@@ -25,6 +29,9 @@ export default function Welcome() {
 
   const { settings, socket, pushTab, closeTab } = useAppContext();
 
+  /** Hidden Toggle */
+  const [showHidden, setShowHidden] = useState(import.meta.env.DEV);
+
   /** Drops List */
   const drops = useMemo(
     () =>
@@ -32,10 +39,30 @@ export default function Welcome() {
         (item) =>
           !["apex-drop-farmer", "telegram-web-k", "telegram-web-a"].includes(
             item.id
-          )
+          ) &&
+          (showHidden || !item.hidden)
       ),
-    [farmerTabs]
+    [showHidden, farmerTabs]
   );
+
+  /** Show Hidden Drops */
+  const [showHiddenDrops, dispatchAndShowHiddenDrops] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        setShowHidden(true);
+        toast.success("Unlocked hidden farmer!");
+      }, [setShowHidden]),
+
+      /** Dispatch */
+      useCallback(
+        (socket, drop) =>
+          socket.dispatch({
+            action: "app.show-hidden-drops",
+          }),
+        []
+      )
+    );
 
   const [, dispatchAndPushTab] = useSocketDispatchCallback(
     /** Main */
@@ -146,6 +173,9 @@ export default function Welcome() {
   useSocketHandlers(
     useMemo(
       () => ({
+        "app.show-hidden-drops": () => {
+          showHiddenDrops();
+        },
         "app.set-active-tab": (command) => {
           findAndPushTab(command.data.id);
         },
@@ -166,7 +196,13 @@ export default function Welcome() {
           openInSeparateWindow();
         },
       }),
-      [findAndPushTab, closeTab, navigateToTelegramWeb, openInSeparateWindow]
+      [
+        showHiddenDrops,
+        findAndPushTab,
+        closeTab,
+        navigateToTelegramWeb,
+        openInSeparateWindow,
+      ]
     )
   );
 
@@ -181,36 +217,55 @@ export default function Welcome() {
     <>
       {/* Settings and New Window Button */}
       <div className="p-4 shrink-0">
-        <div className="flex justify-end w-full gap-2 mx-auto max-w-96">
-          {/* Open in Separate Window */}
-          <button
-            title="Open in separate Window"
-            onClick={dispatchAndOpenInSeparateWindow}
-            className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
-          >
-            <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
-          </button>
+        <div className="flex justify-between w-full gap-2 mx-auto max-w-96">
+          {/* Shutdown */}
+          <Dialog.Root>
+            <Dialog.Trigger asChild>
+              <button
+                title="Shutdown Farmer"
+                className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
+              >
+                <HiOutlinePower className="w-5 h-5" />
+              </button>
+            </Dialog.Trigger>
+            <Shutdown />
+          </Dialog.Root>
 
-          {/* Settings */}
-          <Dialog.Root
-            open={showSettings}
-            onOpenChange={dispatchAndSetShowSettings}
-          >
-            <Dialog.Trigger
-              title="Settings"
+          <div className="flex gap-2">
+            {/* Open in Separate Window */}
+            <button
+              title="Open in separate Window"
+              onClick={dispatchAndOpenInSeparateWindow}
               className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
             >
-              <HiOutlineCog6Tooth className="w-5 h-5" />
-            </Dialog.Trigger>
+              <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
+            </button>
 
-            <Settings />
-          </Dialog.Root>
+            {/* Settings */}
+            <Dialog.Root
+              open={showSettings}
+              onOpenChange={dispatchAndSetShowSettings}
+            >
+              <Dialog.Trigger
+                title="Settings"
+                className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
+              >
+                <HiOutlineCog6Tooth className="w-5 h-5" />
+              </Dialog.Trigger>
+
+              <Settings />
+            </Dialog.Root>
+          </div>
         </div>
       </div>
 
       <div className="flex flex-col p-4 overflow-auto grow">
         <div className="flex flex-col w-full gap-2 mx-auto my-auto max-w-96">
-          <img src={AppIcon} className="mx-auto w-28 h-28" />
+          <img
+            src={AppIcon}
+            className="mx-auto w-28 h-28"
+            onDoubleClick={dispatchAndShowHiddenDrops}
+          />
           <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
           <p className="text-lg text-center">
             <span

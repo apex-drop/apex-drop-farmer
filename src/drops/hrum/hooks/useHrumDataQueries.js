@@ -12,7 +12,7 @@ export default function useHrumDataQueries() {
       data: results.map((result) => result.data),
       isPending: results.some((result) => result.isPending),
       isError: results.some((result) => result.isError),
-      isSuccess: results.some((result) => result.isSuccess),
+      isSuccess: results.every((result) => result.isSuccess),
     };
   }, []);
 

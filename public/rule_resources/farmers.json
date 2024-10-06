@@ -208,5 +208,26 @@
     "condition": {
       "requestDomains": ["true.world"]
     }
+  },
+  {
+    "id": 11,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://app.notpx.app"
+        },
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://app.notpx.app/"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": ["notpx.app"]
+    }
   }
 ]

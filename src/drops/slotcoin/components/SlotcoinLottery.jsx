@@ -1,8 +1,8 @@
+import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
 import { useCallback, useEffect, useMemo } from "react";
-import { useState } from "react";
 
 import EnergyIcon from "../assets/images/energy.png?format=webp";
 import useSlotcoinInfoQuery from "../hooks/useSlotcoinInfoQuery";
@@ -14,18 +14,15 @@ export default function SlotcoinLottery() {
   const maxEnergy = query.data?.user?.["max_spins"] || 0;
 
   const spinMutation = useSlotcoinLotteryMutation();
-
-  const [autoSpin, setAutoSpin] = useState(false);
-  const [working, setWorking] = useState(false);
+  const process = useProcessLock();
 
   /** Handle button click */
   const [handleAutoSpinClick, dispatchAndHandleAutoSpinClick] =
     useSocketDispatchCallback(
       /** Main */
       useCallback(() => {
-        setAutoSpin((previous) => !previous);
-        setWorking(false);
-      }, [setAutoSpin, setWorking]),
+        process.toggle();
+      }, [process]),
 
       /** Dispatch */
       useCallback((socket) => {
@@ -48,19 +45,18 @@ export default function SlotcoinLottery() {
   );
 
   useEffect(() => {
-    if (!autoSpin || working) {
+    if (!process.canExecute) {
       return;
     }
 
     if (energy < 1) {
-      setAutoSpin(false);
-      setWorking(false);
+      process.stop();
       return;
     }
 
     (async function () {
       // Lock Process
-      setWorking(true);
+      process.lock();
 
       /** Spin */
       try {
@@ -76,9 +72,9 @@ export default function SlotcoinLottery() {
       await delay(2_000);
 
       // Release Lock
-      setWorking(false);
+      process.unlock();
     })();
-  }, [autoSpin, energy, working]);
+  }, [process, energy]);
 
   return (
     <div className="p-4">
@@ -103,14 +99,16 @@ export default function SlotcoinLottery() {
             onClick={dispatchAndHandleAutoSpinClick}
             className={cn(
               "p-2 text-white rounded-lg disabled:opacity-50",
-              autoSpin ? "bg-red-500" : "bg-purple-500",
+              process.started ? "bg-red-500" : "bg-purple-500",
               "font-bold"
             )}
           >
-            {autoSpin ? "Stop" : "Start"}
+            {process.started ? "Stop" : "Start"}
           </button>
 
-          {autoSpin ? <div className="text-center">Working....</div> : null}
+          {process.started ? (
+            <div className="text-center">Working....</div>
+          ) : null}
         </div>
       )}
     </div>

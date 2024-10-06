@@ -68,7 +68,7 @@ export default function BirdTonGamer() {
           setStartGameCallback(null);
           setPoints(0);
           setDesiredPoint(perGamePoin);
-          setStopPoint(perGamePoin + Math.floor(Math.random() * 5));
+          setStopPoint(perGamePoin + Math.floor(Math.random() * 20));
           setGameId(id);
           process.start();
         });

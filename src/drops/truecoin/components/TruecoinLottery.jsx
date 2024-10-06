@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { HiOutlineArrowPath } from "react-icons/hi2";
@@ -21,8 +22,7 @@ export default function TruecoinLottery() {
   const coins = data?.user?.coins || 0;
   const energy = data?.user?.currentSpins || 0;
 
-  const [autoSpin, setAutoSpin] = useState(false);
-  const [working, setWorking] = useState(false);
+  const process = useProcessLock();
 
   /** Handle button click */
   const [handle50BoostClick, dispatchAndHandle50BoostClick] =
@@ -49,9 +49,8 @@ export default function TruecoinLottery() {
     useSocketDispatchCallback(
       /** Main */
       useCallback(() => {
-        setAutoSpin((previous) => !previous);
-        setWorking(false);
-      }, [setAutoSpin, setWorking]),
+        process.toggle();
+      }, [process]),
 
       /** Dispatch */
       useCallback((socket) => {
@@ -77,13 +76,13 @@ export default function TruecoinLottery() {
   );
 
   useEffect(() => {
-    if (!autoSpin || working) {
+    if (!process.canExecute) {
       return;
     }
 
     (async function () {
       // Lock Process
-      setWorking(true);
+      process.lock();
 
       try {
         await spinMutation.mutateAsync(null).then((data) => {
@@ -102,9 +101,9 @@ export default function TruecoinLottery() {
       await delay(2_000);
 
       // Release Lock
-      setWorking(false);
+      process.unlock();
     })();
-  }, [autoSpin, working]);
+  }, [process]);
 
   return (
     <div className="flex flex-col gap-2 p-4">
@@ -114,11 +113,11 @@ export default function TruecoinLottery() {
           onClick={dispatchAndHandleAutoSpinClick}
           className={cn(
             "grow min-h-0 min-w-0 p-2 text-white rounded-lg disabled:opacity-50",
-            autoSpin ? "bg-red-500" : "bg-purple-500",
+            process.started ? "bg-red-500" : "bg-purple-500",
             "font-bold"
           )}
         >
-          {autoSpin ? "Stop" : "Start"}
+          {process.started ? "Stop" : "Start"}
         </button>
 
         {/* 50 Boost Click */}
@@ -135,7 +134,7 @@ export default function TruecoinLottery() {
         </button>
       </div>
 
-      {autoSpin ? <div className="text-center">Working....</div> : null}
+      {process.started ? <div className="text-center">Working....</div> : null}
 
       {data ? (
         <>

@@ -1,3 +1,4 @@
+import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
@@ -62,7 +63,7 @@ export default function Agent301Tasks() {
 
   const completeTaskMutation = useAgent301CompleteTaskMutation();
 
-  const [autoClaiming, setAutoClaiming] = useState(false);
+  const process = useProcessLock();
   const [currentTask, setCurrentTask] = useState(null);
   const [taskOffset, setTaskOffset] = useState(null);
   const [action, setAction] = useState(null);
@@ -79,8 +80,8 @@ export default function Agent301Tasks() {
       /** Main */
       useCallback(() => {
         reset();
-        setAutoClaiming((previous) => !previous);
-      }, [reset, setAutoClaiming]),
+        process.toggle();
+      }, [reset, process]),
 
       /** Dispatch */
       useCallback((socket) => {
@@ -103,7 +104,7 @@ export default function Agent301Tasks() {
   );
 
   useEffect(() => {
-    if (!autoClaiming) {
+    if (!process.canExecute) {
       return;
     }
 
@@ -181,9 +182,9 @@ export default function Agent301Tasks() {
       } catch {}
 
       reset();
-      setAutoClaiming(false);
+      process.stop();
     })();
-  }, [autoClaiming]);
+  }, [process]);
 
   return (
     <div className="p-4">
@@ -215,17 +216,17 @@ export default function Agent301Tasks() {
             </p>
           </div>
           <button
-            disabled={autoClaiming}
+            disabled={process.started}
             onClick={dispatchAndHandleAutoTaskClick}
             className={cn(
               "p-2 rounded-lg disabled:opacity-50",
-              autoClaiming ? "bg-red-500 text-black" : "bg-white text-black"
+              process.started ? "bg-red-500 text-black" : "bg-white text-black"
             )}
           >
-            {autoClaiming ? "Stop" : "Start"}
+            {process.started ? "Stop" : "Start"}
           </button>
 
-          {autoClaiming && currentTask ? (
+          {process.started && currentTask ? (
             <div className="flex flex-col gap-2 p-4 rounded-lg bg-neutral-800">
               <h4 className="font-bold">
                 Current Mode:{" "}

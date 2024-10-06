@@ -1,17 +1,16 @@
+import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
-import { useState } from "react";
 
 import useAgent301BalanceQuery from "../hooks/useAgent301BalanceQuery";
 import useAgent301LotteryMutation from "../hooks/useAgent301LotteryMutation";
 
 export default function Agent301Lottery() {
-  const [autoSpin, setAutoSpin] = useState(false);
-  const [working, setWorking] = useState(false);
+  const process = useProcessLock();
 
   const balanceQuery = useAgent301BalanceQuery();
   const result = balanceQuery.data?.result;
@@ -24,9 +23,8 @@ export default function Agent301Lottery() {
     useSocketDispatchCallback(
       /** Main */
       useCallback(() => {
-        setAutoSpin((previous) => !previous);
-        setWorking(false);
-      }, [setAutoSpin, setWorking]),
+        process.toggle();
+      }, [process]),
 
       /** Dispatch */
       useCallback((socket) => {
@@ -49,17 +47,16 @@ export default function Agent301Lottery() {
 
   /** Use Effect */
   useEffect(() => {
-    if (!autoSpin || working) return;
+    if (!process.canExecute) return;
 
     if (tickets < 1) {
-      setAutoSpin(false);
-      setWorking(false);
+      process.stop();
       return;
     }
 
     (async function () {
       // Lock Process
-      setWorking(true);
+      process.lock();
 
       /** Spin */
       try {
@@ -75,9 +72,9 @@ export default function Agent301Lottery() {
       await delay(10_000);
 
       // Release Lock
-      setWorking(false);
+      process.unlock();
     })();
-  }, [autoSpin, tickets, working]);
+  }, [process, tickets]);
 
   return (
     <div className="p-4">
@@ -96,13 +93,15 @@ export default function Agent301Lottery() {
             onClick={dispatchAndHandleAutoSpinClick}
             className={cn(
               "p-2 rounded-lg disabled:opacity-50",
-              autoSpin ? "bg-red-500 text-black" : "bg-white text-black"
+              process.started ? "bg-red-500 text-black" : "bg-white text-black"
             )}
           >
-            {autoSpin ? "Stop" : "Start"}
+            {process.started ? "Stop" : "Start"}
           </button>
 
-          {autoSpin ? <div className="text-center">Working....</div> : null}
+          {process.started ? (
+            <div className="text-center">Working....</div>
+          ) : null}
         </div>
       )}
     </div>

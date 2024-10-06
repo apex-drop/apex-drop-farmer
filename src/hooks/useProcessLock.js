@@ -13,6 +13,11 @@ export default function useProcessLock() {
     signal: null,
   });
 
+  const canExecute = useMemo(
+    () => process.started && !process.locked,
+    [process]
+  );
+
   /** Start Process */
   const start = useCallback(() => {
     setProcess((prev) => {
@@ -68,12 +73,13 @@ export default function useProcessLock() {
   return useMemo(
     () => ({
       ...process,
+      canExecute,
       start,
       stop,
       toggle,
       lock,
       unlock,
     }),
-    [process, start, stop, toggle, lock, unlock]
+    [process, canExecute, start, stop, toggle, lock, unlock]
   );
 }

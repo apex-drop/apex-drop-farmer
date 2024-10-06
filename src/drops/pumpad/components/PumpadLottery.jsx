@@ -1,10 +1,10 @@
+import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
-import { useState } from "react";
 
 import usePumpadLotteryMutation from "../hooks/usePumpadLotteryMutation";
 import usePumpadLotteryQuery from "../hooks/usePumpadLotteryQuery";
@@ -15,17 +15,15 @@ export default function PumpadLottery() {
 
   const spinMutation = usePumpadLotteryMutation();
 
-  const [working, setWorking] = useState(false);
-  const [autoSpin, setAutoSpin] = useState(false);
+  const process = useProcessLock();
 
   /** Handle button click */
   const [handleAutoSpinClick, dispatchAndHandleAutoSpinClick] =
     useSocketDispatchCallback(
       /** Main */
       useCallback(() => {
-        setAutoSpin((previous) => !previous);
-        setWorking(false);
-      }, [setAutoSpin, setWorking]),
+        process.toggle();
+      }, [process]),
 
       /** Dispatch */
       useCallback((socket) => {
@@ -48,19 +46,18 @@ export default function PumpadLottery() {
   );
 
   useEffect(() => {
-    if (!autoSpin || working) {
+    if (!process.canExecute) {
       return;
     }
 
     if (!drawCount) {
-      setAutoSpin(false);
-      setWorking(false);
+      process.stop();
       return;
     }
 
     (async function () {
       // Lock Process
-      setWorking(true);
+      process.lock();
 
       /** Spin */
       try {
@@ -76,9 +73,9 @@ export default function PumpadLottery() {
       await delay(1_000);
 
       // Release Lock
-      setWorking(false);
+      process.unlock();
     })();
-  }, [autoSpin, drawCount, working]);
+  }, [process, drawCount]);
 
   return (
     <div className="p-4">
@@ -101,14 +98,16 @@ export default function PumpadLottery() {
             onClick={dispatchAndHandleAutoSpinClick}
             className={cn(
               "p-2 text-black rounded-lg disabled:opacity-50",
-              autoSpin ? "bg-red-500" : "bg-pumpad-green-500",
+              process.started ? "bg-red-500" : "bg-pumpad-green-500",
               "font-bold"
             )}
           >
-            {autoSpin ? "Stop" : "Start"}
+            {process.started ? "Stop" : "Start"}
           </button>
 
-          {autoSpin ? <div className="text-center">Working....</div> : null}
+          {process.started ? (
+            <div className="text-center">Working....</div>
+          ) : null}
         </div>
       )}
     </div>

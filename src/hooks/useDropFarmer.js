@@ -10,10 +10,17 @@ import useTelegramWebApp from "./useTelegramWebApp";
 export default function useDropFarmer({
   id,
   host,
+  cache = true,
   fetchAuth,
   extractAuth,
   notification,
 }) {
+  /** TelegramWebApp */
+  const { telegramWebApp, resetTelegramWebApp } = useTelegramWebApp(
+    host,
+    cache
+  );
+
   /** Auth */
   const [auth, setAuth] = useState(null);
 
@@ -21,10 +28,10 @@ export default function useDropFarmer({
   const queryClient = useQueryClient();
 
   /** Query Key */
-  const queryKey = useMemo(() => [id, "auth"], [id]);
-
-  /** TelegramWebApp */
-  const telegramWebApp = useTelegramWebApp(host);
+  const queryKey = useMemo(
+    () => [id, "auth", telegramWebApp?.initDataUnsafe?.["auth_date"]],
+    [id, telegramWebApp]
+  );
 
   /** Axios Instance */
   const api = useMemo(
@@ -67,10 +74,7 @@ export default function useDropFarmer({
       (response) => Promise.resolve(response),
       (error) => {
         if ([401, 403, 418].includes(error?.response?.status)) {
-          queryClient.resetQueries({
-            queryKey,
-            exact: true,
-          });
+          resetTelegramWebApp();
         }
         return Promise.reject(error);
       }
@@ -79,7 +83,7 @@ export default function useDropFarmer({
     return () => {
       api.interceptors.response.eject(interceptor);
     };
-  }, [queryClient, api]);
+  }, [queryClient, api, resetTelegramWebApp]);
 
   /** Request Header */
   useEffect(() => {

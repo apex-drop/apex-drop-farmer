@@ -1,4 +1,6 @@
+import useProcessLock from "@/hooks/useProcessLock";
 import { cn, delay } from "@/lib/utils";
+import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -33,24 +35,23 @@ export default function GoatsMissions() {
   );
 
   const completeMissionMutation = useGoatsCompleteMissionMutation();
-
-  const [autoClaiming, setAutoClaiming] = useState(false);
+  const process = useProcessLock();
   const [currentMission, setCurrentMission] = useState(null);
   const [missionOffset, setMissionOffset] = useState(null);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setCurrentMission(null);
     setMissionOffset(null);
-  };
+  }, [setCurrentMission, setMissionOffset]);
 
   /** Handle button click */
-  const handleAutoMissionClick = () => {
+  const handleAutoMissionClick = useCallback(() => {
     reset();
-    setAutoClaiming((previous) => !previous);
-  };
+    process.toggle();
+  }, [reset, process]);
 
   useEffect(() => {
-    if (!autoClaiming) {
+    if (!process.canExecute) {
       return;
     }
 
@@ -76,9 +77,9 @@ export default function GoatsMissions() {
       } catch {}
 
       reset();
-      setAutoClaiming(false);
+      process.stop();
     })();
-  }, [autoClaiming]);
+  }, [process]);
 
   return (
     <div className="p-4">
@@ -100,17 +101,17 @@ export default function GoatsMissions() {
             </p>
           </div>
           <button
-            disabled={autoClaiming}
+            disabled={process.started}
             onClick={handleAutoMissionClick}
             className={cn(
               "p-2 rounded-lg disabled:opacity-50",
-              autoClaiming ? "bg-red-500 text-black" : "bg-white text-black"
+              process.started ? "bg-red-500 text-black" : "bg-white text-black"
             )}
           >
-            {autoClaiming ? "Stop" : "Start"}
+            {process.started ? "Stop" : "Start"}
           </button>
 
-          {autoClaiming && currentMission ? (
+          {process.started && currentMission ? (
             <div className="flex flex-col gap-2 p-4 rounded-lg bg-neutral-800">
               <h4 className="font-bold">
                 <span className="text-yellow-500">

@@ -1,5 +1,7 @@
+import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
+import useValueTasks from "@/hooks/useValueTasks";
 import { cn, delay } from "@/lib/utils";
 import { useCallback } from "react";
 import { useEffect } from "react";
@@ -8,12 +10,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import BlumButton from "./BlumButton";
+import BlumKeywordPrompt from "./BlumKeywordPrompt";
 import useBlumClaimTaskMutation from "../hooks/useBlumClaimTaskMutation";
 import useBlumStartTaskMutation from "../hooks/useBlumStartTaskMutation";
 import useBlumTasksQuery from "../hooks/useBlumTasksQuery";
 import useBlumValidateTaskMutation from "../hooks/useBlumValidateTaskMutation";
-import BlumKeywordPrompt from "./BlumKeywordPrompt";
-import useValueTasks from "@/hooks/useValueTasks";
 
 export default function BlumAutoTasks() {
   const client = useQueryClient();
@@ -95,7 +96,8 @@ export default function BlumAutoTasks() {
     [tasks]
   );
 
-  const [autoClaiming, setAutoClaiming] = useState(false);
+  const process = useProcessLock();
+
   const [currentTask, setCurrentTask] = useState(null);
   const [taskOffset, setTaskOffset] = useState(null);
   const [action, setAction] = useState(null);
@@ -106,6 +108,7 @@ export default function BlumAutoTasks() {
     dispatchAndPrompt,
     dispatchAndSubmitPrompt,
     getResolvedValue,
+    removeResolvedValue,
   } = useValueTasks("blum.keywords");
 
   /** Prompted Task */
@@ -157,8 +160,8 @@ export default function BlumAutoTasks() {
       /** Main */
       useCallback(() => {
         reset();
-        setAutoClaiming((previous) => !previous);
-      }, [reset, setAutoClaiming]),
+        process.toggle();
+      }, [reset, process]),
 
       /** Dispatch */
       useCallback((socket) => {
@@ -182,11 +185,18 @@ export default function BlumAutoTasks() {
 
   /** Run Tasks */
   useEffect(() => {
-    if (!autoClaiming) {
+    if (!process.canExecute) {
       return;
     }
 
     (async function () {
+      const refetch = async () => {
+        try {
+          await refetchTasks();
+          await refetchBalance();
+        } catch {}
+      };
+
       if (!action) {
         setAction("start");
         return;
@@ -196,6 +206,8 @@ export default function BlumAutoTasks() {
           /** Beginning of Start Action */
           setAction("start");
           for (let [index, task] of Object.entries(pendingTasks)) {
+            if (process.signal.aborted) return;
+
             setTaskOffset(index);
             setCurrentTask(task);
             try {
@@ -217,6 +229,7 @@ export default function BlumAutoTasks() {
         case "verify":
           /** Verify */
           for (let [index, task] of Object.entries(unverifiedTasks)) {
+            if (process.signal.aborted) return;
             setTaskOffset(index);
             setCurrentTask(task);
             try {
@@ -225,10 +238,14 @@ export default function BlumAutoTasks() {
                 (await dispatchAndPrompt(task.id));
 
               if (keyword) {
-                await validateTaskMutation.mutateAsync({
-                  id: task.id,
-                  keyword,
-                });
+                try {
+                  await validateTaskMutation.mutateAsync({
+                    id: task.id,
+                    keyword,
+                  });
+                } catch {
+                  await removeResolvedValue(task.id);
+                }
               } else continue;
             } catch {}
 
@@ -247,6 +264,7 @@ export default function BlumAutoTasks() {
         case "claim":
           /** Claim */
           for (let [index, task] of Object.entries(unclaimedTasks)) {
+            if (process.signal.aborted) return;
             setTaskOffset(index);
             setCurrentTask(task);
             try {
@@ -259,15 +277,17 @@ export default function BlumAutoTasks() {
           break;
       }
 
-      try {
-        await refetchTasks();
-        await refetchBalance();
-      } catch {}
-
+      await refetch();
       resetTask();
-      setAutoClaiming(false);
+      process.stop();
     })();
-  }, [autoClaiming, action, getResolvedValue, dispatchAndPrompt]);
+  }, [
+    process,
+    action,
+    getResolvedValue,
+    removeResolvedValue,
+    dispatchAndPrompt,
+  ]);
 
   return (
     <>
@@ -297,17 +317,17 @@ export default function BlumAutoTasks() {
             <div className="flex flex-col gap-2 py-2">
               {/* Start Button */}
               <BlumButton
-                color={autoClaiming ? "danger" : "primary"}
+                color={process.started ? "danger" : "primary"}
                 onClick={dispatchAndHandleAutoClaimClick}
                 disabled={
                   (pendingTasks.length === 0 && unclaimedTasks.length === 0) ||
-                  autoClaiming
+                  process.started
                 }
               >
-                {autoClaiming ? "Stop" : "Start"}
+                {process.started ? "Stop" : "Start"}
               </BlumButton>
 
-              {autoClaiming && currentTask ? (
+              {process.started && currentTask ? (
                 <div className="flex flex-col gap-2 p-4 rounded-lg bg-neutral-800">
                   <h4 className="font-bold">
                     Current Mode:{" "}

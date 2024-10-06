@@ -38,6 +38,16 @@ export default defineConfig({
           __dirname,
           "./src/drops/tomarket/tomarket-world.js"
         ),
+
+        /** Not Pixel Content Scripts */
+        "notpixel-isolated": path.resolve(
+          __dirname,
+          "./src/drops/notpixel/notpixel-isolated.js"
+        ),
+        "notpixel-world": path.resolve(
+          __dirname,
+          "./src/drops/notpixel/notpixel-world.js"
+        ),
       },
       output: {
         entryFileNames: "[name].js",

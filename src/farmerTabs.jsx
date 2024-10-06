@@ -5,6 +5,7 @@ import BlumIcon from "@/drops/blum/assets/images/icon.png?format=webp&w=80";
 import GoatsIcon from "@/drops/goats/assets/images/icon.png?format=webp&w=80";
 import HrumIcon from "@/drops/hrum/assets/images/icon.png?format=webp&w=80";
 import MajorIcon from "@/drops/major/assets/images/icon.png?format=webp&w=80";
+import NotPixelIcon from "@/drops/notpixel/assets/images/icon.png?format=webp&w=80";
 import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
 import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
 import TelegramWeb from "@/TelegramWeb";
@@ -44,11 +45,19 @@ const farmerTabs = [
     component: <Farmer farmer="Major" />,
   },
   {
+    id: "notpixel",
+    title: "Not Pixel",
+    icon: NotPixelIcon,
+    component: <Farmer farmer="NotPixel" />,
+    hidden: true,
+  },
+  {
     id: "hrum",
     title: "Hrum",
     icon: HrumIcon,
     component: <Farmer farmer="Hrum" />,
   },
+
   {
     id: "blum",
     title: "Blum",

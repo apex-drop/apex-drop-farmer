@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -57,6 +57,21 @@
     {
       "matches": ["*://*.tomarket.ai/*"],
       "js": ["tomarket-isolated.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED",
+      "all_frames": true
+    },
+
+    {
+      "matches": ["*://*.notpx.app/*"],
+      "js": ["notpixel-world.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
+    {
+      "matches": ["*://*.notpx.app/*"],
+      "js": ["notpixel-isolated.js"],
       "run_at": "document_start",
       "world": "ISOLATED",
       "all_frames": true

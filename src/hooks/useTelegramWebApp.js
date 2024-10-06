@@ -1,10 +1,17 @@
+import { useCallback } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 
-export default function useTelegramWebApp(host) {
+export default function useTelegramWebApp(host, cache = true) {
   const [telegramWebApp, setTelegramWebApp] = useState(null);
 
+  const resetTelegramWebApp = useCallback(() => {
+    setTelegramWebApp(null);
+  }, [setTelegramWebApp]);
+
   useEffect(() => {
+    if (telegramWebApp) return;
+
     /** Storage Key */
     const storageKey = `telegram-web-app:${host}`;
 
@@ -30,19 +37,21 @@ export default function useTelegramWebApp(host) {
         });
 
         /** Configure the App */
-        configureTelegramWebApp(message.data.telegramWebApp);
+        configureTelegramWebApp(message.data.telegramWebApp, cache);
 
         /** Remove Listener */
         chrome?.runtime?.onMessage.removeListener(getTelegramWebApp);
       }
     };
 
-    /** Get and Store Data */
-    chrome?.storage?.local.get(storageKey).then(({ [storageKey]: data }) => {
-      if (data) {
-        configureTelegramWebApp(data, false);
-      }
-    });
+    if (cache) {
+      /** Get and Store Data */
+      chrome?.storage?.local.get(storageKey).then(({ [storageKey]: data }) => {
+        if (data) {
+          configureTelegramWebApp(data, false);
+        }
+      });
+    }
 
     /** Add Listener */
     chrome?.runtime?.onMessage.addListener(getTelegramWebApp);
@@ -51,7 +60,7 @@ export default function useTelegramWebApp(host) {
       /** Remove Listener */
       chrome?.runtime?.onMessage.removeListener(getTelegramWebApp);
     };
-  }, [host, setTelegramWebApp]);
+  }, [host, cache, telegramWebApp, setTelegramWebApp]);
 
-  return telegramWebApp;
+  return { telegramWebApp, resetTelegramWebApp };
 }

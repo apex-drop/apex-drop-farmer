@@ -1,4 +1,10 @@
 import Countdown from "react-countdown";
+import useProcessLock from "@/hooks/useProcessLock";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import useSocketState from "@/hooks/useSocketState";
+import { CgSpinner } from "react-icons/cg";
+import { delay } from "@/lib/utils";
 import { useCallback, useEffect, useMemo } from "react";
 import { useState } from "react";
 
@@ -7,11 +13,6 @@ import TomarketInput from "./TomarketInput";
 import useTomarketBalanceQuery from "../hooks/useTomarketBalanceQuery";
 import useTomarketClaimGameMutation from "../hooks/useTomarketClaimGameMutation";
 import useTomarketStartGameMutation from "../hooks/useTomarketStartGameMutation";
-import { CgSpinner } from "react-icons/cg";
-import { delay } from "@/lib/utils";
-import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
-import useSocketHandlers from "@/hooks/useSocketHandlers";
-import useSocketState from "@/hooks/useSocketState";
 
 const GAME_DURATION = 30_000;
 const EXTRA_DELAY = 3_000;
@@ -24,8 +25,7 @@ export default function Tomarket() {
 
   const [tomarket, setTomarket] = useState(null);
 
-  const [working, setWorking] = useState(false);
-  const [autoPlaying, setAutoPlaying] = useState(false);
+  const process = useProcessLock();
   const [countdown, setCountdown] = useState(null);
   const [desiredPoint, setDesiredPoint, dispatchAndSetDesiredPoint] =
     useSocketState("tomarket.game.desired-point", INITIAL_POINT);
@@ -66,9 +66,8 @@ export default function Tomarket() {
       /** Main */
       useCallback(() => {
         setDesiredPoint(points);
-        setAutoPlaying((previous) => !previous);
-        setWorking(false);
-      }, [points, setDesiredPoint, setAutoPlaying, setWorking]),
+        process.toggle();
+      }, [points, setDesiredPoint, process]),
 
       /** Dispatch */
       useCallback((socket) => {
@@ -115,19 +114,18 @@ export default function Tomarket() {
 
   /** Auto Play */
   useEffect(() => {
-    if (!autoPlaying || working) {
+    if (!process.canExecute) {
       return;
     }
 
     if (tickets < 1) {
-      setAutoPlaying(false);
-      setWorking(false);
+      process.stop();
       return;
     }
 
     (async function () {
       /** Lock Process */
-      setWorking(true);
+      process.lock();
 
       try {
         await startGameMutation.mutateAsync();
@@ -152,9 +150,9 @@ export default function Tomarket() {
       } catch {}
 
       /** Release Lock */
-      setWorking(false);
+      process.unlock();
     })();
-  }, [autoPlaying, tickets, working]);
+  }, [process, tickets]);
 
   return tomarket ? (
     <div className="flex flex-col gap-2">
@@ -163,7 +161,7 @@ export default function Tomarket() {
           <h3 className="font-bold">Game</h3>
 
           <TomarketInput
-            disabled={autoPlaying || tickets < 1}
+            disabled={process.started || tickets < 1}
             value={desiredPoint}
             onInput={(ev) => dispatchAndSetDesiredPoint(ev.target.value)}
             type="number"
@@ -179,14 +177,14 @@ export default function Tomarket() {
 
       {/* Start or Stop Button  */}
       <TomarketButton
-        color={autoPlaying ? "danger" : "primary"}
+        color={process.started ? "danger" : "primary"}
         disabled={tickets < 1}
         onClick={dispatchAndHandleAutoPlayClick}
       >
-        {autoPlaying ? "Stop" : "Start"}
+        {process.started ? "Stop" : "Start"}
       </TomarketButton>
 
-      {autoPlaying ? (
+      {process.started ? (
         <div className="flex flex-col gap-2 p-4 text-white bg-black rounded-lg">
           {/* Game Start */}
           {startGameMutation.isPending ? (

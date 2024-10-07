@@ -7,20 +7,6 @@ if (location.hash.includes("tgWebAppData")) {
     "&tgWebAppPlatform=android"
   );
 
-  const currentWindow = window;
-
-  /** Override window.top */
-  Object.defineProperty(window, "top", {
-    get: () => currentWindow,
-    configurable: true,
-  });
-
-  /** Override window.parent */
-  Object.defineProperty(window, "parent", {
-    get: () => null,
-    configurable: true,
-  });
-
   /** Override User Agent */
   Object.defineProperty(navigator, "userAgent", {
     get: () =>

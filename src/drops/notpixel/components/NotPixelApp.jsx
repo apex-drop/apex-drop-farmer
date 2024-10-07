@@ -10,8 +10,8 @@ import { useMemo } from "react";
 import { useState } from "react";
 
 import NotPixelIcon from "../assets/images/icon.png?format=webp";
-import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
 import useNotPixelMiningStatusQuery from "../hooks/useNotPixelMiningStatusQuery";
+import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
 
 export default function NotPixelApp({ diff }) {
   const miningQuery = useNotPixelMiningStatusQuery();
@@ -89,16 +89,18 @@ export default function NotPixelApp({ diff }) {
 
           setColor(newColor);
 
-          const data = await repaintMutation.mutateAsync({
-            pixelId,
-            newColor,
-          });
+          if (!process.signal.aborted) {
+            const data = await repaintMutation.mutateAsync({
+              pixelId,
+              newColor,
+            });
 
-          /** Show Difference */
-          toast.success(`+${data.balance - mining.userBalance}`);
+            /** Show Difference */
+            toast.success(`+${data.balance - mining.userBalance}`);
 
-          /** Delay */
-          await delay(5_000);
+            /** Delay */
+            await delay(5_000);
+          }
 
           /** Refetch */
           await miningQuery.refetch();

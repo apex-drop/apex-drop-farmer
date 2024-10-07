@@ -10,6 +10,7 @@ import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import useSocketState from "@/hooks/useSocketState";
 import {
+  HiOutlineArrowPath,
   HiOutlineArrowTopRightOnSquare,
   HiOutlineCog6Tooth,
   HiOutlinePower,
@@ -169,10 +170,31 @@ export default function Welcome() {
       )
     );
 
+  /** Open Farmer in Separate Window */
+  const [reload, dispatchAndReload] = useSocketDispatchCallback(
+    /** Main */
+    useCallback(() => {
+      window.location.reload();
+    }, []),
+
+    /** Dispatch */
+    useCallback(
+      (socket) =>
+        socket.dispatch({
+          action: "app.reload",
+        }),
+      []
+    )
+  );
+
   /** Handlers */
   useSocketHandlers(
     useMemo(
       () => ({
+        "app.reload": () => {
+          reload();
+        },
+
         "app.show-hidden-drops": () => {
           showHiddenDrops();
         },
@@ -197,6 +219,7 @@ export default function Welcome() {
         },
       }),
       [
+        reload,
         showHiddenDrops,
         findAndPushTab,
         closeTab,
@@ -218,18 +241,29 @@ export default function Welcome() {
       {/* Settings and New Window Button */}
       <div className="p-4 shrink-0">
         <div className="flex justify-between w-full gap-2 mx-auto max-w-96">
-          {/* Shutdown */}
-          <Dialog.Root>
-            <Dialog.Trigger asChild>
-              <button
-                title="Shutdown Farmer"
-                className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
-              >
-                <HiOutlinePower className="w-5 h-5" />
-              </button>
-            </Dialog.Trigger>
-            <Shutdown />
-          </Dialog.Root>
+          <div className="flex gap-2">
+            {/* Shutdown */}
+            <Dialog.Root>
+              <Dialog.Trigger asChild>
+                <button
+                  title="Shutdown Farmer"
+                  className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
+                >
+                  <HiOutlinePower className="w-5 h-5" />
+                </button>
+              </Dialog.Trigger>
+              <Shutdown />
+            </Dialog.Root>
+
+            {/* Reload Window */}
+            <button
+              title="Reload Farmer"
+              onClick={dispatchAndReload}
+              className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
+            >
+              <HiOutlineArrowPath className="w-5 h-5" />
+            </button>
+          </div>
 
           <div className="flex gap-2">
             {/* Open in Separate Window */}

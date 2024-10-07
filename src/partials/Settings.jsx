@@ -34,7 +34,6 @@ export default function Settings() {
 
   const handleSetSyncServer = useCallback(() => {
     dispatchAndConfigureSettings("syncServer", syncServer);
-    toast.success("Sync Server Updated");
   }, [toast, syncServer, dispatchAndConfigureSettings]);
 
   /** Handlers */

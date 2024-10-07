@@ -1,4 +1,5 @@
 import defaultSettings from "@/default-settings";
+import toast from "react-hot-toast";
 import { getSettings } from "@/lib/utils";
 import { useCallback } from "react";
 import { useEffect } from "react";
@@ -19,6 +20,9 @@ export default function useSettings() {
       chrome?.storage?.local.set({
         settings: newSettings,
       });
+
+      toast.dismiss();
+      toast.success("Settings Updated");
     },
     [settings]
   );

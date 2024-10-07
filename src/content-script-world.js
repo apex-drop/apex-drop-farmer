@@ -2,10 +2,12 @@
 const INJECT_TG_SCRIPT = true;
 
 if (location.hash.includes("tgWebAppData")) {
-  location.hash = location.hash.replace(
-    "&tgWebAppPlatform=web",
-    "&tgWebAppPlatform=android"
-  );
+  ["webk", "weba", "web"].forEach((platform) => {
+    location.hash = location.hash.replace(
+      `&tgWebAppPlatform=${platform}`,
+      "&tgWebAppPlatform=android"
+    );
+  });
 
   /** Override User Agent */
   Object.defineProperty(navigator, "userAgent", {

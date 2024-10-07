@@ -10,8 +10,6 @@ export default function useTelegramWebApp(host, cache = true) {
   }, [setTelegramWebApp]);
 
   useEffect(() => {
-    if (telegramWebApp) return;
-
     /** Storage Key */
     const storageKey = `telegram-web-app:${host}`;
 

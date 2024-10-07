@@ -1,16 +1,16 @@
 import * as Tabs from "@radix-ui/react-tabs";
+import toast from "react-hot-toast";
 import useSocketTabs from "@/hooks/useSocketTabs";
 import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 import MajorBalanceDisplay from "./MajorBalanceDisplay";
 import MajorGames from "./MajorGames";
-import MajorIcon from "../assets/images/icon.png?format=webp";
+import MajorIcon from "../assets/images/icon.png?format=webp&w=80";
 import MajorTasks from "./MajorTasks";
 import useMajorUserQuery from "../hooks/useMajorUserQuery";
 import useMajorUserVisitMutation from "../hooks/useMajorUserVisitMutation";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
 
 export default function MajorFarmer() {
   const userQuery = useMajorUserQuery();

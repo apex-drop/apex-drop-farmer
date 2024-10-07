@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 
-import HrumIcon from "../assets/images/icon.png?format=webp";
+import HrumIcon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function HrumFullscreenSpinner() {
   return createPortal(

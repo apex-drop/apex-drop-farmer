@@ -1,4 +1,4 @@
-import TomarketIcon from "../assets/images/icon.png?format=webp";
+import TomarketIcon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function TomarketFarmerHeader() {
   return (

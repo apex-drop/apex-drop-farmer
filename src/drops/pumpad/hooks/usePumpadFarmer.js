@@ -1,6 +1,6 @@
 import useDropFarmer from "@/hooks/useDropFarmer";
 
-import PumpadIcon from "../assets/images/icon.png?format=webp";
+import PumpadIcon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function usePumpadFarmer() {
   return useDropFarmer({

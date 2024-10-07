@@ -1,6 +1,6 @@
 import useDropFarmer from "@/hooks/useDropFarmer";
 
-import HrumIcon from "../assets/images/icon.png?format=webp";
+import HrumIcon from "../assets/images/icon.png?format=webp&w=80";
 import { getHrumHeaders } from "../lib/utils";
 
 export default function useHrumFarmer() {

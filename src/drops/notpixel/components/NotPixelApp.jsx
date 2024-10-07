@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 
-import NotPixelIcon from "../assets/images/icon.png?format=webp";
+import NotPixelIcon from "../assets/images/icon.png?format=webp&w=80";
 import useNotPixelMiningStatusQuery from "../hooks/useNotPixelMiningStatusQuery";
 import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
 

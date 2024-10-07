@@ -4,7 +4,7 @@ import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
 import { useCallback, useEffect, useMemo } from "react";
 
-import EnergyIcon from "../assets/images/energy.png?format=webp";
+import EnergyIcon from "../assets/images/energy.png?format=webp&w=80";
 import useSlotcoinInfoQuery from "../hooks/useSlotcoinInfoQuery";
 import useSlotcoinLotteryMutation from "../hooks/useSlotcoinLotteryMutation";
 

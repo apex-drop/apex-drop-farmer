@@ -1,6 +1,6 @@
 import useDropFarmer from "@/hooks/useDropFarmer";
 
-import MajorIcon from "../assets/images/icon.png?format=webp";
+import MajorIcon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function useMajorFarmer() {
   return useDropFarmer({

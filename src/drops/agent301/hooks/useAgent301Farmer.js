@@ -1,6 +1,6 @@
 import useDropFarmer from "@/hooks/useDropFarmer";
 
-import Agent301Icon from "../assets/images/icon.png?format=webp";
+import Agent301Icon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function useAgent301Farmer() {
   return useDropFarmer({

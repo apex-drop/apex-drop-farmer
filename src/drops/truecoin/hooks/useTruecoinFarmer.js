@@ -1,5 +1,6 @@
 import useDropFarmer from "@/hooks/useDropFarmer";
-import TruecoinIcon from "../assets/images/icon.png?format=webp";
+
+import TruecoinIcon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function useTruecoinFarmer() {
   return useDropFarmer({

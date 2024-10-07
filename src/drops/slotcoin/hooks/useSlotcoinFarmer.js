@@ -1,6 +1,6 @@
 import useDropFarmer from "@/hooks/useDropFarmer";
 
-import SlotcoinIcon from "../assets/images/icon.png?format=webp";
+import SlotcoinIcon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function useSlotcoinFarmer() {
   return useDropFarmer({

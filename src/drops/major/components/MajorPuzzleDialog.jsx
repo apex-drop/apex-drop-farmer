@@ -7,7 +7,7 @@ import { useCallback } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 
-import MajorIcon from "../assets/images/icon.png?format=webp";
+import MajorIcon from "../assets/images/icon.png?format=webp&w=80";
 import PuzzleDurovIcon from "../assets/images/puzzle-durov.svg";
 import StarIcon from "../assets/images/star-amount.svg";
 

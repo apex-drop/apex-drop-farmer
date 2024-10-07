@@ -1,6 +1,6 @@
 import FarmerDetect from "@/components/FarmerDetect";
 
-import GoatsIcon from "../assets/images/icon.png?format=webp";
+import GoatsIcon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function GoatsAuthDetect({ status }) {
   return (

@@ -1,4 +1,4 @@
-import TruecoinIcon from "../assets/images/icon.png?format=webp";
+import TruecoinIcon from "../assets/images/icon.png?format=webp&w=80";
 import TruecoinLottery from "./TruecoinLottery";
 
 export default function TruecoinFarmer() {

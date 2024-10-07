@@ -1,6 +1,6 @@
 import useDropFarmer from "@/hooks/useDropFarmer";
 
-import GoatsIcon from "../assets/images/icon.png?format=webp";
+import GoatsIcon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function useGoatsFarmer() {
   return useDropFarmer({

@@ -1,4 +1,4 @@
-import CoinIcon from "../assets/images/coin.png?format=webp";
+import CoinIcon from "../assets/images/coin.png?format=webp&w=80";
 import useSlotcoinInfoQuery from "../hooks/useSlotcoinInfoQuery";
 
 export default function SlotcoinUsernameDisplay() {

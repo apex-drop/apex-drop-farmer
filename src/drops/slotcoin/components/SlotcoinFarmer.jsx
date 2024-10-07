@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import SlotcoinIcon from "../assets/images/icon.png?format=webp";
+import SlotcoinIcon from "../assets/images/icon.png?format=webp&w=80";
 import SlotcoinInfoDisplay from "./SlotcoinInfoDisplay";
 import SlotcoinLottery from "./SlotcoinLottery";
 import useSlotcoinCheckInInfoQuery from "../hooks/useSlotcoinCheckInInfoQuery";

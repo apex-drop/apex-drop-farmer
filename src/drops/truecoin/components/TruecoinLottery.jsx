@@ -9,8 +9,8 @@ import { useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 
-import CoinIcon from "../assets/images/coin.png?format=webp";
-import EnergyIcon from "../assets/images/energy.png?format=webp";
+import CoinIcon from "../assets/images/coin.png?format=webp&w=80";
+import EnergyIcon from "../assets/images/energy.png?format=webp&w=80";
 import useTruecoin50SpinsBoost from "../hooks/useTruecoin50SpinsBoostMutation";
 import useTruecoinLotteryMutation from "../hooks/useTruecoinLotteryMutation";
 

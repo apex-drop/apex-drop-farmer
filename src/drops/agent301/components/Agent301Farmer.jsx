@@ -3,7 +3,7 @@ import useSocketTabs from "@/hooks/useSocketTabs";
 import { cn } from "@/lib/utils";
 
 import Agent301BalanceDisplay from "./Agent301BalanceDisplay";
-import Agent301Icon from "../assets/images/icon.png?format=webp";
+import Agent301Icon from "../assets/images/icon.png?format=webp&w=80";
 import Agent301Lottery from "./Agent301Lottery";
 import Agent301Tasks from "./Agent301Tasks";
 import Agent301Wheel from "./Agent301Wheel";

@@ -3,10 +3,10 @@ import useSocketTabs from "@/hooks/useSocketTabs";
 import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
 
-import CookieIcon from "../assets/images/cookie.png";
+import CookieIcon from "../assets/images/cookie.png?format=webp&w=80";
 import HrumAutoTasks from "./HrumAutoTasks";
 import HrumBalanceDisplay from "./HrumBalanceDisplay";
-import HrumIcon from "../assets/images/icon.png";
+import HrumIcon from "../assets/images/icon.png?format=webp&w=80";
 import HrumOpenButton from "./HrumOpenButton";
 import HrumRiddleTask from "./HrumRiddleTask";
 import useHrumDailyClaim from "../hooks/useHrumDailyClaim";

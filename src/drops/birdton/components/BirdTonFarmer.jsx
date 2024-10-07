@@ -4,9 +4,9 @@ import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
 
 import BirdTonGamer from "./BirdTonGamer";
-import BirdTonIcon from "../assets/images/icon.png?format=webp";
-import CoinIcon from "../assets/images/coin.png?format=webp";
-import EnergyIcon from "../assets/images/energy.png?format=webp";
+import BirdTonIcon from "../assets/images/icon.png?format=webp&w=80";
+import CoinIcon from "../assets/images/coin.png?format=webp&w=80";
+import EnergyIcon from "../assets/images/energy.png?format=webp&w=80";
 import useBirdTonFarmerContext from "../hooks/useBirdTonFarmerContext";
 
 export default function BirdTonFarmer() {

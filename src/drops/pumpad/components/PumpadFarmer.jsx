@@ -1,4 +1,4 @@
-import PumpadIcon from "../assets/images/icon.png?format=webp";
+import PumpadIcon from "../assets/images/icon.png?format=webp&w=80";
 import PumpadLottery from "./PumpadLottery";
 import PumpadUsernameDisplay from "./PumpadUsernameDisplay";
 

@@ -6,7 +6,7 @@ import { useMemo } from "react";
 
 import HrumFullscreenSpinner from "./HrumFullscreenSpinner";
 import HrumTaskButton from "./HrumTaskButton";
-import RiddleIcon from "../assets/images/riddle.jpg";
+import RiddleIcon from "../assets/images/riddle.jpg?format=webp&w=80";
 import useHrumCheckQuestMutation from "../hooks/useHrumCheckQuestMutation";
 import useHrumClaimQuestMutation from "../hooks/useHrumClaimQuestMutation";
 

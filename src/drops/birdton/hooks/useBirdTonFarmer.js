@@ -1,6 +1,6 @@
 import useDropFarmer from "@/hooks/useDropFarmer";
 
-import BirdTonIcon from "../assets/images/icon.png?format=webp";
+import BirdTonIcon from "../assets/images/icon.png?format=webp&w=80";
 
 export default function useBirdTonFarmer() {
   return useDropFarmer({

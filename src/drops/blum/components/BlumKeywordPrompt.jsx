@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { useState } from "react";
 
 import BlumButton from "./BlumButton";
-import BlumIcon from "../assets/images/icon.png?format=webp";
+import BlumIcon from "../assets/images/icon.png?format=webp&w=80";
 import BlumInput from "./BlumInput";
 
 export default function BlumKeywordPrompt({ task, onSubmit }) {

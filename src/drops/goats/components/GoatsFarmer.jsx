@@ -5,7 +5,7 @@ import { isToday } from "date-fns";
 import { useEffect } from "react";
 
 import GoatsBalanceDisplay from "./GoatsBalanceDisplay";
-import GoatsIcon from "../assets/images/icon.png?format=webp";
+import GoatsIcon from "../assets/images/icon.png?format=webp&w=80";
 import GoatsMissions from "./GoatsMissions";
 import useGoatsCheckInMutation from "../hooks/useGoatsCheckInMutation";
 import useGoatsCheckInQuery from "../hooks/useGoatsCheckInQuery";

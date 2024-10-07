@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import AppIcon from "@/assets/images/icon.png";
+import AppIcon from "@/assets/images/icon.png?format=webp&w=80";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn } from "@/lib/utils";

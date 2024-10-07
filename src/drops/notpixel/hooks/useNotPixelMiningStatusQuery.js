@@ -5,6 +5,7 @@ import useNotPixelApi from "./useNotPixelApi";
 export default function useNotPixelMiningStatusQuery() {
   const api = useNotPixelApi();
   return useQuery({
+    refetchInterval: 10_000,
     queryKey: ["notpx", "mining", "status"],
     queryFn: ({ signal }) =>
       api

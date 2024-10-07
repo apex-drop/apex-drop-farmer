@@ -1,36 +1,35 @@
 import { useEffect } from "react";
 import { useState } from "react";
 
-export default function useNotPixelDiff(items, worldData) {
+import { getCoords } from "../lib/utils";
+
+export default function useNotPixelDiff(items, worldPixels, worldUpdatedAt) {
   const [diff, setDiff] = useState([]);
 
   useEffect(() => {
-    if (!items || !worldData) {
+    if (!items || !worldPixels) {
       return;
     }
 
     const result = [];
 
-    items.forEach((item) => {
-      for (let i = 0; i < item.imageData.length; i++) {
-        let x = i % item.size;
-        let y = Math.floor(i / item.size);
+    if (worldUpdatedAt >= Date.now() - 1000) {
+      items.forEach((item) => {
+        for (let i = 0; i < item.pixels.length; i++) {
+          let { offset } = getCoords(i, item);
 
-        let positionX = item.x + x;
-        let positionY = item.y + y;
-
-        let offset = positionY * 1000 + positionX;
-
-        if (worldData[offset] !== item.imageData[i]) {
-          result.push([offset, item.imageData[i]]);
+          if (
+            worldPixels[offset].color !== item.pixels[i].color &&
+            worldPixels[offset].updatedAt <= Date.now() - 3000
+          ) {
+            result.push([offset + 1, item.pixels[i]]);
+          }
         }
-      }
-    });
-
-    if (result.length) {
-      setDiff(result);
+      });
     }
-  }, [items, worldData, setDiff]);
+
+    setDiff(result);
+  }, [items, worldPixels, worldUpdatedAt, setDiff]);
 
   return diff;
 }

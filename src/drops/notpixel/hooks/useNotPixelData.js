@@ -2,27 +2,39 @@ import { useCallback } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 
-import { imageDataToHex, loadImage } from "../lib/utils";
+import {
+  getCoords,
+  imageDataToPixel,
+  loadImage,
+  rgbToPixel,
+} from "../lib/utils";
 
 export default function useNotPixelData() {
   const [started, setStarted] = useState(false);
-  const [worldData, setWorldData] = useState(null);
+  const [worldPixels, setWorldPixels] = useState(null);
+  const [worldUpdatedAt, setWorldUpdatedAt] = useState(() => Date.now());
   const [items, setItems] = useState(null);
 
   const updatePixels = useCallback(
     (updates) => {
       if (updates.length < 1) return;
-      setWorldData((prev) => {
-        let newWorldData = [...prev];
+      setWorldPixels((prev) => {
+        let newWorldPixels = { ...prev };
 
         for (let [pos, color] of updates) {
-          newWorldData[pos] = color;
+          const offset = pos - 1;
+          if (offset in newWorldPixels) {
+            newWorldPixels[offset].color = color;
+            newWorldPixels[offset].updatedAt = Date.now();
+          }
         }
 
-        return newWorldData;
+        return newWorldPixels;
       });
+
+      setWorldUpdatedAt(Date.now());
     },
-    [setWorldData]
+    [setWorldPixels]
   );
 
   /** Configure Not Pixel Images */
@@ -36,50 +48,60 @@ export default function useNotPixelData() {
           willReadFrequently: true,
         });
 
-        /** Set Items */
-        setItems(
-          images.map((image, index) => {
-            const item = data[index];
-            let imageData;
+        /** Items */
+        const items = images.map((image, index) => {
+          const item = data[index];
 
-            const x =
-              Math.sign(item.x) === -1
-                ? offscreenCanvas.width + item.x
-                : item.x;
-            const y =
-              Math.sign(item.y) === -1
-                ? offscreenCanvas.width + item.y
-                : item.y;
+          const x =
+            Math.sign(item.x) === -1 ? offscreenCanvas.width + item.x : item.x;
+          const y =
+            Math.sign(item.y) === -1 ? offscreenCanvas.height + item.y : item.y;
 
-            offscreenCtx.drawImage(image, x, y, item.size, item.size);
+          /** Draw Image */
+          offscreenCtx.drawImage(image, x, y, item.size, item.size);
 
-            imageData = imageDataToHex(
+          return {
+            x,
+            y,
+            size: item.size,
+            image,
+            pixels: imageDataToPixel(
               offscreenCtx.getImageData(x, y, item.size, item.size).data
-            );
+            ),
+          };
+        });
 
-            return {
-              x,
-              y,
-              size: item.size,
-              image,
-              imageData,
-            };
-          })
-        );
+        /** Set Items */
+        setItems(items);
 
         /** Load Current World */
         loadImage("https://image.notpx.app/api/v2/image").then((image) => {
           offscreenCtx.drawImage(image, 0, 0);
-          setWorldData(
-            imageDataToHex(
-              offscreenCtx.getImageData(
-                0,
-                0,
-                offscreenCanvas.width,
-                offscreenCanvas.height
-              ).data
-            )
-          );
+          const worldImageData = offscreenCtx.getImageData(
+            0,
+            0,
+            offscreenCanvas.width,
+            offscreenCanvas.height
+          ).data;
+
+          let result = {};
+
+          items.forEach((item) => {
+            for (let i = 0; i < item.pixels.length; i++) {
+              let { offset } = getCoords(i, item);
+              let imageDataOffset = offset * 4;
+              let [r, g, b, a] = [
+                worldImageData[imageDataOffset + 0],
+                worldImageData[imageDataOffset + 1],
+                worldImageData[imageDataOffset + 2],
+                worldImageData[imageDataOffset + 3],
+              ];
+
+              result[offset] = rgbToPixel(r, g, b);
+            }
+          });
+
+          setWorldPixels(result);
           setStarted(true);
         });
       })
@@ -90,10 +112,18 @@ export default function useNotPixelData() {
     () => ({
       started,
       items,
-      worldData,
+      worldPixels,
+      worldUpdatedAt,
       configureNotPixel,
       updatePixels,
     }),
-    [started, items, worldData, configureNotPixel, updatePixels]
+    [
+      started,
+      items,
+      worldPixels,
+      configureNotPixel,
+      updatePixels,
+      worldUpdatedAt,
+    ]
   );
 }

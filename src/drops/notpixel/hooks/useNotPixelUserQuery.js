@@ -6,6 +6,7 @@ export default function useNotPixelUserQuery(options) {
   const api = useNotPixelApi();
   return useQuery({
     ...options,
+    refetchInterval: 10_000,
     queryKey: ["notpx", "user"],
     queryFn: ({ signal }) =>
       api

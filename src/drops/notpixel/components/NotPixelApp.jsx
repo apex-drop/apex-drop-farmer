@@ -10,13 +10,12 @@ import { useMemo } from "react";
 import { useState } from "react";
 
 import NotPixelIcon from "../assets/images/icon.png?format=webp";
-import useNotPixelDataQueries from "../hooks/useNotPixelDataQueries";
 import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
+import useNotPixelMiningStatusQuery from "../hooks/useNotPixelMiningStatusQuery";
 
 export default function NotPixelApp({ diff }) {
-  const dataQueries = useNotPixelDataQueries();
-  const [userQuery, miningQuery] = dataQueries.query;
-  const [user, mining] = dataQueries.data;
+  const miningQuery = useNotPixelMiningStatusQuery();
+  const mining = miningQuery.data;
   const process = useProcessLock();
   const repaintMutation = useNotPixelRepaintMutation();
   const [color, setColor] = useState(null);
@@ -70,21 +69,23 @@ export default function NotPixelApp({ diff }) {
 
   /** Farmer */
   useEffect(() => {
-    if (mining?.charges < 1 && process.started) {
-      process.stop();
-    }
-
     if (!process.canExecute) return;
+
+    if (mining.charges < 1) {
+      process.stop();
+      return;
+    }
 
     (async function () {
       /** Lock Process */
       process.lock();
 
       try {
-        const pixel = diff[Math.floor(Math.random() * diff.length)];
+        const item = diff[Math.floor(Math.random() * diff.length)];
 
-        if (pixel) {
-          const [pixelId, newColor] = pixel;
+        if (item) {
+          const [pixelId, pixel] = item;
+          const newColor = pixel.color;
 
           setColor(newColor);
 
@@ -97,7 +98,9 @@ export default function NotPixelApp({ diff }) {
           toast.success(`+${data.balance - mining.userBalance}`);
 
           /** Delay */
-          await delay(3000);
+          await delay(5_000);
+
+          /** Refetch */
           await miningQuery.refetch();
         }
       } catch {}
@@ -125,7 +128,7 @@ export default function NotPixelApp({ diff }) {
         <h1 className="font-bold">Not Pixel Farmer</h1>
       </div>
 
-      {dataQueries.isSuccess ? (
+      {miningQuery.isSuccess ? (
         <>
           <h1 className="text-3xl text-center">{mining.userBalance}</h1>
           <h2 className="text-center">Charges: {mining.charges}</h2>

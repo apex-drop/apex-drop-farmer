@@ -7,9 +7,15 @@ import useNotPixelDiff from "../hooks/useNotPixelDiff";
 import useNotPixelSocket from "../hooks/useNotPixelSocket";
 
 export default function NotPixelFarmer() {
-  const { started, configureNotPixel, worldData, items, updatePixels } =
-    useNotPixelData();
-  const diff = useNotPixelDiff(items, worldData);
+  const {
+    started,
+    configureNotPixel,
+    worldPixels,
+    worldUpdatedAt,
+    items,
+    updatePixels,
+  } = useNotPixelData();
+  const diff = useNotPixelDiff(items, worldPixels, worldUpdatedAt);
 
   useNotPixelSocket(started, updatePixels);
   useEffect(() => {

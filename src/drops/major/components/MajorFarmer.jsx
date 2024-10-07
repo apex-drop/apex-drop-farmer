@@ -8,10 +8,25 @@ import MajorGames from "./MajorGames";
 import MajorIcon from "../assets/images/icon.png?format=webp";
 import MajorTasks from "./MajorTasks";
 import useMajorUserQuery from "../hooks/useMajorUserQuery";
+import useMajorUserVisitMutation from "../hooks/useMajorUserVisitMutation";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function MajorFarmer() {
   const userQuery = useMajorUserQuery();
   const tabs = useSocketTabs("major.farmer-tabs", "games");
+
+  const visitMutation = useMajorUserVisitMutation();
+
+  useEffect(() => {
+    (async function () {
+      const data = await visitMutation.mutateAsync();
+
+      if (data["is_increased"]) {
+        toast.success("Major Daily Check-in Claimed");
+      }
+    })();
+  }, []);
 
   return (
     <div className="flex flex-col gap-2 p-4">

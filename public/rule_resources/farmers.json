@@ -14,6 +14,13 @@
           "operation": "set",
           "value": "https://telegram.agent301.org/"
         }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
       ]
     },
     "condition": {
@@ -34,6 +41,13 @@
           "header": "referer",
           "operation": "set",
           "value": "https://birdton.site/"
+        }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
         }
       ]
     },
@@ -56,6 +70,13 @@
           "operation": "set",
           "value": "https://telegram.blum.codes/"
         }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
       ]
     },
     "condition": {
@@ -76,6 +97,13 @@
           "header": "referer",
           "operation": "set",
           "value": "https://dev.goatsbot.xyz/"
+        }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
         }
       ]
     },
@@ -98,6 +126,13 @@
           "operation": "set",
           "value": "https://game.hrum.me/"
         }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
       ]
     },
     "condition": {
@@ -118,6 +153,13 @@
           "header": "referer",
           "operation": "set",
           "value": "https://major.bot/"
+        }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
         }
       ]
     },
@@ -140,6 +182,13 @@
           "operation": "set",
           "value": "https://tg.pumpad.io/"
         }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
       ]
     },
     "condition": {
@@ -160,6 +209,13 @@
           "header": "referer",
           "operation": "set",
           "value": "https://app.slotcoin.app/"
+        }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
         }
       ]
     },
@@ -182,6 +238,13 @@
           "operation": "set",
           "value": "https://mini-app.tomarket.ai/"
         }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
       ]
     },
     "condition": {
@@ -203,6 +266,13 @@
           "operation": "set",
           "value": "https://bot.true.world/"
         }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
       ]
     },
     "condition": {
@@ -223,6 +293,13 @@
           "header": "referer",
           "operation": "set",
           "value": "https://app.notpx.app/"
+        }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
         }
       ]
     },

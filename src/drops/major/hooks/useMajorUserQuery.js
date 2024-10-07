@@ -1,19 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 
 import useMajorApi from "./useMajorApi";
+import useMajorUserStreakQuery from "./useMajorUserStreakQuery";
 
 export default function useMajorUserQuery() {
   const api = useMajorApi();
-  const streakQuery = useQuery({
-    refetchInterval: false,
-    queryKey: ["major", "streak"],
-    queryFn: ({ signal }) =>
-      api
-        .get("https://major.bot/api/user-visits/streak/", {
-          signal,
-        })
-        .then((res) => res.data),
-  });
+  const streakQuery = useMajorUserStreakQuery();
 
   const userQuery = useQuery({
     enabled: streakQuery.isSuccess,

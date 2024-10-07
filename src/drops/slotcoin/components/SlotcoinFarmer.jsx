@@ -1,8 +1,25 @@
+import { useEffect } from "react";
+
 import SlotcoinIcon from "../assets/images/icon.png?format=webp";
 import SlotcoinInfoDisplay from "./SlotcoinInfoDisplay";
 import SlotcoinLottery from "./SlotcoinLottery";
+import useSlotcoinCheckInInfoQuery from "../hooks/useSlotcoinCheckInInfoQuery";
+import useSlotcoinCheckInMutation from "../hooks/useSlotcoinCheckInMutation";
 
 export default function SlotcoinFarmer() {
+  const checkInQuery = useSlotcoinCheckInInfoQuery();
+  const checkInMutation = useSlotcoinCheckInMutation();
+
+  useEffect(() => {
+    if (!checkInQuery.data) return;
+    (async function () {
+      const checkIn = checkInQuery.data;
+
+      if (Math.sign(checkIn["time_to_claim"]) === -1) {
+        await checkInMutation.mutateAsync();
+      }
+    })();
+  }, [checkInQuery.data]);
   return (
     <div className="flex flex-col gap-2 py-4">
       {/* Header */}

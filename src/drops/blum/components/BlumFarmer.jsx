@@ -7,9 +7,50 @@ import BlumAutoTasks from "./BlumAutoTasks";
 import BlumBalanceDisplay from "./BlumBalanceDisplay";
 import BlumFarmerHeader from "./BlumFarmerHeader";
 import BlumUsernameDisplay from "./BlumUsernameDisplay";
+import useBlumDailyRewardMutation from "../hooks/useBlumDailyRewardMutation";
+import { useEffect } from "react";
+import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
+import useBlumNowQuery from "../hooks/useBlumNowQuery";
+import useBlumClaimFarmingMutation from "../hooks/useBlumClaimFarmingMutation";
+import useBlumStartFarmingMutation from "../hooks/useBlumStartFarmingMutation";
+import toast from "react-hot-toast";
 
 export default function BlumFarmer() {
   const tabs = useSocketTabs("blum.farmer-tabs", "game");
+  const dailyRewardMutation = useBlumDailyRewardMutation();
+  const startFarmingMutation = useBlumStartFarmingMutation();
+  const claimFarmingMutation = useBlumClaimFarmingMutation();
+  const nowQuery = useBlumNowQuery();
+  const balanceQuery = useBlumBalanceQuery();
+
+  useEffect(() => {
+    (async function () {
+      await dailyRewardMutation.mutateAsync();
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!nowQuery.data || !balanceQuery.data) {
+      return;
+    }
+
+    (async function () {
+      const now = nowQuery.data.now;
+      const balance = balanceQuery.data;
+      const farming = balance.farming;
+
+      if (!balance.isFastFarmingEnabled) {
+        await startFarmingMutation.mutateAsync();
+        toast.success("Blum Started Farming");
+      } else if (now > farming.endTime) {
+        await claimFarmingMutation.mutateAsync();
+        toast.success("Blum Claimed Previous Farming");
+
+        await startFarmingMutation.mutateAsync();
+        toast.success("Blum Started Farming");
+      }
+    })();
+  }, [nowQuery.data, balanceQuery.data]);
 
   return (
     <div className="flex flex-col p-4">

@@ -4,15 +4,15 @@ import { cn } from "@/lib/utils";
 import { isToday } from "date-fns";
 import { useEffect } from "react";
 
-import GoatsBalanceDisplay from "./GoatsBalanceDisplay";
-import GoatsIcon from "../assets/images/icon.png?format=webp&w=80";
-import GoatsMissions from "./GoatsMissions";
-import useGoatsCheckInMutation from "../hooks/useGoatsCheckInMutation";
-import useGoatsCheckInQuery from "../hooks/useGoatsCheckInQuery";
+import TadaBalanceDisplay from "./TadaBalanceDisplay";
+import TadaIcon from "../assets/images/icon.png?format=webp&w=80";
+import TadaMissions from "./TadaMissions";
+import useTadaCheckInMutation from "../hooks/useTadaCheckInMutation";
+import useTadaCheckInQuery from "../hooks/useTadaCheckInQuery";
 
-export default function GoatsFarmer() {
-  const checkInQuery = useGoatsCheckInQuery();
-  const checkInMutation = useGoatsCheckInMutation();
+export default function TadaFarmer() {
+  const checkInQuery = useTadaCheckInQuery();
+  const checkInMutation = useTadaCheckInMutation();
 
   useEffect(() => {
     if (!checkInQuery.data) return;
@@ -21,10 +21,10 @@ export default function GoatsFarmer() {
       const checkIn = checkInQuery.data;
       const result = checkIn.result;
 
-      if (!isToday(new Date(checkIn.lastCheckinTime))) {
+      if (!isToday(checkIn.lastCheckinTime)) {
         const day = result.find((item) => !item.status);
         await checkInMutation.mutateAsync(day["_id"]);
-        toast.success("Goats Daily Check-In");
+        toast.success("Tada Daily Check-In");
       }
     })();
   }, [checkInQuery.data]);
@@ -32,12 +32,12 @@ export default function GoatsFarmer() {
     <div className="flex flex-col gap-2 py-4">
       {/* Header */}
       <div className="flex items-center justify-center gap-2 p-2">
-        <img src={GoatsIcon} alt="Goats Farmer" className="w-8 h-8" />
-        <h1 className="font-bold">Goats Farmer</h1>
+        <img src={TadaIcon} alt="Tada Farmer" className="w-8 h-8" />
+        <h1 className="font-bold">Tada Farmer</h1>
       </div>
 
       {/* Balance Display */}
-      <GoatsBalanceDisplay />
+      <TadaBalanceDisplay />
 
       <Tabs.Root defaultValue="missions" className="flex flex-col gap-4">
         <Tabs.List className="grid grid-cols-1">
@@ -56,7 +56,7 @@ export default function GoatsFarmer() {
           ))}
         </Tabs.List>
         <Tabs.Content value="missions">
-          <GoatsMissions />
+          <TadaMissions />
         </Tabs.Content>
       </Tabs.Root>
     </div>

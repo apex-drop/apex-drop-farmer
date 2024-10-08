@@ -8,6 +8,7 @@ import MajorIcon from "@/drops/major/assets/images/icon.png?format=webp&w=80";
 import NotPixelIcon from "@/drops/notpixel/assets/images/icon.png?format=webp&w=80";
 import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
 import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
+import TadaIcon from "@/drops/tada/assets/images/icon.png?format=webp&w=80";
 import TelegramWeb from "@/TelegramWeb";
 import TelegramWebAIcon from "@/assets/images/telegram-web-a.png?format=webp&w=80";
 import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=80";
@@ -63,6 +64,12 @@ const farmerTabs = [
     title: "Yescoin",
     icon: YescoinIcon,
     component: <Farmer farmer="Yescoin" />,
+  },
+  {
+    id: "tada",
+    title: "Tada",
+    icon: TadaIcon,
+    component: <Farmer farmer="Tada" />,
   },
   {
     id: "wonton",

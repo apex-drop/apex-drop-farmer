@@ -42,10 +42,10 @@ export default function WontonFarmer() {
       // Check
       const farming = farmingStatusQuery.data;
 
-      if (!farming.finishAt) {
+      if (!farming.finishAt || farming.claimed) {
         await startFarmingMutation.mutateAsync();
         toast.success("Wonton Started Farming");
-      } else if (isAfter(new Date().toISOString(), farming.finishAt)) {
+      } else if (isAfter(new Date(), new Date(farming.finishAt))) {
         await claimFarmingMutation.mutateAsync();
         toast.success("Wonton Claimed Previous Farming");
 

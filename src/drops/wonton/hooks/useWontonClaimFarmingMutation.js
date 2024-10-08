@@ -8,7 +8,7 @@ export default function useWontonClaimFarmingMutation() {
     mutationKey: ["wonton", "farming", "claim"],
     mutationFn: () =>
       api
-        .post("https://game-domain.wonton.codes/api/v1/farming/claim", null)
+        .post("https://wonton.food/api/v1/user/farming-claim", null)
         .then((res) => res.data),
   });
 }

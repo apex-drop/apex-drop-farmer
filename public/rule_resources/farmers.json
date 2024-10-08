@@ -362,5 +362,33 @@
     "condition": {
       "requestDomains": ["wonton.restaurant", "wonton.food"]
     }
+  },
+  {
+    "id": 14,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://tada-mini.mvlchain.io"
+        },
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://tada-mini.mvlchain.io/"
+        }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": ["backend.clutchwalletserver.xyz"]
+    }
   }
 ]

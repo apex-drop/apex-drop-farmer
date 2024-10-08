@@ -334,5 +334,33 @@
     "condition": {
       "requestDomains": ["yescoin.gold"]
     }
+  },
+  {
+    "id": 13,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://www.wonton.restaurant"
+        },
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://www.wonton.restaurant/"
+        }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": ["wonton.restaurant", "wonton.food"]
+    }
   }
 ]

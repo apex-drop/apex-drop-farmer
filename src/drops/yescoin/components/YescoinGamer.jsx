@@ -3,7 +3,7 @@ import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { CgSpinner } from "react-icons/cg";
-import { delay } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
@@ -17,7 +17,9 @@ import useYescoinSpecialBoxReloadMutation from "../hooks/useYescoinSpecialBoxRel
 export default function YescoinGamer() {
   const process = useProcessLock();
   const gameInfoQuery = useYescoinGameInfoQuery();
-  const specialBoxInfoQuery = useYescoinGameSpecialBoxInfoQuery();
+  const specialBoxInfoQuery = useYescoinGameSpecialBoxInfoQuery({
+    enabled: process.started,
+  });
 
   const specialBox = specialBoxInfoQuery.data;
   const coinLeft = gameInfoQuery.data?.coinPoolLeftCount;
@@ -74,7 +76,7 @@ export default function YescoinGamer() {
         toast.success(`Collected ${toCollect} coins!`);
 
         /** Special Box */
-        if (specialBox.autoBox) {
+        if (specialBox?.autoBox) {
           if (!specialBox.autoBox.boxStatus) {
             await reloadSpecialBoxMutation.mutateAsync();
           } else {
@@ -89,7 +91,7 @@ export default function YescoinGamer() {
           }
         }
 
-        await delay(5000);
+        await delay(10000);
       }
 
       /** Unlock */
@@ -100,9 +102,21 @@ export default function YescoinGamer() {
   return (
     <div className="flex flex-col gap-2">
       {gameInfoQuery.isSuccess ? (
-        <button onClick={dispatchAndHandleAutoGameClick}>
-          {!process.started ? "Start Playing" : "Stop Playing"}
-        </button>
+        <>
+          <button
+            onClick={dispatchAndHandleAutoGameClick}
+            className={cn(
+              "px-4 py-2 rounded-lg text-white font-bold",
+              !process.started ? "bg-purple-500" : "bg-red-500"
+            )}
+          >
+            {!process.started ? "Start Playing" : "Stop Playing"}
+          </button>
+
+          <div className="font-bold text-center text-orange-500">
+            Left: {coinLeft}
+          </div>
+        </>
       ) : (
         <CgSpinner className="w-5 h-5 mx-auto animate-spin" />
       )}

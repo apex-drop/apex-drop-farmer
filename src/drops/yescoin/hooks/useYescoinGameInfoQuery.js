@@ -7,7 +7,7 @@ export default function useYescoinGameInfoQuery() {
   const isMutating = useIsMutating({ mutationKey: ["yescoin"] });
 
   return useQuery({
-    refetchInterval: isMutating < 1 ? 3000 : false,
+    refetchInterval: isMutating < 1 ? 5000 : false,
     queryKey: ["yescoin", "game", "info"],
     queryFn: ({ signal }) =>
       api

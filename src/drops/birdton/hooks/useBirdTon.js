@@ -110,10 +110,13 @@ export default function useBirdTon(farmer) {
     socket.addEventListener("close", () => {
       /** Reset Auth */
       farmer.resetAuth();
+      setConnected(false);
     });
 
     return () => {
       socketRef.current?.close();
+      socketRef.current = null;
+      setConnected(false);
     };
   }, [farmer.authQuery.status]);
 

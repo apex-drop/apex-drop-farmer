@@ -67,7 +67,8 @@ export default function useDropFarmer({
     queryClient.resetQueries({
       queryKey,
     });
-  }, [queryClient, queryKey]);
+    setAuth(null);
+  }, [queryClient, queryKey, setAuth]);
 
   /** Response Interceptor */
   useEffect(() => {

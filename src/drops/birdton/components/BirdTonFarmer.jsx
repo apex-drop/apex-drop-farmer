@@ -12,11 +12,11 @@ import useBirdTonFarmerContext from "../hooks/useBirdTonFarmerContext";
 export default function BirdTonFarmer() {
   const { connected, authQuery } = useBirdTonFarmerContext();
   const user = authQuery.data;
-  const energy = user["energy"] || 0;
-  const maxEnergy = user["energy_capacity"] || 0;
+  const energy = user?.["energy"] || 0;
+  const maxEnergy = use?.["energy_capacity"] || 0;
   const tabs = useSocketTabs("birdton.farmer-tabs", "game");
 
-  return connected ? (
+  return user && connected ? (
     <div className="flex flex-col gap-2 p-4">
       {/* Header */}
       <div className="flex items-center justify-center gap-2 p-2">

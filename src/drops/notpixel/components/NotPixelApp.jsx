@@ -1,14 +1,10 @@
 import toast from "react-hot-toast";
 import useProcessLock from "@/hooks/useProcessLock";
-import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
-import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { CgSpinner } from "react-icons/cg";
 import { cn, delay } from "@/lib/utils";
 import { useCallback } from "react";
 import { useEffect } from "react";
-import { useMemo } from "react";
 import { useState } from "react";
-
 import NotPixelIcon from "../assets/images/icon.png?format=webp&w=80";
 import useNotPixelMiningStatusQuery from "../hooks/useNotPixelMiningStatusQuery";
 import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
@@ -21,51 +17,16 @@ export default function NotPixelApp({ diff }) {
   const [color, setColor] = useState(null);
 
   /** Start */
-  const [startFarming, dispatchAndStartFarming] = useSocketDispatchCallback(
-    /** Main */
-    useCallback(() => {
-      process.start();
-      setColor(null);
-    }, [process, setColor]),
-
-    /** Dispatch */
-    useCallback((socket) => {
-      socket.dispatch({
-        action: "notpixel.repaint.start",
-      });
-    }, [])
-  );
+  const startFarming = useCallback(() => {
+    process.start();
+    setColor(null);
+  }, [process, setColor]);
 
   /** Stop */
-  const [stopFarming, dispatchAndStopFarming] = useSocketDispatchCallback(
-    /** Main */
-    useCallback(() => {
-      process.stop();
-      setColor(null);
-    }, [process, setColor]),
-
-    /** Dispatch */
-    useCallback((socket) => {
-      socket.dispatch({
-        action: "notpixel.repaint.stop",
-      });
-    }, [])
-  );
-
-  /** Sync Handlers */
-  useSocketHandlers(
-    useMemo(
-      () => ({
-        "notpixel.repaint.start": () => {
-          startFarming();
-        },
-        "notpixel.repaint.stop": () => {
-          stopFarming();
-        },
-      }),
-      [startFarming, stopFarming]
-    )
-  );
+  const stopFarming = useCallback(() => {
+    process.stop();
+    setColor(null);
+  }, [process, setColor]);
 
   /** Farmer */
   useEffect(() => {
@@ -136,11 +97,7 @@ export default function NotPixelApp({ diff }) {
           <h2 className="text-center">Charges: {mining.charges}</h2>
 
           <button
-            onClick={
-              !process.started
-                ? dispatchAndStartFarming
-                : dispatchAndStopFarming
-            }
+            onClick={!process.started ? startFarming : stopFarming}
             disabled={mining.charges < 1}
             className={cn(
               "text-white px-4 py-2 rounded-lg disabled:opacity-50",

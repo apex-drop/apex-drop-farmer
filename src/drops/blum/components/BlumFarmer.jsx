@@ -25,7 +25,10 @@ export default function BlumFarmer() {
 
   useEffect(() => {
     (async function () {
-      await dailyRewardMutation.mutateAsync();
+      try {
+        await dailyRewardMutation.mutateAsync();
+        toast.success("Blum Daily Check-In");
+      } catch {}
     })();
   }, []);
 

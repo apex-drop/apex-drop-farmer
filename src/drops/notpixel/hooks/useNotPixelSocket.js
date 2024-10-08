@@ -25,7 +25,9 @@ export default function useNotPixelSocket(enabled, updatePixels) {
           }
         }
 
-        updatePixels(pixelUpdates);
+        if (pixelUpdates.length) {
+          updatePixels(pixelUpdates);
+        }
       };
 
       /** Add Event Listener for Open */

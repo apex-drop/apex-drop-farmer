@@ -45,7 +45,7 @@ export default function NotPixelFarmer() {
   }, [configureNotPixel]);
 
   return started ? (
-    <NotPixelApp diff={diff} />
+    <NotPixelApp diff={diff} updatePixels={updatePixels} />
   ) : (
     <div className="flex items-center justify-center grow">
       <CgSpinner className="w-5 h-5 mx-auto animate-spin" />

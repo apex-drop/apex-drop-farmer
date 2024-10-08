@@ -2,19 +2,26 @@ import toast from "react-hot-toast";
 import useProcessLock from "@/hooks/useProcessLock";
 import { CgSpinner } from "react-icons/cg";
 import { cn, delay } from "@/lib/utils";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import NotPixelIcon from "../assets/images/icon.png?format=webp&w=80";
 import useNotPixelMiningStatusQuery from "../hooks/useNotPixelMiningStatusQuery";
 import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
+import useNotPixelMiningClaimMutation from "../hooks/useNotPixelMiningClaimMutation";
 
-export default function NotPixelApp({ diff }) {
+export default function NotPixelApp({ diff, updatePixels }) {
   const miningQuery = useNotPixelMiningStatusQuery();
   const mining = miningQuery.data;
   const process = useProcessLock();
   const repaintMutation = useNotPixelRepaintMutation();
+  const claimMiningMutation = useNotPixelMiningClaimMutation();
   const [color, setColor] = useState(null);
+
+  const balance = useMemo(
+    () => Math.floor(mining?.userBalance || 0),
+    [mining?.userBalance]
+  );
 
   /** Start */
   const startFarming = useCallback(() => {
@@ -27,6 +34,18 @@ export default function NotPixelApp({ diff }) {
     process.stop();
     setColor(null);
   }, [process, setColor]);
+
+  /** Claim Mining */
+  useEffect(() => {
+    if (!mining) return;
+
+    (async function () {
+      if (mining.fromStart >= mining.maxMiningTime) {
+        await claimMiningMutation.mutateAsync();
+        toast.success("Not Pixel - Claimed Mining");
+      }
+    })();
+  }, [mining]);
 
   /** Farmer */
   useEffect(() => {
@@ -56,15 +75,18 @@ export default function NotPixelApp({ diff }) {
               newColor,
             });
 
+            /** Update Pixels */
+            updatePixels([[pixelId, newColor]]);
+
+            /** Refetch */
+            await miningQuery.refetch();
+
             /** Show Difference */
             toast.success(`+${data.balance - mining.userBalance}`);
 
             /** Delay */
             await delay(5_000);
           }
-
-          /** Refetch */
-          await miningQuery.refetch();
         }
       } catch {}
 
@@ -77,7 +99,7 @@ export default function NotPixelApp({ diff }) {
       /** Release Lock */
       process.unlock();
     })();
-  }, [process, diff, mining]);
+  }, [process, diff, mining, updatePixels]);
 
   return (
     <div className="flex flex-col gap-2 p-4">
@@ -93,7 +115,7 @@ export default function NotPixelApp({ diff }) {
 
       {miningQuery.isSuccess ? (
         <>
-          <h1 className="text-3xl text-center">{mining.userBalance}</h1>
+          <h1 className="text-3xl text-center">{balance}</h1>
           <h2 className="text-center">Charges: {mining.charges}</h2>
 
           <button

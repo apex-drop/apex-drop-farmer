@@ -306,5 +306,33 @@
     "condition": {
       "requestDomains": ["notpx.app"]
     }
+  },
+  {
+    "id": 12,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://www.yescoin.gold"
+        },
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://www.yescoin.gold/"
+        }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": ["yescoin.gold"]
+    }
   }
 ]

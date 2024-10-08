@@ -14,6 +14,7 @@ import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=8
 import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
 import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
 import Welcome from "@/Welcome";
+import YescoinIcon from "@/drops/yescoin/assets/images/icon.png?format=webp&w=80";
 
 import Farmer from "./Farmer";
 
@@ -57,7 +58,12 @@ const farmerTabs = [
     icon: HrumIcon,
     component: <Farmer farmer="Hrum" />,
   },
-
+  {
+    id: "yescoin",
+    title: "Yescoin",
+    icon: YescoinIcon,
+    component: <Farmer farmer="Yescoin" />,
+  },
   {
     id: "blum",
     title: "Blum",

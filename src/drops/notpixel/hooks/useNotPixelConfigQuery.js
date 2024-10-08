@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function useNotPixelConfigQuery() {
   return useQuery({
-    queryKey: ["notpx", "config"],
+    queryKey: ["notpixel", "config"],
     queryFn: ({ signal }) =>
       axios
         .get(

@@ -11,6 +11,7 @@ export default function useDropFarmer({
   id,
   host,
   cache = true,
+  authHeader,
   fetchAuth,
   extractAuth,
   notification,
@@ -91,18 +92,19 @@ export default function useDropFarmer({
       /** Extract and Set Authorization Header */
       let Authorization = extractAuth(authQuery.data);
       if (Authorization) {
-        api.defaults.headers.common["Authorization"] = Authorization;
+        api.defaults.headers.common[authHeader || "Authorization"] =
+          Authorization;
       }
       /** Set Auth */
       setAuth(authQuery.data);
     } else {
       /** Remove Authorization Header */
-      delete api.defaults.headers.common["Authorization"];
+      delete api.defaults.headers.common[authHeader || "Authorization"];
 
       /** Remove Auth */
       setAuth(null);
     }
-  }, [api, authQuery.data, setAuth, extractAuth]);
+  }, [api, authQuery.data, setAuth, extractAuth, authHeader]);
 
   useEffect(() => {
     if (auth) {

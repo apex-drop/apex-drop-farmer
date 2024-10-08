@@ -1,11 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { useIsMutating, useQuery } from "@tanstack/react-query";
 
 import useSlotcoinApi from "./useSlotcoinApi";
 
 export default function useSlotcoinInfoQuery() {
   const api = useSlotcoinApi();
+  const isMutating = useIsMutating({ mutationKey: ["slotcoin"] });
+
   return useQuery({
-    refetchInterval: 10_000,
+    refetchInterval: isMutating < 1 ? 10_000 : false,
     queryKey: ["slotcoin", "info"],
     queryFn: ({ signal }) =>
       api

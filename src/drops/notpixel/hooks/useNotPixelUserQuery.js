@@ -1,13 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import { useIsMutating, useQuery } from "@tanstack/react-query";
 
 import useNotPixelApi from "./useNotPixelApi";
 
 export default function useNotPixelUserQuery(options) {
   const api = useNotPixelApi();
+  const isMutating = useIsMutating({ mutationKey: ["notpixel"] });
+
   return useQuery({
     ...options,
-    refetchInterval: 10_000,
-    queryKey: ["notpx", "user"],
+    refetchInterval: isMutating < 1 ? 10_000 : false,
+    queryKey: ["notpixel", "user"],
     queryFn: ({ signal }) =>
       api
         .get("https://notpx.app/api/v1/users/me", {

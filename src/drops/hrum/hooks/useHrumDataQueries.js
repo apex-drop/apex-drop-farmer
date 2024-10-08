@@ -1,11 +1,12 @@
 import { useCallback } from "react";
-import { useQueries } from "@tanstack/react-query";
-
+import { useIsMutating, useQueries } from "@tanstack/react-query";
 import useHrumFarmerContext from "./useHrumFarmerContext";
 import { getHrumHeaders } from "../lib/utils";
 
 export default function useHrumDataQueries() {
   const { api, telegramWebApp } = useHrumFarmerContext();
+  const isMutating = useIsMutating({ mutationKey: ["hrum"] });
+
   const combine = useCallback((results) => {
     return {
       query: results,
@@ -20,7 +21,7 @@ export default function useHrumDataQueries() {
     combine,
     queries: [
       {
-        refetchInterval: 10_000,
+        refetchInterval: isMutating < 1 ? 10_000 : false,
         queryKey: ["hrum", "all"],
         queryFn: ({ signal }) => {
           const body = {
@@ -39,7 +40,7 @@ export default function useHrumDataQueries() {
         },
       },
       {
-        refetchInterval: 10_000,
+        refetchInterval: isMutating < 1 ? 10_000 : false,
         queryKey: ["hrum", "after"],
         queryFn: ({ signal }) => {
           const body = {

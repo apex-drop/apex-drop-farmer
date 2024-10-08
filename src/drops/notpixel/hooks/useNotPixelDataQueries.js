@@ -1,10 +1,10 @@
 import { useCallback } from "react";
-import { useQueries } from "@tanstack/react-query";
-
+import { useIsMutating, useQueries } from "@tanstack/react-query";
 import useNotPixelApi from "./useNotPixelApi";
 
 export default function useNotPixelDataQueries() {
   const api = useNotPixelApi();
+  const isMutating = useIsMutating({ mutationKey: ["notpixel"] });
 
   const combine = useCallback((results) => {
     return {
@@ -20,8 +20,8 @@ export default function useNotPixelDataQueries() {
     combine,
     queries: [
       {
-        refetchInterval: 10_000,
-        queryKey: ["notpx", "user"],
+        refetchInterval: isMutating < 1 ? 10_000 : false,
+        queryKey: ["notpixel", "user"],
         queryFn: ({ signal }) =>
           api
             .get("https://notpx.app/api/v1/users/me", {
@@ -30,8 +30,8 @@ export default function useNotPixelDataQueries() {
             .then((res) => res.data),
       },
       {
-        refetchInterval: 10_000,
-        queryKey: ["notpx", "mining", "status"],
+        refetchInterval: isMutating < 1 ? 10_000 : false,
+        queryKey: ["notpixel", "mining", "status"],
         queryFn: ({ signal }) =>
           api
             .get("https://notpx.app/api/v1/mining/status", {

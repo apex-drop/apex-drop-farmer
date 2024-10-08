@@ -36,7 +36,7 @@ export default function BirdTonGamer() {
   );
 
   const user = authQuery.data;
-  const energy = user["energy"] || 0;
+  const energy = user?.["energy"] || 0;
 
   /** Reset Game */
   const reset = useCallback(() => {

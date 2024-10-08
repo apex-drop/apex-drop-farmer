@@ -1,12 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-
+import { useIsMutating, useQuery } from "@tanstack/react-query";
 import useNotPixelApi from "./useNotPixelApi";
 
 export default function useNotPixelMiningStatusQuery() {
   const api = useNotPixelApi();
+  const isMutating = useIsMutating({ mutationKey: ["notpixel"] });
+
   return useQuery({
-    refetchInterval: 10_000,
-    queryKey: ["notpx", "mining", "status"],
+    refetchInterval: isMutating < 1 ? 10_000 : false,
+    queryKey: ["notpixel", "mining", "status"],
     queryFn: ({ signal }) =>
       api
         .get("https://notpx.app/api/v1/mining/status", {

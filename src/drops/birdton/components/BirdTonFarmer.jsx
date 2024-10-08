@@ -13,7 +13,7 @@ export default function BirdTonFarmer() {
   const { connected, authQuery } = useBirdTonFarmerContext();
   const user = authQuery.data;
   const energy = user?.["energy"] || 0;
-  const maxEnergy = use?.["energy_capacity"] || 0;
+  const maxEnergy = user?.["energy_capacity"] || 0;
   const tabs = useSocketTabs("birdton.farmer-tabs", "game");
 
   return user && connected ? (

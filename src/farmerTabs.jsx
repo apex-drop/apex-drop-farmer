@@ -50,7 +50,6 @@ const farmerTabs = [
     title: "Not Pixel",
     icon: NotPixelIcon,
     component: <Farmer farmer="NotPixel" />,
-    hidden: true,
   },
   {
     id: "hrum",

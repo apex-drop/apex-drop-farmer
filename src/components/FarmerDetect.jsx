@@ -8,9 +8,11 @@ export default function FarmerDetect({ status, title, icon, className }) {
         {status === "pending-webapp" ? "Getting App" : "Fetching Auth"}
       </h3>
       <p className={cn("text-center text-neutral-500", className)}>
-        {status === "pending-webapp"
-          ? "Please open/reload the bot"
-          : "Loading..."}
+        {status === "pending-webapp" ? (
+          <>Please open/reload the bot</>
+        ) : (
+          <>If stuck for too long, you should reload the bot</>
+        )}
       </p>
     </div>
   );

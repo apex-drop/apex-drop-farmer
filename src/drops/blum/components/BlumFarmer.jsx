@@ -1,19 +1,19 @@
 import * as Tabs from "@radix-ui/react-tabs";
+import toast from "react-hot-toast";
 import useSocketTabs from "@/hooks/useSocketTabs";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 import BlumAutoGamer from "./BlumAutoGamer";
 import BlumAutoTasks from "./BlumAutoTasks";
 import BlumBalanceDisplay from "./BlumBalanceDisplay";
 import BlumFarmerHeader from "./BlumFarmerHeader";
 import BlumUsernameDisplay from "./BlumUsernameDisplay";
-import useBlumDailyRewardMutation from "../hooks/useBlumDailyRewardMutation";
-import { useEffect } from "react";
 import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
-import useBlumNowQuery from "../hooks/useBlumNowQuery";
 import useBlumClaimFarmingMutation from "../hooks/useBlumClaimFarmingMutation";
+import useBlumDailyRewardMutation from "../hooks/useBlumDailyRewardMutation";
+import useBlumNowQuery from "../hooks/useBlumNowQuery";
 import useBlumStartFarmingMutation from "../hooks/useBlumStartFarmingMutation";
-import toast from "react-hot-toast";
 
 export default function BlumFarmer() {
   const tabs = useSocketTabs("blum.farmer-tabs", "game");
@@ -42,7 +42,7 @@ export default function BlumFarmer() {
       if (!balance.isFastFarmingEnabled) {
         await startFarmingMutation.mutateAsync();
         toast.success("Blum Started Farming");
-      } else if (now > farming.endTime) {
+      } else if (balance.timestamp >= farming.endTime) {
         await claimFarmingMutation.mutateAsync();
         toast.success("Blum Claimed Previous Farming");
 

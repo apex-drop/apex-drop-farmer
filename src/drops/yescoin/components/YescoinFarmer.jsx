@@ -4,15 +4,16 @@ import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
 
 import YescoinBalanceDisplay from "./YescoinBalanceDisplay";
+import YescoinDailyMission from "./YescoinDailyMission";
+import YescoinGamer from "./YescoinGamer";
 import YescoinIcon from "../assets/images/icon.png?format=webp&w=80";
 import useYescoinAccountInfoQuery from "../hooks/useYescoinAccountInfoQuery";
-import YescoinDailyMission from "./YescoinDailyMission";
 import useYescoinDailyCheckIn from "../hooks/useYescoinDailyCheckIn";
 import useYescoinOfflineQuery from "../hooks/useYescoinOfflineQuery";
 
 export default function YescoinFarmer() {
   const accountInfoQuery = useYescoinAccountInfoQuery();
-  const tabs = useSocketTabs("yescoin.farmer-tabs", "daily-mission");
+  const tabs = useSocketTabs("yescoin.farmer-tabs", "game");
 
   useYescoinDailyCheckIn();
   useYescoinOfflineQuery();
@@ -34,7 +35,7 @@ export default function YescoinFarmer() {
           <YescoinBalanceDisplay />
           <Tabs.Root {...tabs} className="flex flex-col gap-4">
             <Tabs.List className="grid grid-cols-2">
-              {["daily-mission", "tasks"].map((value, index) => (
+              {["game", "daily-mission"].map((value, index) => (
                 <Tabs.Trigger
                   key={index}
                   value={value}
@@ -48,10 +49,12 @@ export default function YescoinFarmer() {
                 </Tabs.Trigger>
               ))}
             </Tabs.List>
+            <Tabs.Content value="game">
+              <YescoinGamer />
+            </Tabs.Content>
             <Tabs.Content value="daily-mission">
               <YescoinDailyMission />
             </Tabs.Content>
-            <Tabs.Content value="tasks"></Tabs.Content>
           </Tabs.Root>
         </>
       ) : (

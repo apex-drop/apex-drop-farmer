@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useEffect } from "react";
 
 import SlotcoinIcon from "../assets/images/icon.png?format=webp&w=80";
@@ -17,6 +18,7 @@ export default function SlotcoinFarmer() {
 
       if (Math.sign(checkIn["time_to_claim"]) === -1) {
         await checkInMutation.mutateAsync();
+        toast.success("Slotcoin - Check-In");
       }
     })();
   }, [checkInQuery.data]);

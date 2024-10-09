@@ -20,33 +20,13 @@ export default defineConfig({
       input: {
         index: path.resolve(__dirname, "./index.html"),
         "service-worker": path.resolve(__dirname, "./src/service-worker.js"),
-        "content-script-world": path.resolve(
+        "content-script-main": path.resolve(
           __dirname,
-          "./src/content-script-world.js"
+          "./src/content-script-main.js"
         ),
         "content-script-isolated": path.resolve(
           __dirname,
           "./src/content-script-isolated.js"
-        ),
-
-        /** Tomarket Content Scripts */
-        "tomarket-isolated": path.resolve(
-          __dirname,
-          "./src/drops/tomarket/tomarket-isolated.js"
-        ),
-        "tomarket-world": path.resolve(
-          __dirname,
-          "./src/drops/tomarket/tomarket-world.js"
-        ),
-
-        /** Not Pixel Content Scripts */
-        "notpixel-isolated": path.resolve(
-          __dirname,
-          "./src/drops/notpixel/notpixel-isolated.js"
-        ),
-        "notpixel-world": path.resolve(
-          __dirname,
-          "./src/drops/notpixel/notpixel-world.js"
         ),
       },
       output: {

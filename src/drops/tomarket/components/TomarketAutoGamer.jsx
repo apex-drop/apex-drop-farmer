@@ -3,7 +3,6 @@ import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import useSocketState from "@/hooks/useSocketState";
-import { CgSpinner } from "react-icons/cg";
 import { delay } from "@/lib/utils";
 import { useCallback, useEffect, useMemo } from "react";
 import { useState } from "react";
@@ -20,10 +19,8 @@ const MIN_POINT = 100;
 const INITIAL_POINT = 220;
 const MAX_POINT = 390;
 
-export default function Tomarket() {
+export default function Tomarket({ tomarket }) {
   const query = useTomarketBalanceQuery();
-
-  const [tomarket, setTomarket] = useState(null);
 
   const process = useProcessLock();
   const [countdown, setCountdown] = useState(null);
@@ -45,19 +42,6 @@ export default function Tomarket() {
   /** Countdown renderer */
   const countdownRenderer = ({ seconds }) => (
     <span className="text-xl font-bold">{seconds}</span>
-  );
-
-  /** Configure Tomarket */
-  const configureTomarket = useCallback(
-    (data, store = true) => {
-      if (store) {
-        chrome?.storage?.local.set({
-          tomarket: data,
-        });
-      }
-      setTomarket(data);
-    },
-    [setTomarket]
   );
 
   /** Handle button click */
@@ -88,29 +72,6 @@ export default function Tomarket() {
       [handleAutoPlayClick]
     )
   );
-
-  useEffect(() => {
-    const watchStorage = ({ tomarket: data }) => {
-      if (data) {
-        configureTomarket(data.newValue, false);
-      }
-    };
-
-    /** Get and Store Data */
-    chrome?.storage?.local.get("tomarket").then(({ tomarket: data }) => {
-      if (data) {
-        configureTomarket(data, false);
-      }
-    });
-
-    /** Listen for change */
-    chrome?.storage?.local?.onChanged.addListener(watchStorage);
-
-    return () => {
-      /** Remove Listener */
-      chrome?.storage?.local?.onChanged.removeListener(watchStorage);
-    };
-  }, []);
 
   /** Auto Play */
   useEffect(() => {
@@ -154,7 +115,7 @@ export default function Tomarket() {
     })();
   }, [process, tickets]);
 
-  return tomarket ? (
+  return (
     <div className="flex flex-col gap-2">
       {tickets > 0 ? (
         <>
@@ -221,13 +182,6 @@ export default function Tomarket() {
           )}
         </div>
       ) : null}
-    </div>
-  ) : (
-    <div className="flex flex-col gap-2">
-      <div className="p-2 text-center text-white bg-black rounded-lg">
-        Please relaunch Tomarket or the farmer...
-      </div>
-      <CgSpinner className="w-5 h-5 mx-auto animate-spin" />
     </div>
   );
 }

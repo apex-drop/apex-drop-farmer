@@ -5,6 +5,7 @@ import NotPixelApp from "./NotPixelApp";
 import useNotPixelData from "../hooks/useNotPixelData";
 import useNotPixelDiff from "../hooks/useNotPixelDiff";
 import useNotPixelSocket from "../hooks/useNotPixelSocket";
+import { getNotPixelGame } from "../lib/utils";
 
 export default function NotPixelFarmer() {
   const { started, pixels, worldPixels, updateWorldPixels, configureNotPixel } =
@@ -14,30 +15,14 @@ export default function NotPixelFarmer() {
   /** Initiate socket */
   const { connected } = useNotPixelSocket(started, updateWorldPixels);
 
-  /** Get NotPixel from Message */
+  /** Get NotPixel */
   useEffect(() => {
-    const getNotPixel = (message, sender, sendResponse) => {
-      if (message.action === "set-notpixel") {
-        /** Return a Response */
-        sendResponse({
-          status: true,
-        });
+    (async function () {
+      const game = await getNotPixelGame();
 
-        /** Configure the App */
-        configureNotPixel(message.data.notpixel);
-
-        /** Remove Listener */
-        chrome?.runtime?.onMessage.removeListener(getNotPixel);
-      }
-    };
-
-    /** Add Listener */
-    chrome?.runtime?.onMessage.addListener(getNotPixel);
-
-    return () => {
-      /** Remove Listener */
-      chrome?.runtime?.onMessage.removeListener(getNotPixel);
-    };
+      /** Configure the App */
+      configureNotPixel(game);
+    })();
   }, [configureNotPixel]);
 
   return connected ? (

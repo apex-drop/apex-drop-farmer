@@ -1,4 +1,5 @@
 import rgbHex from "rgb-hex";
+import { getDropMainScript } from "@/lib/utils";
 
 export function loadImage(src) {
   return new Promise((resolve, reject) => {
@@ -60,4 +61,41 @@ export function getCoords(index, item) {
     positionY,
     offset,
   };
+}
+
+export async function getNotPixelGame() {
+  const scriptResponse = await getDropMainScript("https://app.notpx.app");
+
+  try {
+    let items = scriptResponse.match(/this\.items=\[([^\]]+)]/)?.[1];
+    let obj = items
+      .matchAll(/{[^}]+}/g)
+      .toArray()
+      .map((item) => {
+        const match = item[0];
+        // X
+        let x = match.match(/x:([^,]+),/)?.[1]?.replaceAll(/[^\d-]/g, "");
+
+        // Y
+        let y = match.match(/y:([^,]+),/)?.[1]?.replaceAll(/[^\d-]/g, "");
+
+        // Size
+        let size = match.match(/size:([^,]+),/)?.[1]?.replaceAll(/[^\d-]/g, "");
+
+        // Image
+        let imageVariable = match.match(/image:([^,]+),/)?.[1];
+        let image = scriptResponse.match(
+          new RegExp(`${imageVariable}="/assets/([^"]+)"`)
+        )?.[1];
+
+        return {
+          x: parseInt(x),
+          y: parseInt(y),
+          size: parseInt(size),
+          image: `/assets/${image}`,
+        };
+      });
+
+    return obj;
+  } catch {}
 }

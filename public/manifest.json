@@ -35,7 +35,7 @@
   "content_scripts": [
     {
       "matches": ["*://*/*"],
-      "js": ["content-script-world.js"],
+      "js": ["content-script-main.js"],
       "run_at": "document_start",
       "world": "MAIN",
       "all_frames": true
@@ -43,35 +43,6 @@
     {
       "matches": ["*://*/*"],
       "js": ["content-script-isolated.js"],
-      "run_at": "document_start",
-      "world": "ISOLATED",
-      "all_frames": true
-    },
-    {
-      "matches": ["*://*.tomarket.ai/*"],
-      "js": ["tomarket-world.js"],
-      "run_at": "document_start",
-      "world": "MAIN",
-      "all_frames": true
-    },
-    {
-      "matches": ["*://*.tomarket.ai/*"],
-      "js": ["tomarket-isolated.js"],
-      "run_at": "document_start",
-      "world": "ISOLATED",
-      "all_frames": true
-    },
-
-    {
-      "matches": ["*://*.notpx.app/*"],
-      "js": ["notpixel-world.js"],
-      "run_at": "document_start",
-      "world": "MAIN",
-      "all_frames": true
-    },
-    {
-      "matches": ["*://*.notpx.app/*"],
-      "js": ["notpixel-isolated.js"],
       "run_at": "document_start",
       "world": "ISOLATED",
       "all_frames": true

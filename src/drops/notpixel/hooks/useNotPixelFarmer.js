@@ -10,7 +10,6 @@ export default function useNotPixelFarmer() {
       icon: NotPixelIcon,
       title: "NotPixel Farmer",
     },
-    cache: false,
     fetchAuth: (api, telegramWebApp) =>
       Promise.resolve({ auth: telegramWebApp.initData }),
     extractAuth: (data) => `initData ${data.auth}`,

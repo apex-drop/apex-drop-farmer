@@ -2,17 +2,38 @@ import { useCallback } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 
-import { imageDataToHex, loadImage } from "../lib/utils";
+import { getCoords, loadImage, rgbToHex } from "../lib/utils";
 
 export default function useNotPixelData() {
   const [started, setStarted] = useState(false);
-  const [items, setItems] = useState(null);
+  const [pixels, setPixels] = useState({});
+  const [worldPixels, setWorldPixels] = useState({});
+
+  const updateWorldPixels = useCallback(
+    (updates) => {
+      setWorldPixels((prev) => {
+        let newWorldPixels = { ...prev };
+
+        for (let [pixelId, color] of updates) {
+          if (pixelId in newWorldPixels) {
+            newWorldPixels[pixelId] = color;
+          }
+        }
+
+        return newWorldPixels;
+      });
+    },
+    [setWorldPixels]
+  );
 
   /** Configure Not Pixel Images */
   const configureNotPixel = useCallback(
     (data) => {
+      console.log("---NOT PIXEL---");
+      console.log(data);
+
       Promise.all(
-        data.map((item) => loadImage("https://app.notpx.app" + item.image))
+        data.map(({ image }) => loadImage("https://app.notpx.app" + image))
       )
         .then((images) => {
           const offscreenCanvas = new OffscreenCanvas(1000, 1000);
@@ -20,50 +41,93 @@ export default function useNotPixelData() {
             willReadFrequently: true,
           });
 
-          /** Items */
-          const items = images.map((image, index) => {
-            const item = data[index];
-
+          /** Map Items */
+          const items = data.map((item, index) => {
+            /** X */
             const x =
               Math.sign(item.x) === -1
                 ? offscreenCanvas.width + item.x
                 : item.x;
+
+            /** Y */
             const y =
               Math.sign(item.y) === -1
                 ? offscreenCanvas.height + item.y
                 : item.y;
 
-            /** Draw Image */
-            offscreenCtx.drawImage(image, x, y, item.size, item.size);
-
             return {
+              ...item,
               x,
               y,
-              size: item.size,
-              image,
-              pixels: imageDataToHex(
-                offscreenCtx.getImageData(x, y, item.size, item.size).data
-              ),
+              image: images[index],
             };
           });
 
-          /** Set Items */
-          setItems(items);
+          /** Get Pixels */
+          const getPixels = () =>
+            items.reduce((result, item) => {
+              const data = offscreenCtx.getImageData(
+                item.x,
+                item.y,
+                item.size,
+                item.size
+              ).data;
 
-          /** Start */
-          setStarted(true);
+              for (let i = 0; i < data.length; i += 4) {
+                let [r, g, b, a] = [
+                  data[i + 0],
+                  data[i + 1],
+                  data[i + 2],
+                  data[i + 3],
+                ];
+
+                let pos = i / 4;
+                let { offset } = getCoords(pos, item);
+                let pixelId = offset + 1;
+
+                /** Set Color */
+                result[pixelId] = rgbToHex(r, g, b);
+              }
+
+              return result;
+            }, {});
+
+          /** Draw Images */
+          items.forEach((item) => {
+            offscreenCtx.drawImage(
+              item.image,
+              item.x,
+              item.y,
+              item.size,
+              item.size
+            );
+          });
+
+          /** Set Items */
+          setPixels(getPixels());
+
+          /** Load Current World */
+          loadImage("https://image.notpx.app/api/v2/image").then((image) => {
+            /** Draw current world */
+            offscreenCtx.drawImage(image, 0, 0);
+
+            setWorldPixels(getPixels());
+            setStarted(true);
+          });
         })
         .catch((e) => {});
     },
-    [setItems, setStarted]
+    [setPixels, setWorldPixels]
   );
 
   return useMemo(
     () => ({
       started,
-      items,
+      pixels,
+      worldPixels,
+      updateWorldPixels,
       configureNotPixel,
     }),
-    [started, items, configureNotPixel]
+    [started, pixels, worldPixels, updateWorldPixels, configureNotPixel]
   );
 }

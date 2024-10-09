@@ -28,8 +28,8 @@ export default function useNotPixelSocket(enabled, updateWorldPixels) {
             const SIZE = 5;
             const HALF = Math.floor(SIZE / 2);
 
-            const position = value[1];
-            const { x, y } = getCoords(position - 1, {
+            const position = (value[1] - 1) * 4;
+            const { x, y } = getCoords(position, {
               x: 0,
               y: 0,
               size: 1000,

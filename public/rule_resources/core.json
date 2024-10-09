@@ -7,17 +7,52 @@
         {
           "header": "user-agent",
           "operation": "set",
-          "value": "Mozilla/5.0 (Linux; Android 14; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.127 Mobile Safari/537.36"
+          "value": "Mozilla/5.0 (Linux; Android 11; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.6367.82 Safari/537.36"
         },
         {
-          "header": "sec-ch-ua-platform",
+          "header": "sec-ch-ua",
           "operation": "set",
-          "value": "Android"
+          "value": "\"Chromium\";v=\"124\", \"Android WebView\";v=\"124\", \"Not-A.Brand\";v=\"99\""
         },
         {
           "header": "sec-ch-ua-mobile",
           "operation": "set",
-          "value": "?1"
+          "value": "?0"
+        },
+        {
+          "header": "sec-ch-ua-arch",
+          "operation": "set",
+          "value": "\"\""
+        },
+        {
+          "header": "sec-ch-ua-arch-full-version",
+          "operation": "set",
+          "value": "\"\""
+        },
+        {
+          "header": "sec-ch-ua-platform-version",
+          "operation": "set",
+          "value": "\"\""
+        },
+        {
+          "header": "sec-ch-ua-full-version-list",
+          "operation": "set",
+          "value": ""
+        },
+        {
+          "header": "sec-ch-ua-bitness",
+          "operation": "set",
+          "value": "\"\""
+        },
+        {
+          "header": "sec-ch-ua-model",
+          "operation": "set",
+          "value": "\"\""
+        },
+        {
+          "header": "sec-ch-ua-platform",
+          "operation": "set",
+          "value": "\"Android\""
         }
       ],
       "responseHeaders": [

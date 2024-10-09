@@ -5,6 +5,11 @@
       "type": "modifyHeaders",
       "requestHeaders": [
         {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
+        {
           "header": "origin",
           "operation": "set",
           "value": "https://static.agent301.org"
@@ -32,6 +37,11 @@
     "action": {
       "type": "modifyHeaders",
       "requestHeaders": [
+        {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
         {
           "header": "origin",
           "operation": "set",
@@ -61,6 +71,11 @@
       "type": "modifyHeaders",
       "requestHeaders": [
         {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
+        {
           "header": "origin",
           "operation": "set",
           "value": "https://telegram.blum.codes"
@@ -88,6 +103,11 @@
     "action": {
       "type": "modifyHeaders",
       "requestHeaders": [
+        {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
         {
           "header": "origin",
           "operation": "set",
@@ -117,6 +137,11 @@
       "type": "modifyHeaders",
       "requestHeaders": [
         {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
+        {
           "header": "origin",
           "operation": "set",
           "value": "https://game.hrum.me"
@@ -144,6 +169,11 @@
     "action": {
       "type": "modifyHeaders",
       "requestHeaders": [
+        {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
         {
           "header": "origin",
           "operation": "set",
@@ -173,6 +203,11 @@
       "type": "modifyHeaders",
       "requestHeaders": [
         {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
+        {
           "header": "origin",
           "operation": "set",
           "value": "https://tg.pumpad.io"
@@ -181,6 +216,11 @@
           "header": "referer",
           "operation": "set",
           "value": "https://tg.pumpad.io/"
+        },
+        {
+          "header": "cookie",
+          "operation": "set",
+          "value": "cf_clearance=vRcyKo0A5ko2cSKC3KAPWIMWByRXSDjZUoS1rjtbvvM-1725531610-1.2.1.1-48RwIL6a3z_1KMTLS.AADKah6wPxpQ5go0803_bg0TzTAyG96Ja7cf2MMZEWjcjw8yTNgy_EpHlYwfePsaK48VKXCuRlXYzA0UqS21aYpUEtyLW8Otyo9Czwl6NYZxr7CtusW1XPRBvhNmnhGNUpQLdDbh9PER1pJLQFdBH.M3vsBIGBDngRLQCsY7nmukJLePtCFwaFZusmj8FmRMtli4UYDfIHRcrMSHGs6bLE0jv6a4Rd9oEzqJCT8GSu0_eox3KWomlWwYOkjrid8yfca16Ch7tceOZBA8kbpn20PonHmSiav5uQVUzv9yHBr65JFVrCG5mV.eeyXdyEIDqkg_4TQHZaoulFLNdx71zoxrCMH4h7helL2d.6cc_skhE.jNLveglxJsfPBINgaN_T25Qy2ojGpN_42nBqCoEBofVJbkXcre92e3JrFUXnGhfj"
         }
       ],
       "responseHeaders": [
@@ -200,6 +240,11 @@
     "action": {
       "type": "modifyHeaders",
       "requestHeaders": [
+        {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
         {
           "header": "origin",
           "operation": "set",
@@ -229,6 +274,11 @@
       "type": "modifyHeaders",
       "requestHeaders": [
         {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
+        {
           "header": "origin",
           "operation": "set",
           "value": "https://mini-app.tomarket.ai"
@@ -256,6 +306,11 @@
     "action": {
       "type": "modifyHeaders",
       "requestHeaders": [
+        {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
         {
           "header": "origin",
           "operation": "set",
@@ -285,6 +340,11 @@
       "type": "modifyHeaders",
       "requestHeaders": [
         {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
+        {
           "header": "origin",
           "operation": "set",
           "value": "https://app.notpx.app"
@@ -312,6 +372,11 @@
     "action": {
       "type": "modifyHeaders",
       "requestHeaders": [
+        {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
         {
           "header": "origin",
           "operation": "set",
@@ -341,6 +406,11 @@
       "type": "modifyHeaders",
       "requestHeaders": [
         {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
+        {
           "header": "origin",
           "operation": "set",
           "value": "https://www.wonton.restaurant"
@@ -368,6 +438,11 @@
     "action": {
       "type": "modifyHeaders",
       "requestHeaders": [
+        {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
         {
           "header": "origin",
           "operation": "set",

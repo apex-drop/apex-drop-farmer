@@ -12,7 +12,7 @@ if (location.hash.includes("tgWebAppData")) {
   /** Override User Agent */
   Object.defineProperty(navigator, "userAgent", {
     get: () =>
-      "Mozilla/5.0 (Linux; Android 14; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.127 Mobile Safari/537.36",
+      "Mozilla/5.0 (Linux; Android 11; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.6367.82 Safari/537.36",
     configurable: true,
   });
 

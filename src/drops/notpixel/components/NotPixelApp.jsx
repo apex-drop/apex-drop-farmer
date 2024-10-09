@@ -12,7 +12,7 @@ import useNotPixelMiningClaimMutation from "../hooks/useNotPixelMiningClaimMutat
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 
-export default function NotPixelApp({ diff, updatePixels }) {
+export default function NotPixelApp({ diff, resetDiff }) {
   const miningQuery = useNotPixelMiningStatusQuery();
   const mining = miningQuery.data;
   const process = useProcessLock();
@@ -86,8 +86,7 @@ export default function NotPixelApp({ diff, updatePixels }) {
         const item = diff[Math.floor(Math.random() * diff.length)];
 
         if (item) {
-          const [pixelId, pixel] = item;
-          const newColor = pixel.color;
+          const [pixelId, newColor] = item;
 
           setColor(newColor);
 
@@ -96,9 +95,6 @@ export default function NotPixelApp({ diff, updatePixels }) {
               pixelId,
               newColor,
             });
-
-            /** Update Pixels */
-            updatePixels([[pixelId, newColor]]);
 
             /** Refetch */
             await miningQuery.refetch();
@@ -118,10 +114,13 @@ export default function NotPixelApp({ diff, updatePixels }) {
       /** Reset Mutation */
       repaintMutation.reset();
 
+      /** Reset Diff */
+      resetDiff();
+
       /** Release Lock */
       process.unlock();
     })();
-  }, [process, diff, mining, updatePixels]);
+  }, [process, diff, mining, resetDiff]);
 
   /** Sync Handlers */
   useSocketHandlers(

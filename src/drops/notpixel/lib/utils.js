@@ -27,19 +27,6 @@ export function imageDataToHex(data) {
   return imageDataToHexCallback(data, (color) => color);
 }
 
-export function imageDataToPixel(data) {
-  return imageDataToHexCallback(data, (color) => ({
-    color,
-    updatedAt: Date.now(),
-  }));
-}
-
-export function rgbToPixel(...args) {
-  return {
-    color: rgbToHex(...args),
-    updatedAt: Date.now(),
-  };
-}
 export function rgbToHex(...args) {
   return "#" + rgbHex(...args).toUpperCase();
 }

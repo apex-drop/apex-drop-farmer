@@ -7,17 +7,10 @@ import useNotPixelDiff from "../hooks/useNotPixelDiff";
 import useNotPixelSocket from "../hooks/useNotPixelSocket";
 
 export default function NotPixelFarmer() {
-  const {
-    started,
-    configureNotPixel,
-    worldPixels,
-    worldUpdatedAt,
-    items,
-    updatePixels,
-  } = useNotPixelData();
-  const diff = useNotPixelDiff(items, worldPixels, worldUpdatedAt);
+  const { started, configureNotPixel, items } = useNotPixelData();
+  const { diff, updateDiff, resetDiff } = useNotPixelDiff(items);
 
-  useNotPixelSocket(started, updatePixels);
+  useNotPixelSocket(started, updateDiff);
   useEffect(() => {
     /** Get NotPixel from Message */
     const getNotPixel = (message, sender, sendResponse) => {
@@ -45,7 +38,7 @@ export default function NotPixelFarmer() {
   }, [configureNotPixel]);
 
   return started ? (
-    <NotPixelApp diff={diff} updatePixels={updatePixels} />
+    <NotPixelApp diff={diff} resetDiff={resetDiff} />
   ) : (
     <div className="flex items-center justify-center grow">
       <CgSpinner className="w-5 h-5 mx-auto animate-spin" />

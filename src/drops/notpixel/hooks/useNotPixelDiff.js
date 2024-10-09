@@ -1,33 +1,44 @@
-import { useEffect } from "react";
+import { useCallback } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 
 import { getCoords } from "../lib/utils";
 
-export default function useNotPixelDiff(items, worldPixels, worldUpdatedAt) {
+export default function useNotPixelDiff(items) {
   const [diff, setDiff] = useState([]);
 
-  useEffect(() => {
-    if (!items || !worldPixels) {
-      return;
-    }
+  /** Update the diff */
+  const updateDiff = useCallback(
+    (updates) => {
+      const result = [];
 
-    const result = [];
+      items?.forEach((item) => {
+        for (let i = 0; i < item.pixels.length; i++) {
+          let { offset } = getCoords(i, item);
+          let pixelId = offset + 1;
 
-    items.forEach((item) => {
-      for (let i = 0; i < item.pixels.length; i++) {
-        let { offset } = getCoords(i, item);
-
-        if (worldPixels[offset].color !== item.pixels[i].color) {
-          result.push([offset + 1, item.pixels[i]]);
+          if (pixelId in updates && updates[pixelId] !== item.pixels[i]) {
+            result.push([pixelId, item.pixels[i]]);
+          }
         }
-      }
-    });
+      });
 
-    /** Sort the result */
-    result.sort((a, b) => b[1].updatedAt - a[1].updatedAt);
+      setDiff(result >= 50 ? result : []);
+    },
+    [items, setDiff]
+  );
 
-    setDiff(result);
-  }, [items, worldPixels, worldUpdatedAt, setDiff]);
+  /** Reset the diff */
+  const resetDiff = useCallback(() => {
+    setDiff([]);
+  }, [setDiff]);
 
-  return diff;
+  return useMemo(
+    () => ({
+      diff,
+      updateDiff,
+      resetDiff,
+    }),
+    [diff, updateDiff, resetDiff]
+  );
 }

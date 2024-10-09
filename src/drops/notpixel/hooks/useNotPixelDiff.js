@@ -13,20 +13,18 @@ export default function useNotPixelDiff(items, worldPixels, worldUpdatedAt) {
 
     const result = [];
 
-    if (worldUpdatedAt >= Date.now() - 100) {
-      items.forEach((item) => {
-        for (let i = 0; i < item.pixels.length; i++) {
-          let { offset } = getCoords(i, item);
+    items.forEach((item) => {
+      for (let i = 0; i < item.pixels.length; i++) {
+        let { offset } = getCoords(i, item);
 
-          if (
-            worldPixels[offset].color !== item.pixels[i].color &&
-            worldPixels[offset].updatedAt >= Date.now() - 100
-          ) {
-            result.push([offset + 1, item.pixels[i]]);
-          }
+        if (worldPixels[offset].color !== item.pixels[i].color) {
+          result.push([offset + 1, item.pixels[i]]);
         }
-      });
-    }
+      }
+    });
+
+    /** Sort the result */
+    result.sort((a, b) => b[1].updatedAt - a[1].updatedAt);
 
     setDiff(result);
   }, [items, worldPixels, worldUpdatedAt, setDiff]);

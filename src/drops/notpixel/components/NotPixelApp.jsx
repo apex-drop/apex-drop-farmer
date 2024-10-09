@@ -9,6 +9,8 @@ import NotPixelIcon from "../assets/images/icon.png?format=webp&w=80";
 import useNotPixelMiningStatusQuery from "../hooks/useNotPixelMiningStatusQuery";
 import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
 import useNotPixelMiningClaimMutation from "../hooks/useNotPixelMiningClaimMutation";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 
 export default function NotPixelApp({ diff, updatePixels }) {
   const miningQuery = useNotPixelMiningStatusQuery();
@@ -24,16 +26,36 @@ export default function NotPixelApp({ diff, updatePixels }) {
   );
 
   /** Start */
-  const startFarming = useCallback(() => {
-    process.start();
-    setColor(null);
-  }, [process, setColor]);
+  const [startFarming, dispatchAndStartFarming] = useSocketDispatchCallback(
+    /** Main */
+    useCallback(() => {
+      process.start();
+      setColor(null);
+    }, [process, setColor]),
+
+    /** Dispatch */
+    useCallback((socket) => {
+      socket.dispatch({
+        action: "notpixel.repaint.start",
+      });
+    }, [])
+  );
 
   /** Stop */
-  const stopFarming = useCallback(() => {
-    process.stop();
-    setColor(null);
-  }, [process, setColor]);
+  const [stopFarming, dispatchAndStopFarming] = useSocketDispatchCallback(
+    /** Main */
+    useCallback(() => {
+      process.stop();
+      setColor(null);
+    }, [process, setColor]),
+
+    /** Dispatch */
+    useCallback((socket) => {
+      socket.dispatch({
+        action: "notpixel.repaint.stop",
+      });
+    }, [])
+  );
 
   /** Claim Mining */
   useEffect(() => {
@@ -101,6 +123,21 @@ export default function NotPixelApp({ diff, updatePixels }) {
     })();
   }, [process, diff, mining, updatePixels]);
 
+  /** Sync Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "notpixel.repaint.start": () => {
+          startFarming();
+        },
+        "notpixel.repaint.stop": () => {
+          stopFarming();
+        },
+      }),
+      [startFarming, stopFarming]
+    )
+  );
+
   return (
     <div className="flex flex-col gap-2 p-4">
       {/* Header */}
@@ -119,7 +156,11 @@ export default function NotPixelApp({ diff, updatePixels }) {
           <h2 className="text-center">Charges: {mining.charges}</h2>
 
           <button
-            onClick={!process.started ? startFarming : stopFarming}
+            onClick={
+              !process.started
+                ? dispatchAndStartFarming
+                : dispatchAndStopFarming
+            }
             disabled={mining.charges < 1}
             className={cn(
               "text-white px-4 py-2 rounded-lg disabled:opacity-50",

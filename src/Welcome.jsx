@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 
+import DropButton from "./components/DropButton";
 import Shutdown from "./partials/Shutdown";
 import farmerTabs from "./farmerTabs";
 
@@ -354,22 +355,11 @@ export default function Welcome() {
           {/* Drops */}
           <div className={cn("grid grid-cols-3", "gap-2 py-4")}>
             {drops.map((drop, index) => (
-              <button
+              <DropButton
                 key={index}
+                drop={drop}
                 onClick={() => dispatchAndPushTab(drop)}
-                className={cn(
-                  "flex flex-col justify-center items-center",
-                  "gap-2 p-2 rounded-lg",
-                  "bg-neutral-100 hover:bg-neutral-200"
-                )}
-                title={drop.title}
-              >
-                <img
-                  src={drop.icon}
-                  className="w-10 h-10 rounded-full shrink-0"
-                />
-                <h3 className={cn("min-w-0")}>{drop.title}</h3>
-              </button>
+              />
             ))}
           </div>
 

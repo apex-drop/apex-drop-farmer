@@ -1,4 +1,6 @@
 import useProcessLock from "@/hooks/useProcessLock";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { cn, delay } from "@/lib/utils";
 import { useCallback } from "react";
 import { useEffect } from "react";
@@ -45,10 +47,33 @@ export default function GoatsMissions() {
   }, [setCurrentMission, setMissionOffset]);
 
   /** Handle button click */
-  const handleAutoMissionClick = useCallback(() => {
-    reset();
-    process.toggle();
-  }, [reset, process]);
+  const [handleAutoMissionClick, dispatchAndHandleAutoMissionClick] =
+    useSocketDispatchCallback(
+      /** Main */
+      useCallback(() => {
+        reset();
+        process.toggle();
+      }, [reset, process]),
+
+      /** Dispatch */
+      useCallback((socket) => {
+        socket.dispatch({
+          action: "goats.missions.claim",
+        });
+      }, [])
+    );
+
+  /** Handlers */
+  useSocketHandlers(
+    useMemo(
+      () => ({
+        "goats.missions.claim": () => {
+          handleAutoMissionClick();
+        },
+      }),
+      [handleAutoMissionClick]
+    )
+  );
 
   useEffect(() => {
     if (!process.canExecute) {
@@ -102,7 +127,7 @@ export default function GoatsMissions() {
           </div>
           <button
             disabled={process.started}
-            onClick={handleAutoMissionClick}
+            onClick={dispatchAndHandleAutoMissionClick}
             className={cn(
               "p-2 rounded-lg disabled:opacity-50",
               process.started ? "bg-red-500 text-black" : "bg-white text-black"

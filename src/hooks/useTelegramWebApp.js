@@ -48,18 +48,20 @@ export default function useTelegramWebApp(host, cache = true) {
 
   /** Listen for Message */
   useEffect(() => {
-    /** Add Listener */
-    chrome?.runtime?.onMessage.addListener(getTelegramWebApp);
+    if (!telegramWebApp) {
+      /** Add Listener */
+      chrome?.runtime?.onMessage.addListener(getTelegramWebApp);
+    }
 
     return () => {
       /** Remove Listener */
       chrome?.runtime?.onMessage.removeListener(getTelegramWebApp);
     };
-  }, [host, getTelegramWebApp]);
+  }, [host, telegramWebApp, getTelegramWebApp]);
 
   /** Set from Cache */
   useEffect(() => {
-    if (cache) {
+    if (cache && !telegramWebApp) {
       /** Get and Store Data */
       chrome?.storage?.local.get(storageKey).then(({ [storageKey]: data }) => {
         if (data) {
@@ -67,7 +69,7 @@ export default function useTelegramWebApp(host, cache = true) {
         }
       });
     }
-  }, [cache, storageKey, configureTelegramWebApp]);
+  }, [cache, storageKey, telegramWebApp, configureTelegramWebApp]);
 
   return { telegramWebApp, resetTelegramWebApp };
 }

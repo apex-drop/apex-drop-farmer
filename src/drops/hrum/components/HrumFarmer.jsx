@@ -3,7 +3,7 @@ import useSocketTabs from "@/hooks/useSocketTabs";
 import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
 
-import CookieIcon from "../assets/images/cookie.png?format=webp&w=80";
+import CookieIcon from "../assets/images/cookie.png?format=webp&w=160";
 import HrumAutoTasks from "./HrumAutoTasks";
 import HrumBalanceDisplay from "./HrumBalanceDisplay";
 import HrumIcon from "../assets/images/icon.png?format=webp&w=80";

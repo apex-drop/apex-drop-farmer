@@ -1,6 +1,7 @@
 import Agent301Icon from "@/drops/agent301/assets/images/icon.png?format=webp&w=80";
 import AppIcon from "@/assets/images/icon-wrapped.png?format=webp&w=80";
 import BirdTonIcon from "@/drops/birdton/assets/images/icon.png?format=webp&w=80";
+import BitsIcon from "@/drops/bits/assets/images/icon.png?format=webp&w=80";
 import BlumIcon from "@/drops/blum/assets/images/icon.png?format=webp&w=80";
 import GoatsIcon from "@/drops/goats/assets/images/icon.png?format=webp&w=80";
 import HrumIcon from "@/drops/hrum/assets/images/icon.png?format=webp&w=80";
@@ -125,6 +126,12 @@ const farmerTabs = [
     title: "BirdTON",
     icon: BirdTonIcon,
     component: <Farmer farmer="BirdTon" />,
+  },
+  {
+    id: "bits",
+    title: "Bits",
+    icon: BitsIcon,
+    component: <Farmer farmer="Bits" />,
   },
 ];
 

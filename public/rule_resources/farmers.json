@@ -465,5 +465,38 @@
     "condition": {
       "requestDomains": ["backend.clutchwalletserver.xyz"]
     }
+  },
+  {
+    "id": 15,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "x-requested-with",
+          "operation": "set",
+          "value": "org.telegram.messenger"
+        },
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://bits.apps-tonbox.me"
+        },
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://bits.apps-tonbox.me/"
+        }
+      ],
+      "responseHeaders": [
+        {
+          "header": "access-control-allow-origin",
+          "operation": "set",
+          "value": "*"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": ["api-bits.apps-tonbox.me", "bits.apps-tonbox.me"]
+    }
   }
 ]

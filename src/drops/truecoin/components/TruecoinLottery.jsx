@@ -87,13 +87,13 @@ export default function TruecoinLottery() {
       try {
         await spinMutation.mutateAsync(null).then((data) => {
           if (data.user.currentSpins < 1) {
-            setAutoSpin(false);
+            process.stop();
           }
           setData(data);
         });
       } catch (e) {
         if (e?.response?.status === 400) {
-          setAutoSpin(false);
+          process.stop();
         }
       }
 

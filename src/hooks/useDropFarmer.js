@@ -108,7 +108,7 @@ export default function useDropFarmer({
   }, [api, authQuery.data, setAuth, extractAuth, authHeader]);
 
   useEffect(() => {
-    if (auth) {
+    if (authQuery.status === "success") {
       /** Create Notification */
       chrome?.notifications?.create(`${id}-farmer`, {
         iconUrl: notification.icon,
@@ -121,7 +121,7 @@ export default function useDropFarmer({
     return () => {
       chrome?.notifications?.clear(`${id}-farmer`);
     };
-  }, [id, auth]);
+  }, [id, authQuery.status]);
 
   /** Return API and Auth */
   return useMemo(
@@ -131,8 +131,9 @@ export default function useDropFarmer({
       authQuery,
       queryClient,
       queryKey,
-      resetAuth,
       telegramWebApp,
+      resetAuth,
+      resetTelegramWebApp,
       status,
     }),
     [
@@ -141,8 +142,9 @@ export default function useDropFarmer({
       authQuery,
       queryClient,
       queryKey,
-      resetAuth,
       telegramWebApp,
+      resetAuth,
+      resetTelegramWebApp,
       status,
     ]
   );

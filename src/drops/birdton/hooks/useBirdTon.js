@@ -109,7 +109,7 @@ export default function useBirdTon(farmer) {
     /** Add Event Listener for Close */
     socket.addEventListener("close", () => {
       /** Reset Auth */
-      farmer.resetAuth();
+      farmer.resetTelegramWebApp();
       setConnected(false);
     });
 

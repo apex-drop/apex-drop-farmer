@@ -67,34 +67,33 @@ export async function getNotPixelGame() {
   const scriptResponse = await getDropMainScript("https://app.notpx.app");
 
   try {
-    let items = scriptResponse.match(/this\.items=\[([^\]]+)]/)?.[1];
-    let obj = items
-      .matchAll(/{[^}]+}/g)
-      .toArray()
-      .map((item) => {
-        const match = item[0];
-        // X
-        let x = match.match(/x:([^,]+),/)?.[1]?.replaceAll(/[^\d-]/g, "");
+    let match = scriptResponse.match(
+      /"template\/getWorldTemplate"[^{]+({[^}]+})/
+    )[1];
 
-        // Y
-        let y = match.match(/y:([^,]+),/)?.[1]?.replaceAll(/[^\d-]/g, "");
+    // X
+    let x = match.match(/x:([^,]+),/)?.[1]?.replaceAll(/[^\d-]/g, "");
 
-        // Size
-        let size = match.match(/size:([^,]+),/)?.[1]?.replaceAll(/[^\d-]/g, "");
+    // Y
+    let y = match.match(/y:([^,]+),/)?.[1]?.replaceAll(/[^\d-]/g, "");
 
-        // Image
-        let imageVariable = match.match(/image:([^,]+),/)?.[1];
-        let image = scriptResponse.match(
-          new RegExp(`${imageVariable}="/assets/([^"]+)"`)
-        )?.[1];
+    // Size
+    let size = match
+      .match(/imageSize:([^,]+),/)?.[1]
+      ?.replaceAll(/[^\d-]/g, "");
 
-        return {
-          x: parseInt(x),
-          y: parseInt(y),
-          size: parseInt(size),
-          image: `/assets/${image}`,
-        };
-      });
+    // Image
+    let urlVariable = match.match(/url:([^,]+),/)?.[1];
+    let url = scriptResponse.match(
+      new RegExp(`${urlVariable}="/assets/([^"]+)"`)
+    )?.[1];
+
+    let obj = {
+      x: parseInt(x),
+      y: parseInt(y),
+      size: parseInt(size),
+      url: `/assets/${url}`,
+    };
 
     return obj;
   } catch {}

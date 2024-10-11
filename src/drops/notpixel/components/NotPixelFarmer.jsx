@@ -18,10 +18,10 @@ export default function NotPixelFarmer() {
   /** Get NotPixel */
   useEffect(() => {
     (async function () {
-      const game = await getNotPixelGame();
+      const worldTemplate = await getNotPixelGame();
 
       /** Configure the App */
-      configureNotPixel(game);
+      configureNotPixel([worldTemplate]);
     })();
   }, [configureNotPixel]);
 

@@ -33,7 +33,7 @@ export default function useNotPixelData() {
       console.log(data);
 
       Promise.all(
-        data.map(({ image }) => loadImage("https://app.notpx.app" + image))
+        data.map(({ url }) => loadImage("https://app.notpx.app" + url))
       )
         .then((images) => {
           const offscreenCanvas = new OffscreenCanvas(1000, 1000);

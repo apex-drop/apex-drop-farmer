@@ -50,7 +50,7 @@ export default function BlumFarmer() {
       if (!balance.isFastFarmingEnabled) {
         await startFarmingMutation.mutateAsync();
         toast.success("Blum Started Farming");
-      } else if (balance.timestamp >= farming.endTime) {
+      } else if (farming && balance.timestamp >= farming.endTime) {
         await claimFarmingMutation.mutateAsync();
         toast.success("Blum Claimed Previous Farming");
 

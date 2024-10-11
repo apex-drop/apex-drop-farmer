@@ -5,22 +5,23 @@ import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { HiOutlineArrowPath } from "react-icons/hi2";
 import { cn, delay } from "@/lib/utils";
 import { useCallback } from "react";
+import { useContext } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
-import { useState } from "react";
 
-import CoinIcon from "../assets/images/coin.png?format=webp&w=80";
-import EnergyIcon from "../assets/images/energy.png?format=webp&w=80";
+import TruecoinFarmerContext from "../context/TruecoinFarmerContext";
 import useTruecoin50SpinsBoost from "../hooks/useTruecoin50SpinsBoostMutation";
 import useTruecoinLotteryMutation from "../hooks/useTruecoinLotteryMutation";
 
 export default function TruecoinLottery() {
-  const [data, setData] = useState(null);
+  const { queryClient, queryKey, authQuery } = useContext(
+    TruecoinFarmerContext
+  );
+
+  const user = authQuery.data.user;
+
   const spinMutation = useTruecoinLotteryMutation();
   const boostMutation = useTruecoin50SpinsBoost();
-
-  const coins = data?.user?.coins || 0;
-  const energy = data?.user?.currentSpins || 0;
 
   const process = useProcessLock();
 
@@ -80,6 +81,10 @@ export default function TruecoinLottery() {
       return;
     }
 
+    if (user.currentSpins < 1) {
+      return process.stop();
+    }
+
     (async function () {
       // Lock Process
       process.lock();
@@ -89,7 +94,16 @@ export default function TruecoinLottery() {
           if (data.user.currentSpins < 1) {
             process.stop();
           }
-          setData(data);
+
+          queryClient.setQueryData(queryKey, (prev) => {
+            return {
+              ...prev,
+              user: {
+                ...prev.user,
+                ...data.user,
+              },
+            };
+          });
         });
       } catch (e) {
         if (e?.response?.status === 400) {
@@ -103,13 +117,14 @@ export default function TruecoinLottery() {
       // Release Lock
       process.unlock();
     })();
-  }, [process]);
+  }, [process, user]);
 
   return (
     <div className="flex flex-col gap-2 p-4">
       {/* Auto Spin Button */}
       <div className="flex gap-2">
         <button
+          disabled={user.currentSpins < 1}
           onClick={dispatchAndHandleAutoSpinClick}
           className={cn(
             "grow min-h-0 min-w-0 p-2 text-white rounded-lg disabled:opacity-50",
@@ -135,20 +150,6 @@ export default function TruecoinLottery() {
       </div>
 
       {process.started ? <div className="text-center">Working....</div> : null}
-
-      {data ? (
-        <>
-          <h3 className="text-2xl font-bold text-center text-orange-500">
-            <img src={CoinIcon} className="inline w-5 h-5" />{" "}
-            {Intl.NumberFormat().format(coins)}
-          </h3>
-          {energy > 0 ? (
-            <h4 className="text-lg font-bold text-center text-purple-500">
-              <img src={EnergyIcon} className="inline w-5" /> {energy}
-            </h4>
-          ) : null}
-        </>
-      ) : null}
     </div>
   );
 }

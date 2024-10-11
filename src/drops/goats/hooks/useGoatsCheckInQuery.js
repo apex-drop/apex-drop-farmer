@@ -10,7 +10,6 @@ export default function useGoatsCheckInQuery() {
       api
         .get("https://api-checkin.goatsbot.xyz/checkin/user", {
           signal,
-          withCredentials: true,
         })
         .then((res) => res.data),
   });

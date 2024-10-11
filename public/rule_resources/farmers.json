@@ -19,13 +19,6 @@
           "operation": "set",
           "value": "https://static.agent301.org/"
         }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
-        }
       ]
     },
     "condition": {
@@ -51,13 +44,6 @@
           "header": "referer",
           "operation": "set",
           "value": "https://birdton.site/"
-        }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
         }
       ]
     },
@@ -85,13 +71,6 @@
           "operation": "set",
           "value": "https://telegram.blum.codes/"
         }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
-        }
       ]
     },
     "condition": {
@@ -117,13 +96,6 @@
           "header": "referer",
           "operation": "set",
           "value": "https://dev.goatsbot.xyz/"
-        }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
         }
       ]
     },
@@ -151,13 +123,6 @@
           "operation": "set",
           "value": "https://game.hrum.me/"
         }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
-        }
       ]
     },
     "condition": {
@@ -183,13 +148,6 @@
           "header": "referer",
           "operation": "set",
           "value": "https://major.bot/"
-        }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
         }
       ]
     },
@@ -222,13 +180,6 @@
           "operation": "set",
           "value": "cf_clearance=vRcyKo0A5ko2cSKC3KAPWIMWByRXSDjZUoS1rjtbvvM-1725531610-1.2.1.1-48RwIL6a3z_1KMTLS.AADKah6wPxpQ5go0803_bg0TzTAyG96Ja7cf2MMZEWjcjw8yTNgy_EpHlYwfePsaK48VKXCuRlXYzA0UqS21aYpUEtyLW8Otyo9Czwl6NYZxr7CtusW1XPRBvhNmnhGNUpQLdDbh9PER1pJLQFdBH.M3vsBIGBDngRLQCsY7nmukJLePtCFwaFZusmj8FmRMtli4UYDfIHRcrMSHGs6bLE0jv6a4Rd9oEzqJCT8GSu0_eox3KWomlWwYOkjrid8yfca16Ch7tceOZBA8kbpn20PonHmSiav5uQVUzv9yHBr65JFVrCG5mV.eeyXdyEIDqkg_4TQHZaoulFLNdx71zoxrCMH4h7helL2d.6cc_skhE.jNLveglxJsfPBINgaN_T25Qy2ojGpN_42nBqCoEBofVJbkXcre92e3JrFUXnGhfj"
         }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
-        }
       ]
     },
     "condition": {
@@ -254,13 +205,6 @@
           "header": "referer",
           "operation": "set",
           "value": "https://app.slotcoin.app/"
-        }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
         }
       ]
     },
@@ -288,13 +232,6 @@
           "operation": "set",
           "value": "https://mini-app.tomarket.ai/"
         }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
-        }
       ]
     },
     "condition": {
@@ -320,13 +257,6 @@
           "header": "referer",
           "operation": "set",
           "value": "https://bot.true.world/"
-        }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
         }
       ]
     },
@@ -354,13 +284,6 @@
           "operation": "set",
           "value": "https://app.notpx.app/"
         }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
-        }
       ]
     },
     "condition": {
@@ -386,13 +309,6 @@
           "header": "referer",
           "operation": "set",
           "value": "https://www.yescoin.gold/"
-        }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
         }
       ]
     },
@@ -420,13 +336,6 @@
           "operation": "set",
           "value": "https://www.wonton.restaurant/"
         }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
-        }
       ]
     },
     "condition": {
@@ -453,13 +362,6 @@
           "operation": "set",
           "value": "https://tada-mini.mvlchain.io/"
         }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
-        }
       ]
     },
     "condition": {
@@ -485,13 +387,6 @@
           "header": "referer",
           "operation": "set",
           "value": "https://bits.apps-tonbox.me/"
-        }
-      ],
-      "responseHeaders": [
-        {
-          "header": "access-control-allow-origin",
-          "operation": "set",
-          "value": "*"
         }
       ]
     },

@@ -35,13 +35,7 @@ export default function useDropFarmer({
   );
 
   /** Axios Instance */
-  const api = useMemo(
-    () =>
-      axios.create({
-        withCredentials: true,
-      }),
-    []
-  );
+  const api = useMemo(() => axios.create(), []);
 
   /** Status */
   const status = useMemo(

@@ -10,7 +10,6 @@ export default function useGoatsUserQuery() {
       api
         .get("https://api-me.goatsbot.xyz/users/me", {
           signal,
-          withCredentials: true,
         })
         .then((res) => res.data),
   });

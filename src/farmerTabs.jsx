@@ -43,16 +43,22 @@ const farmerTabs = [
     component: <TelegramWeb version="a" />,
   },
   {
+    id: "notpixel",
+    title: "Not Pixel",
+    icon: NotPixelIcon,
+    component: <Farmer farmer="NotPixel" />,
+  },
+  {
     id: "major",
     title: "Major",
     icon: MajorIcon,
     component: <Farmer farmer="Major" />,
   },
   {
-    id: "notpixel",
-    title: "Not Pixel",
-    icon: NotPixelIcon,
-    component: <Farmer farmer="NotPixel" />,
+    id: "blum",
+    title: "Blum",
+    icon: BlumIcon,
+    component: <Farmer farmer="Blum" />,
   },
   {
     id: "hrum",
@@ -78,12 +84,7 @@ const farmerTabs = [
     icon: WontonIcon,
     component: <Farmer farmer="Wonton" />,
   },
-  {
-    id: "blum",
-    title: "Blum",
-    icon: BlumIcon,
-    component: <Farmer farmer="Blum" />,
-  },
+
   {
     id: "tomarket",
     title: "Tomarket",

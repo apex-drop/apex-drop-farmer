@@ -92,7 +92,7 @@ export async function getNotPixelGame() {
       x: parseInt(x),
       y: parseInt(y),
       size: parseInt(size),
-      url: `/assets/${url}`,
+      url: `https://app.notpx.app/assets/${url}`,
     };
 
     return obj;

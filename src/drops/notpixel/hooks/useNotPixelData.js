@@ -32,9 +32,7 @@ export default function useNotPixelData() {
       console.log("---NOT PIXEL---");
       console.log(data);
 
-      Promise.all(
-        data.map(({ url }) => loadImage("https://app.notpx.app" + url))
-      )
+      Promise.all(data.map(({ url }) => loadImage(url)))
         .then((images) => {
           const offscreenCanvas = new OffscreenCanvas(1000, 1000);
           const offscreenCtx = offscreenCanvas.getContext("2d", {

@@ -54,8 +54,6 @@ export default function BitsFarmer() {
         await startPassiveFarmingMutation.mutateAsync();
         toast.success("Bits - Started Farming");
       }
-
-      console.log(passiveIncome);
     })();
   }, [userQuery.data]);
 

@@ -1,18 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-
 import useMajorApi from "./useMajorApi";
-import useMajorUserStreakQuery from "./useMajorUserStreakQuery";
+import useMajorFarmerContext from "./useMajorFarmerContext";
 
 export default function useMajorUserQuery() {
   const api = useMajorApi();
-  const streakQuery = useMajorUserStreakQuery();
+  const { authQuery } = useMajorFarmerContext();
 
   const userQuery = useQuery({
-    enabled: streakQuery.isSuccess,
-    queryKey: ["major", "user", streakQuery.data?.["user_id"]],
+    enabled: authQuery.isSuccess,
+    queryKey: ["major", "user", authQuery.data?.user?.id],
     queryFn: ({ signal }) =>
       api
-        .get(`https://major.bot/api/users/${streakQuery.data?.["user_id"]}/`, {
+        .get(`https://major.bot/api/users/${authQuery.data?.user?.id}/`, {
           signal,
         })
         .then((res) => res.data),

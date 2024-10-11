@@ -10,35 +10,40 @@ import BlumBalanceDisplay from "./BlumBalanceDisplay";
 import BlumFarmerHeader from "./BlumFarmerHeader";
 import BlumUsernameDisplay from "./BlumUsernameDisplay";
 import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
+import useBlumClaimDailyRewardMutation from "../hooks/useBlumClaimDailyRewardMutation";
 import useBlumClaimFarmingMutation from "../hooks/useBlumClaimFarmingMutation";
-import useBlumDailyRewardMutation from "../hooks/useBlumDailyRewardMutation";
-import useBlumNowQuery from "../hooks/useBlumNowQuery";
+import useBlumDailyRewardQuery from "../hooks/useBlumDailyRewardQuery";
 import useBlumStartFarmingMutation from "../hooks/useBlumStartFarmingMutation";
 
 export default function BlumFarmer() {
   const tabs = useSocketTabs("blum.farmer-tabs", "game");
-  const dailyRewardMutation = useBlumDailyRewardMutation();
+
+  const dailyRewardQuery = useBlumDailyRewardQuery();
+  const claimDailyRewardMutation = useBlumClaimDailyRewardMutation();
+
   const startFarmingMutation = useBlumStartFarmingMutation();
   const claimFarmingMutation = useBlumClaimFarmingMutation();
-  const nowQuery = useBlumNowQuery();
+
   const balanceQuery = useBlumBalanceQuery();
 
+  /** Daily Reward */
   useEffect(() => {
+    if (!dailyRewardQuery.data) return;
     (async function () {
       try {
-        await dailyRewardMutation.mutateAsync();
+        await claimDailyRewardMutation.mutateAsync();
         toast.success("Blum Daily Check-In");
       } catch {}
     })();
-  }, []);
+  }, [dailyRewardQuery.data]);
 
+  /** Start and Claim Farming */
   useEffect(() => {
-    if (!nowQuery.data || !balanceQuery.data) {
+    if (!balanceQuery.data) {
       return;
     }
 
     (async function () {
-      const now = nowQuery.data.now;
       const balance = balanceQuery.data;
       const farming = balance.farming;
 
@@ -53,7 +58,7 @@ export default function BlumFarmer() {
         toast.success("Blum Started Farming");
       }
     })();
-  }, [nowQuery.data, balanceQuery.data]);
+  }, [balanceQuery.data]);
 
   return (
     <div className="flex flex-col p-4">

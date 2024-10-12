@@ -16,7 +16,10 @@ export default function useNotPixelData() {
 
         for (let [pixelId, color] of updates) {
           if (pixelId in newWorldPixels) {
-            newWorldPixels[pixelId] = color;
+            newWorldPixels[pixelId] = {
+              ...newWorldPixels[pixelId],
+              color,
+            };
           }
         }
 
@@ -80,11 +83,22 @@ export default function useNotPixelData() {
                 ];
 
                 let pos = i / 4;
-                let { offset } = getCoords(pos, item);
+                let { x, y, positionX, positionY, offset } = getCoords(
+                  pos,
+                  item
+                );
                 let pixelId = offset + 1;
 
                 /** Set Color */
-                result[pixelId] = rgbToHex(r, g, b);
+                result[pixelId] = {
+                  x,
+                  y,
+                  positionX,
+                  positionY,
+                  offset,
+                  pixelId,
+                  color: rgbToHex(r, g, b),
+                };
               }
 
               return result;

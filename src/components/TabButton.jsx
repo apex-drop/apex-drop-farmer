@@ -118,30 +118,30 @@ export default function TabButton({ tab, connected }) {
         {tab.title}
       </span>
 
-      {/* Reload Button */}
-      {tab.active && tab.reloadable ? (
-        <button
-          className={cn(
-            "inline-flex items-center justify-center",
-            "rounded-full w-7 h-7 shrink-0 hover:bg-neutral-200"
-          )}
-          onClick={handleReloadTab}
-        >
-          <HiOutlineArrowPath className="w-5 h-5" />
-        </button>
-      ) : null}
-
-      {/* Close Button */}
       {tab.active && tab.id !== "apex-drop-farmer" ? (
-        <button
-          className={cn(
-            "inline-flex items-center justify-center",
-            "rounded-full w-7 h-7 shrink-0 hover:bg-neutral-200"
-          )}
-          onClick={dispatchAndHandleCloseButtonClick}
-        >
-          <HiOutlineXMark className="w-5 h-5" />
-        </button>
+        <>
+          {/* Reload Button */}
+          <button
+            className={cn(
+              "inline-flex items-center justify-center",
+              "rounded-full w-7 h-7 shrink-0 hover:bg-neutral-200"
+            )}
+            onClick={handleReloadTab}
+          >
+            <HiOutlineArrowPath className="w-5 h-5" />
+          </button>
+
+          {/* Close Button */}
+          <button
+            className={cn(
+              "inline-flex items-center justify-center",
+              "rounded-full w-7 h-7 shrink-0 hover:bg-neutral-200"
+            )}
+            onClick={dispatchAndHandleCloseButtonClick}
+          >
+            <HiOutlineXMark className="w-5 h-5" />
+          </button>
+        </>
       ) : null}
     </div>
   );

@@ -31,14 +31,12 @@ const farmerTabs = [
   {
     id: "telegram-web-k",
     title: "Telegram WebK",
-    reloadable: true,
     icon: TelegramWebKIcon,
     component: <TelegramWeb version="k" />,
   },
   {
     id: "telegram-web-a",
     title: "Telegram WebA",
-    reloadable: true,
     icon: TelegramWebAIcon,
     component: <TelegramWeb version="a" />,
   },

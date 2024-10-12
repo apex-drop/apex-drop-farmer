@@ -101,9 +101,9 @@ export default function useDropFarmer({
     }
   }, [api, authQuery.data, setAuth, extractAuth, authHeader]);
 
+  /** Create Notification */
   useEffect(() => {
     if (authQuery.status === "success") {
-      /** Create Notification */
       chrome?.notifications?.create(`${id}-farmer`, {
         iconUrl: notification.icon,
         title: notification.title,
@@ -116,6 +116,13 @@ export default function useDropFarmer({
       chrome?.notifications?.clear(`${id}-farmer`);
     };
   }, [id, authQuery.status]);
+
+  /** Remove Queries */
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: [id] });
+    };
+  }, [id, queryClient]);
 
   /** Return API and Auth */
   return useMemo(

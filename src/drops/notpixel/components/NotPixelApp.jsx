@@ -11,14 +11,20 @@ import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
 import useNotPixelMiningClaimMutation from "../hooks/useNotPixelMiningClaimMutation";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import { useContext } from "react";
+import NotPixelFarmerContext from "../context/NotPixelFarmerContext";
 
 export default function NotPixelApp({ diff, updateWorldPixels }) {
+  const { queryClient } = useContext(NotPixelFarmerContext);
   const miningQuery = useNotPixelMiningStatusQuery();
   const mining = miningQuery.data;
+
   const process = useProcessLock();
+
   const repaintMutation = useNotPixelRepaintMutation();
   const claimMiningMutation = useNotPixelMiningClaimMutation();
-  const [color, setColor] = useState(null);
+
+  const [pixel, setPixel] = useState(null);
 
   const balance = useMemo(
     () => Math.floor(mining?.userBalance || 0),
@@ -30,8 +36,8 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
     /** Main */
     useCallback(() => {
       process.start();
-      setColor(null);
-    }, [process, setColor]),
+      setPixel(null);
+    }, [process, setPixel]),
 
     /** Dispatch */
     useCallback((socket) => {
@@ -46,8 +52,8 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
     /** Main */
     useCallback(() => {
       process.stop();
-      setColor(null);
-    }, [process, setColor]),
+      setPixel(null);
+    }, [process, setPixel]),
 
     /** Dispatch */
     useCallback((socket) => {
@@ -83,24 +89,28 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
       process.lock();
 
       try {
-        const item = diff[Math.floor(Math.random() * diff.length)];
+        const pixel = diff[Math.floor(Math.random() * diff.length)];
 
-        if (item) {
-          const [pixelId, newColor] = item;
-
-          setColor(newColor);
+        if (pixel) {
+          setPixel(pixel);
 
           if (!process.signal.aborted) {
             const data = await repaintMutation.mutateAsync({
-              pixelId: Number(pixelId),
-              newColor,
+              pixelId: pixel.pixelId,
+              newColor: pixel.color,
             });
 
-            /** Update Pixels */
-            updateWorldPixels([item]);
-
-            /** Refetch */
-            await miningQuery.refetch();
+            /** Update Balance */
+            queryClient.setQueryData(
+              ["notpixel", "mining", "status"],
+              (prev) => {
+                return {
+                  ...prev,
+                  charges: prev.charges - 1,
+                  userBalance: data.balance,
+                };
+              }
+            );
 
             /** Show Difference */
             toast.success(`+${data.balance - mining.userBalance}`);
@@ -112,7 +122,7 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
       await delay(5_000);
 
       /** Reset Color */
-      setColor(null);
+      setPixel(null);
 
       /** Reset Mutation */
       repaintMutation.reset();
@@ -171,13 +181,30 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
 
           {process.started ? (
             <>
-              <div className="flex flex-col items-center justify-center gap-2">
+              <div className="flex flex-col items-center justify-center gap-2 font-bold rounded-lg">
                 {/* Color */}
-                {color ? (
-                  <div
-                    className="w-10 h-10 border rounded-lg"
-                    style={{ backgroundColor: color }}
-                  />
+                {pixel ? (
+                  <>
+                    <div className="flex flex-col w-full gap-1 p-4 bg-black">
+                      <p className="text-blue-500">Pixel ID: {pixel.pixelId}</p>
+                      <p className="text-rose-500">Offset: {pixel.offset}</p>
+                      <p className="text-green-500">Color: {pixel.color}</p>
+                      <p className="text-pink-500">X: {pixel.x}</p>
+                      <p className="text-orange-500">Y: {pixel.y}</p>
+                      <p className="text-purple-500">
+                        Position-X: {pixel.positionX}
+                      </p>
+                      <p className="text-lime-500">
+                        Position-X: {pixel.positionX}
+                      </p>
+                    </div>
+
+                    {/* Box Color */}
+                    <div
+                      className="w-full h-10 border rounded-lg"
+                      style={{ backgroundColor: pixel.color }}
+                    />
+                  </>
                 ) : null}
 
                 <div

@@ -1,3 +1,4 @@
+import ReconnectingWebSocket from "reconnecting-websocket";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useRef } from "react";
@@ -11,7 +12,7 @@ export default function useNotPixelSocket(enabled, updateWorldPixels) {
 
   useEffect(() => {
     if (enabled) {
-      const socket = (socketRef.current = new WebSocket(
+      const socket = (socketRef.current = new ReconnectingWebSocket(
         "wss://notpx.app/api/v2/image/ws"
       ));
 

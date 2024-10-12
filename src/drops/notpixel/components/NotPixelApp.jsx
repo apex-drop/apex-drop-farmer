@@ -11,11 +11,8 @@ import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
 import useNotPixelMiningClaimMutation from "../hooks/useNotPixelMiningClaimMutation";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
-import { useContext } from "react";
-import NotPixelFarmerContext from "../context/NotPixelFarmerContext";
 
 export default function NotPixelApp({ diff, updateWorldPixels }) {
-  const { queryClient } = useContext(NotPixelFarmerContext);
   const miningQuery = useNotPixelMiningStatusQuery();
   const mining = miningQuery.data;
 
@@ -100,20 +97,11 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
               newColor: pixel.color,
             });
 
-            /** Update Balance */
-            queryClient.setQueryData(
-              ["notpixel", "mining", "status"],
-              (prev) => {
-                return {
-                  ...prev,
-                  charges: prev.charges - 1,
-                  userBalance: data.balance,
-                };
-              }
-            );
-
             /** Show Difference */
             toast.success(`+${data.balance - mining.userBalance}`);
+
+            /** Update Balance */
+            await miningQuery.refetch();
           }
         }
       } catch {}
@@ -181,11 +169,11 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
 
           {process.started ? (
             <>
-              <div className="flex flex-col items-center justify-center gap-2 font-bold rounded-lg">
+              <div className="flex flex-col items-center justify-center gap-2 ">
                 {/* Color */}
                 {pixel ? (
                   <>
-                    <div className="flex flex-col w-full gap-1 p-4 bg-black">
+                    <div className="flex flex-col w-full gap-1 p-4 font-bold bg-black rounded-lg">
                       <p className="text-blue-500">Pixel ID: {pixel.pixelId}</p>
                       <p className="text-rose-500">Offset: {pixel.offset}</p>
                       <p className="text-green-500">Color: {pixel.color}</p>
@@ -195,7 +183,7 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
                         Position-X: {pixel.positionX}
                       </p>
                       <p className="text-lime-500">
-                        Position-X: {pixel.positionX}
+                        Position-Y: {pixel.positionY}
                       </p>
                     </div>
 
@@ -209,7 +197,7 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
 
                 <div
                   className={cn(
-                    "text-center",
+                    "text-center font-bold",
                     {
                       pending: "text-orange-500",
                       success: "text-green-500",
@@ -221,7 +209,7 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
                     {
                       idle: "Waiting...",
                       pending: "Painting...",
-                      success: "Painted!",
+                      success: "Painted! Refetching...",
                       error: "Error..",
                     }[repaintMutation.status]
                   }

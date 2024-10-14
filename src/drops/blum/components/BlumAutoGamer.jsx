@@ -15,6 +15,8 @@ import BlumInput from "./BlumInput";
 import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
 import useBlumClaimGameMutation from "../hooks/useBlumClaimGameMutation";
 import useBlumStartGameMutation from "../hooks/useBlumStartGameMutation";
+import useBlumDogsDropEligibilityQuery from "../hooks/useBlumDogsDropEligibilityQuery";
+import toast from "react-hot-toast";
 
 const GAME_DURATION = 30_000;
 const EXTRA_DELAY = 3_000;
@@ -24,6 +26,7 @@ const MAX_POINT = 280;
 
 export default function Blum() {
   const query = useBlumBalanceQuery();
+  const dogsDropEligibilityQuery = useBlumDogsDropEligibilityQuery();
   const client = useQueryClient();
 
   const process = useProcessLock();
@@ -136,6 +139,16 @@ export default function Blum() {
       process.unlock();
     })();
   }, [tickets, process]);
+
+  useEffect(() => {
+    if (dogsDropEligibilityQuery.status === "success") {
+      const data = dogsDropEligibilityQuery.data;
+
+      if (data.eligible) {
+        toast.success("You are eligible for Blum Dogs Bonus!");
+      }
+    }
+  }, [dogsDropEligibilityQuery.status]);
 
   return (
     <div className="flex flex-col gap-2">

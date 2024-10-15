@@ -1,83 +1,60 @@
-import ReconnectingWebSocket from "reconnecting-websocket";
 import { useEffect } from "react";
 import { useMemo } from "react";
-import { useRef } from "react";
 import { useState } from "react";
 
-import { getCoords } from "../lib/utils";
+import useNotPixelUserQuery from "./useNotPixelUserQuery";
 
-export default function useNotPixelSocket(enabled, updateWorldPixels) {
+export default function useNotPixelSocket(
+  enabled,
+  sandboxRef,
+  updateWorldPixels
+) {
   const [connected, setConnected] = useState(false);
-  const socketRef = useRef(null);
+  const userQuery = useNotPixelUserQuery({
+    enabled,
+    refetchInterval: false,
+  });
+  const [websocketToken, setWebsocketToken] = useState(null);
 
   useEffect(() => {
-    if (enabled) {
-      const socket = (socketRef.current = new ReconnectingWebSocket(
-        "wss://notpx.app/api/v2/image/ws"
-      ));
+    if (userQuery.status === "success" && !websocketToken) {
+      setWebsocketToken(userQuery.data.websocketToken);
+    }
+  }, [websocketToken, userQuery.status]);
 
-      const messageController = (message) => {
-        let pixelUpdates = [];
-        const actions = message.data.split("\n");
+  useEffect(() => {
+    const handleMessage = (ev) => {
+      const message = ev.data;
 
-        for (let action of actions) {
-          let [type, target, ...value] = action.split(":");
+      switch (message.action) {
+        case "set-socket-status":
+          setConnected(message.data);
+          break;
 
-          if (type === "pixelUpdate") {
-            pixelUpdates.push([target, ...value]);
-          } else if (type === "event" && target === "Dynamite") {
-            const SIZE = 5;
-            const HALF = Math.floor(SIZE / 2);
+        case "update-world-pixels":
+          updateWorldPixels(message.data);
+          break;
+      }
+    };
 
-            const position = value[1] - 1;
-            const { x, y } = getCoords(position, {
-              x: 0,
-              y: 0,
-              size: 1000,
-            });
+    if (enabled && websocketToken) {
+      const sandbox = sandboxRef.current;
 
-            const startX = x - HALF;
-            const startY = y - HALF;
+      window.addEventListener("message", handleMessage);
 
-            for (let i = 0; i < SIZE; i++) {
-              for (let j = 0; j < SIZE; j++) {
-                const currentX = startX + i;
-                const currentY = startY + j;
-
-                let offset = currentY * 1000 + currentX;
-                let pixelId = offset + 1;
-
-                pixelUpdates.push([pixelId, null]);
-              }
-            }
-          }
-        }
-
-        if (pixelUpdates.length) {
-          updateWorldPixels(pixelUpdates);
-        }
-      };
-
-      /** Add Event Listener for Open */
-      socket.addEventListener("open", () => {
-        setConnected(true);
-      });
-
-      /** Add Event Listener for Message */
-      socket.addEventListener("message", messageController);
-
-      /** Add Event Listener for Close */
-      socket.addEventListener("close", () => {
-        setConnected(false);
-      });
+      sandbox.contentWindow.postMessage(
+        {
+          action: "start-socket",
+          data: { token: websocketToken },
+        },
+        "*"
+      );
     }
 
     return () => {
-      socketRef.current?.close();
-      socketRef.current = null;
-      setConnected(false);
+      window.removeEventListener("message", handleMessage);
     };
-  }, [enabled, updateWorldPixels]);
+  }, [enabled, websocketToken, updateWorldPixels, setConnected]);
 
   return useMemo(() => ({ connected }), [connected]);
 }

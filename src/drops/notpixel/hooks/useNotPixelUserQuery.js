@@ -7,7 +7,6 @@ export default function useNotPixelUserQuery(options) {
   const isMutating = useIsMutating({ mutationKey: ["notpixel"] });
 
   return useQuery({
-    ...options,
     refetchInterval: isMutating < 1 ? 10_000 : false,
     queryKey: ["notpixel", "user"],
     queryFn: ({ signal }) =>
@@ -16,5 +15,6 @@ export default function useNotPixelUserQuery(options) {
           signal,
         })
         .then((res) => res.data),
+    ...options,
   });
 }

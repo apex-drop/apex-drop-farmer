@@ -10,7 +10,6 @@ export default function useTadaFarmer() {
       icon: TadaIcon,
       title: "Tada Farmer",
     },
-    cache: false,
     fetchAuth: (api, telegramWebApp) =>
       api
         .post("https://backend.clutchwalletserver.xyz/tada-ton/v1/auth/login", {

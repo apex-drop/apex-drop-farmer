@@ -85,10 +85,10 @@ export async function getNotPixelGame() {
       ?.replaceAll(/[^\d-]/g, "");
 
     // Image
-    let urlVariable = match.match(/url:([^,]+),/)?.[1];
-    let url = scriptResponse.match(
-      new RegExp(`${urlVariable}="/assets/([^"]+)"`)
-    )?.[1];
+    let urlVariable = match.match(/url:([^,]+),/)?.[1].trim();
+    let urlPattern = `${urlVariable}="/assets/([^"]+)"`;
+    let urlRegex = new RegExp(urlPattern);
+    let url = scriptResponse.match(urlRegex)?.[1];
 
     let obj = {
       x: parseInt(x),

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -63,6 +63,10 @@
     ]
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals;"
+  },
+  "sandbox": {
+    "pages": ["notpixel-sandbox.html"]
   }
 }

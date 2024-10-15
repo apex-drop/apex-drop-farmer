@@ -1,9 +1,11 @@
 import { getDropMainScript } from "@/lib/utils";
 
 export async function getSignInKey() {
+  if (getSignInKey.DATA) return getSignInKey.DATA;
+
   const scriptResponse = await getDropMainScript("https://www.yescoin.gold");
 
   const match = scriptResponse.match(/"([^"]+)"[^"]+\.signInType/);
 
-  return match[1];
+  return (getSignInKey.DATA = match[1]);
 }

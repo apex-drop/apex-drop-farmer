@@ -4,7 +4,6 @@ import useSocketTabs from "@/hooks/useSocketTabs";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 
-import BlumAutoGamer from "./BlumAutoGamer";
 import BlumAutoTasks from "./BlumAutoTasks";
 import BlumBalanceDisplay from "./BlumBalanceDisplay";
 import BlumFarmerHeader from "./BlumFarmerHeader";
@@ -14,6 +13,7 @@ import useBlumClaimDailyRewardMutation from "../hooks/useBlumClaimDailyRewardMut
 import useBlumClaimFarmingMutation from "../hooks/useBlumClaimFarmingMutation";
 import useBlumDailyRewardQuery from "../hooks/useBlumDailyRewardQuery";
 import useBlumStartFarmingMutation from "../hooks/useBlumStartFarmingMutation";
+import BlumGamer from "./BlumGamer";
 
 export default function BlumFarmer() {
   const tabs = useSocketTabs("blum.farmer-tabs", "game");
@@ -83,7 +83,7 @@ export default function BlumFarmer() {
           ))}
         </Tabs.List>
         <Tabs.Content value="game">
-          <BlumAutoGamer />
+          <BlumGamer />
         </Tabs.Content>
         <Tabs.Content value="tasks">
           <BlumAutoTasks />

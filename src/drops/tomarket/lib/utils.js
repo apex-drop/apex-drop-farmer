@@ -1,6 +1,7 @@
 import { getDropMainScript } from "@/lib/utils";
 
 export async function getTomarketGame() {
+  if (getTomarketGame.DATA) return getTomarketGame.DATA;
   const scriptResponse = await getDropMainScript(
     "https://mini-app.tomarket.ai"
   );
@@ -16,6 +17,6 @@ export async function getTomarketGame() {
       farm: farm[1],
     };
 
-    return result;
+    return (getTomarketGame.DATA = result);
   }
 }

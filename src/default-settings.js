@@ -1,5 +1,6 @@
 const defaultSettings = {
   farmerTitle: "TGUser",
+  farmersPerWindow: 5,
   openTelegramWebWithinFarmer: true,
   openFarmerInNewWindow: true,
   openFarmerOnStartup: false,

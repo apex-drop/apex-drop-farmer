@@ -1,9 +1,10 @@
 import Countdown from "react-countdown";
+import toast from "react-hot-toast";
 import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import useSocketState from "@/hooks/useSocketState";
-import { delay } from "@/lib/utils";
+import { delay, uuid } from "@/lib/utils";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
@@ -14,9 +15,8 @@ import BlumButton from "./BlumButton";
 import BlumInput from "./BlumInput";
 import useBlumBalanceQuery from "../hooks/useBlumBalanceQuery";
 import useBlumClaimGameMutation from "../hooks/useBlumClaimGameMutation";
-import useBlumStartGameMutation from "../hooks/useBlumStartGameMutation";
 import useBlumDogsDropEligibilityQuery from "../hooks/useBlumDogsDropEligibilityQuery";
-import toast from "react-hot-toast";
+import useBlumStartGameMutation from "../hooks/useBlumStartGameMutation";
 
 const GAME_DURATION = 30_000;
 const EXTRA_DELAY = 3_000;
@@ -24,7 +24,7 @@ const MIN_POINT = 100;
 const INITIAL_POINT = 180;
 const MAX_POINT = 280;
 
-export default function Blum() {
+export default function BlumAutoGamer({ workerRef }) {
   const query = useBlumBalanceQuery();
   const dogsDropEligibilityQuery = useBlumDogsDropEligibilityQuery();
   const client = useQueryClient();
@@ -42,7 +42,7 @@ export default function Blum() {
   );
 
   const startGameMutation = useBlumStartGameMutation();
-  const claimGameMutation = useBlumClaimGameMutation(points);
+  const claimGameMutation = useBlumClaimGameMutation();
 
   /** Countdown renderer */
   const countdownRenderer = useCallback(
@@ -80,6 +80,24 @@ export default function Blum() {
         action: "blum.autoplay.stop",
       });
     }, [])
+  );
+
+  const postWorkerMessage = useCallback(
+    (data) => {
+      return new Promise((resolve) => {
+        /** @type {Worker} */
+        const worker = workerRef.current;
+
+        const respond = (ev) => {
+          worker.removeEventListener("message", respond);
+          resolve(ev.data);
+        };
+
+        worker.addEventListener("message", respond);
+        worker.postMessage(data);
+      });
+    },
+    [workerRef]
   );
 
   /** Handlers */
@@ -121,8 +139,33 @@ export default function Blum() {
         /** Reset countdown */
         setCountdown(null);
 
+        /** Calculate */
+        const finalPoints = points + Math.floor(Math.random() * 20);
+        const challenge = await postWorkerMessage({
+          id: uuid(),
+          method: "proof",
+          payload: game.gameId,
+        });
+
+        const pack = await postWorkerMessage({
+          id: uuid(),
+          method: "pack",
+          payload: {
+            gameId: game.gameId,
+            challenge,
+            earnedAssets: {
+              CLOVER: {
+                amount: finalPoints.toString(),
+              },
+            },
+          },
+        });
+
         /** Claim Game */
-        await claimGameMutation.mutateAsync(game.gameId);
+        await claimGameMutation.mutateAsync(pack.hash);
+
+        /** Show Success */
+        toast.success(`+${finalPoints} Blum Points`);
       } catch {}
 
       /** Add a little delay */
@@ -138,8 +181,9 @@ export default function Blum() {
       /** Release Lock */
       process.unlock();
     })();
-  }, [tickets, process]);
+  }, [tickets, process, points, postWorkerMessage]);
 
+  /** Toast Dogs Eligibility */
   useEffect(() => {
     if (dogsDropEligibilityQuery.status === "success") {
       const data = dogsDropEligibilityQuery.data;

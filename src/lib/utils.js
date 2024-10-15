@@ -2,9 +2,14 @@ import axios from "axios";
 import defaultSettings from "@/default-settings";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { v4 as uuidv4 } from "uuid";
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
+}
+
+export function uuid() {
+  return uuidv4();
 }
 
 export function delay(length, value) {
@@ -22,8 +27,12 @@ export function getSettings() {
   });
 }
 
-export async function getDropMainScript(url) {
-  const htmlResponse = await axios.get(url).then((res) => res.data);
+export function fetchContent(url, ...options) {
+  return axios.get(url, ...options).then((res) => res.data);
+}
+
+export async function getDropMainScript(url, name = "index") {
+  const htmlResponse = await fetchContent(url);
 
   const parser = new DOMParser();
   const html = parser.parseFromString(htmlResponse, "text/html");
@@ -32,13 +41,13 @@ export async function getDropMainScript(url) {
 
   const indexScript = Array.prototype.find.call(
     scripts,
-    (script) => script.type === "module" && script.src.includes("index")
+    (script) => script.type === "module" && script.src.includes(name)
   );
 
   if (!indexScript) return;
 
   const scriptUrl = new URL(indexScript.getAttribute("src"), url);
-  const scriptResponse = await axios.get(scriptUrl).then((res) => res.data);
+  const scriptResponse = await fetchContent(scriptUrl);
 
   return scriptResponse;
 }

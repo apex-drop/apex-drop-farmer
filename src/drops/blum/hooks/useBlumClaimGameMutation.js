@@ -2,15 +2,14 @@ import { useMutation } from "@tanstack/react-query";
 
 import useBlumApi from "./useBlumApi";
 
-export default function useBlumClaimGameMutation(points) {
+export default function useBlumClaimGameMutation() {
   const api = useBlumApi();
   return useMutation({
-    mutationKey: ["blum", "game", "claim", points],
-    mutationFn: (id) =>
+    mutationKey: ["blum", "game", "claim"],
+    mutationFn: (payload) =>
       api
-        .post("https://game-domain.blum.codes/api/v1/game/claim", {
-          gameId: id,
-          points: points + Math.floor(Math.random() * 20),
+        .post("https://game-domain.blum.codes/api/v2/game/claim", {
+          payload,
         })
         .then((res) => res.data),
   });

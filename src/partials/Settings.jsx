@@ -1,7 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import LabelToggle from "@/components/LabelToggle";
 import defaultSettings from "@/default-settings";
-import toast from "react-hot-toast";
 import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
@@ -13,7 +12,12 @@ import { useMemo } from "react";
 
 export default function Settings() {
   const { settings, configureSettings } = useAppContext();
-  const [syncServer, setSyncServer] = useState(settings.syncServer);
+  const [syncServer, setSyncServer] = useState(
+    settings.syncServer || defaultSettings.syncServer
+  );
+  const [farmersPerWindow, setFarmersPerWindow] = useState(
+    settings.farmersPerWindow || defaultSettings.farmersPerWindow
+  );
   const [, dispatchAndConfigureSettings] = useSocketDispatchCallback(
     /** Configure Settings */
     configureSettings,
@@ -32,9 +36,18 @@ export default function Settings() {
     )
   );
 
+  /** Handle Set Sync Server */
   const handleSetSyncServer = useCallback(() => {
     dispatchAndConfigureSettings("syncServer", syncServer);
-  }, [toast, syncServer, dispatchAndConfigureSettings]);
+  }, [syncServer, dispatchAndConfigureSettings]);
+
+  /** Set Farmers Per Window */
+  const handleSetFarmersPerWindow = useCallback(() => {
+    dispatchAndConfigureSettings(
+      "farmersPerWindow",
+      Math.max(3, Number(farmersPerWindow))
+    );
+  }, [farmersPerWindow, dispatchAndConfigureSettings]);
 
   /** Handlers */
   useSocketHandlers(
@@ -48,10 +61,11 @@ export default function Settings() {
     )
   );
 
-  /** Update Sync Server */
+  /** Update Settings */
   useEffect(() => {
     setSyncServer(settings.syncServer);
-  }, [settings.syncServer, setSyncServer]);
+    setFarmersPerWindow(settings.farmersPerWindow);
+  }, [settings, setSyncServer, setFarmersPerWindow]);
 
   return (
     <Dialog.Portal>
@@ -95,6 +109,33 @@ export default function Settings() {
                   }
                   placeholder="Farmer Title"
                 />
+
+                {/* Farmers Per Windows */}
+                <label className="text-neutral-500">
+                  Farmers Per Window (Min - 3)
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    className="p-2.5 rounded-lg bg-neutral-100 font-bold grow min-h-0 min-w-0"
+                    value={farmersPerWindow}
+                    type="number"
+                    onChange={(ev) => setFarmersPerWindow(ev.target.value)}
+                    placeholder="Farmers Per Window"
+                  />
+
+                  {/* Set Button */}
+                  <button
+                    type="button"
+                    onClick={handleSetFarmersPerWindow}
+                    className={cn(
+                      "inline-flex items-center justify-center",
+                      "px-4 rounded-lg shrink-0",
+                      "text-white bg-blue-500"
+                    )}
+                  >
+                    <HiCheck className="w-4 h-4 " />
+                  </button>
+                </div>
 
                 {/* Sync Server */}
                 <label className="text-neutral-500">Sync Server</label>

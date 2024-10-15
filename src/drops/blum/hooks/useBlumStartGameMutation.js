@@ -8,7 +8,7 @@ export default function useBlumStartGameMutation() {
     mutationKey: ["blum", "game", "start"],
     mutationFn: () =>
       api
-        .post("https://game-domain.blum.codes/api/v1/game/play", null)
+        .post("https://game-domain.blum.codes/api/v2/game/play", null)
         .then((res) => res.data),
   });
 }

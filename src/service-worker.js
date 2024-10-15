@@ -65,7 +65,25 @@ chrome.runtime.onStartup.addListener(async () => {
   const settings = await getSettings();
 
   if (settings.openFarmerOnStartup) {
-    openFarmerWindow();
+    /** Open Extensions Page */
+    try {
+      const platform = await chrome.runtime.getPlatformInfo();
+      if (platform.os !== "android") {
+        const tab = await chrome.tabs.query({
+          active: true,
+          currentWindow: true,
+        })[0];
+
+        if (tab) {
+          chrome.tabs.update(tab.id, {
+            url: "chrome://extensions",
+          });
+        }
+      }
+    } catch {}
+
+    /** Open Farmer Window */
+    await openFarmerWindow();
   }
 });
 

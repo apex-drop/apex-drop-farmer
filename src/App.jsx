@@ -5,7 +5,9 @@ import AppContext from "./contexts/AppContext";
 import SyncControl from "./partials/SyncControl";
 import TabButtonList from "./components/TabButtonList";
 import TabContent from "./components/TabContent";
+import defaultSettings from "./default-settings";
 import useApp from "./hooks/useApp";
+import { getSettings } from "./lib/utils";
 
 function App() {
   const app = useApp();
@@ -20,9 +22,21 @@ function App() {
         currentWindow.type === "popup" &&
         currentWindow.state === "maximized"
       ) {
+        const settings = await getSettings();
+        const width = Math.max(
+          300,
+          Math.floor(
+            currentWindow.width /
+              (settings.farmersPerWindow || defaultSettings.farmersPerWindow)
+          )
+        );
+
+        const left = Math.floor(currentWindow.width / 2 - width / 2);
+
         chrome?.windows?.update(currentWindow.id, {
           state: "normal",
-          width: Math.max(300, Math.floor(currentWindow.width / 5)),
+          width,
+          left,
         });
       }
     })();

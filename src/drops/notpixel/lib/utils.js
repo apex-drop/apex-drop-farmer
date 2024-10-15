@@ -64,6 +64,8 @@ export function getCoords(index, item) {
 }
 
 export async function getNotPixelGame() {
+  if (getNotPixelGame.DATA) return getNotPixelGame.DATA;
+
   const scriptResponse = await getDropMainScript("https://app.notpx.app");
 
   try {
@@ -95,6 +97,6 @@ export async function getNotPixelGame() {
       url: `https://app.notpx.app/assets/${url}`,
     };
 
-    return obj;
+    return (getNotPixelGame.DATA = obj);
   } catch {}
 }

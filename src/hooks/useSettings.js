@@ -21,10 +21,12 @@ export default function useSettings() {
         settings: newSettings,
       });
 
+      setSettings(newSettings);
+
       toast.dismiss();
       toast.success("Settings Updated");
     },
-    [settings]
+    [settings, setSettings]
   );
 
   /** Set initial settings */

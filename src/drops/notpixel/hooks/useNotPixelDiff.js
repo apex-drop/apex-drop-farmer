@@ -8,7 +8,10 @@ export default function useNotPixelDiff(pixels, worldPixels) {
     const result = [];
 
     for (let pixelId in pixels) {
-      if (pixels[pixelId].color !== worldPixels[pixelId]?.color) {
+      if (
+        pixels[pixelId].color !== worldPixels[pixelId]?.color &&
+        worldPixels[pixelId]?.color !== null
+      ) {
         result.push(pixels[pixelId]);
       }
     }

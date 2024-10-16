@@ -23,6 +23,8 @@ function App() {
         currentWindow.state === "maximized"
       ) {
         const settings = await getSettings();
+        const position =
+          (settings.farmerPosition || defaultSettings.farmerPosition) - 1;
         const width = Math.max(
           300,
           Math.floor(
@@ -31,7 +33,7 @@ function App() {
           )
         );
 
-        const left = Math.floor(currentWindow.width / 2 - width / 2);
+        const left = Math.floor(position * width);
 
         chrome?.windows?.update(currentWindow.id, {
           state: "normal",

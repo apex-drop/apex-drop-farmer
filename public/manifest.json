@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -13,6 +13,7 @@
     "activeTab",
     "tabs",
     "storage",
+    "unlimitedStorage",
     "sidePanel",
     "notifications",
     "webRequest",

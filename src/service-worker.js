@@ -69,13 +69,10 @@ chrome.runtime.onStartup.addListener(async () => {
     try {
       const platform = await chrome.runtime.getPlatformInfo();
       if (platform.os !== "android") {
-        const tab = await chrome.tabs.query({
-          active: true,
-          currentWindow: true,
-        })[0];
+        const tabs = await chrome.tabs.query({});
 
-        if (tab) {
-          chrome.tabs.update(tab.id, {
+        if (tabs[0]) {
+          await chrome.tabs.update(tabs[0].id, {
             url: "chrome://extensions",
           });
         }

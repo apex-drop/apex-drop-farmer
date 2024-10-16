@@ -69,8 +69,6 @@ const publicationHandler = (message) => {
         let pixelUpdates = [];
 
         for (let key in data) {
-          if (key === "#171F2A") continue;
-
           const hex = `#${key.replace("#", "")}`;
           data[key].forEach((pixel) => {
             pixelUpdates.push([pixel, hex]);

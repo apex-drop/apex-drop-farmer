@@ -18,6 +18,9 @@ export default function Settings() {
   const [farmersPerWindow, setFarmersPerWindow] = useState(
     settings.farmersPerWindow || defaultSettings.farmersPerWindow
   );
+  const [farmerPosition, setFarmerPosition] = useState(
+    settings.farmerPosition || defaultSettings.farmerPosition
+  );
   const [, dispatchAndConfigureSettings] = useSocketDispatchCallback(
     /** Configure Settings */
     configureSettings,
@@ -49,6 +52,14 @@ export default function Settings() {
     );
   }, [farmersPerWindow, dispatchAndConfigureSettings]);
 
+  /** Set Farmer Position */
+  const handleSetFarmerPosition = useCallback(() => {
+    configureSettings(
+      "farmerPosition",
+      Math.max(1, Math.min(farmersPerWindow, Number(farmerPosition)))
+    );
+  }, [farmersPerWindow, farmerPosition]);
+
   /** Handlers */
   useSocketHandlers(
     useMemo(
@@ -65,7 +76,8 @@ export default function Settings() {
   useEffect(() => {
     setSyncServer(settings.syncServer);
     setFarmersPerWindow(settings.farmersPerWindow);
-  }, [settings, setSyncServer, setFarmersPerWindow]);
+    setFarmerPosition(settings.farmerPosition);
+  }, [settings, setSyncServer, setFarmersPerWindow, setFarmerPosition]);
 
   return (
     <Dialog.Portal>
@@ -127,6 +139,31 @@ export default function Settings() {
                   <button
                     type="button"
                     onClick={handleSetFarmersPerWindow}
+                    className={cn(
+                      "inline-flex items-center justify-center",
+                      "px-4 rounded-lg shrink-0",
+                      "text-white bg-blue-500"
+                    )}
+                  >
+                    <HiCheck className="w-4 h-4 " />
+                  </button>
+                </div>
+
+                {/* Farmers Postion */}
+                <label className="text-neutral-500">Farmer Position</label>
+                <div className="flex gap-2">
+                  <input
+                    className="p-2.5 rounded-lg bg-neutral-100 font-bold grow min-h-0 min-w-0"
+                    value={farmerPosition}
+                    type="number"
+                    onChange={(ev) => setFarmerPosition(ev.target.value)}
+                    placeholder="Farmer Position"
+                  />
+
+                  {/* Set Button */}
+                  <button
+                    type="button"
+                    onClick={handleSetFarmerPosition}
                     className={cn(
                       "inline-flex items-center justify-center",
                       "px-4 rounded-lg shrink-0",

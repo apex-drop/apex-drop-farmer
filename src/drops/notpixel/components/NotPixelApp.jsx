@@ -1,18 +1,24 @@
+import ReactTimeAgo from "react-time-ago";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 import toast from "react-hot-toast";
 import useProcessLock from "@/hooks/useProcessLock";
+import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
+import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { CgSpinner } from "react-icons/cg";
 import { cn, delay } from "@/lib/utils";
 import { useCallback, useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+
 import NotPixelIcon from "../assets/images/icon.png?format=webp&w=80";
+import useNotPixelMiningClaimMutation from "../hooks/useNotPixelMiningClaimMutation";
 import useNotPixelMiningStatusQuery from "../hooks/useNotPixelMiningStatusQuery";
 import useNotPixelRepaintMutation from "../hooks/useNotPixelRepaintMutation";
-import useNotPixelMiningClaimMutation from "../hooks/useNotPixelMiningClaimMutation";
-import useSocketHandlers from "@/hooks/useSocketHandlers";
-import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 
-export default function NotPixelApp({ diff, updateWorldPixels }) {
+TimeAgo.addDefaultLocale(en);
+
+export default function NotPixelApp({ diff, updatedAt }) {
   const miningQuery = useNotPixelMiningStatusQuery();
   const mining = miningQuery.data;
 
@@ -118,7 +124,7 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
       /** Release Lock */
       process.unlock();
     })();
-  }, [process, diff, mining, updateWorldPixels]);
+  }, [process, diff, mining]);
 
   /** Sync Handlers */
   useSocketHandlers(
@@ -146,6 +152,10 @@ export default function NotPixelApp({ diff, updateWorldPixels }) {
         />
         <h1 className="font-bold">Not Pixel Farmer</h1>
       </div>
+
+      <p className="text-center text-green-500">
+        🛜 <ReactTimeAgo date={updatedAt} locale="en-US" timeStyle="twitter" />
+      </p>
 
       {miningQuery.isSuccess ? (
         <>

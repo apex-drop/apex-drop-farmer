@@ -8,6 +8,7 @@ export default function useNotPixelData() {
   const [started, setStarted] = useState(false);
   const [pixels, setPixels] = useState({});
   const [worldPixels, setWorldPixels] = useState({});
+  const [updatedAt, setUpdatedAt] = useState(() => Date.now());
 
   const updateWorldPixels = useCallback(
     (updates) => {
@@ -25,8 +26,10 @@ export default function useNotPixelData() {
 
         return newWorldPixels;
       });
+
+      setUpdatedAt(Date.now());
     },
-    [setWorldPixels]
+    [setWorldPixels, setUpdatedAt]
   );
 
   /** Configure Not Pixel Images */
@@ -137,9 +140,17 @@ export default function useNotPixelData() {
       started,
       pixels,
       worldPixels,
+      updatedAt,
       updateWorldPixels,
       configureNotPixel,
     }),
-    [started, pixels, worldPixels, updateWorldPixels, configureNotPixel]
+    [
+      started,
+      pixels,
+      worldPixels,
+      updatedAt,
+      updateWorldPixels,
+      configureNotPixel,
+    ]
   );
 }

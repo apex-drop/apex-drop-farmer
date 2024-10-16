@@ -9,8 +9,14 @@ import useNotPixelSocket from "../hooks/useNotPixelSocket";
 
 export default function NotPixelFarmer({ sandboxRef }) {
   const api = useNotPixelApi();
-  const { started, pixels, worldPixels, updateWorldPixels, configureNotPixel } =
-    useNotPixelData();
+  const {
+    started,
+    pixels,
+    worldPixels,
+    updatedAt,
+    updateWorldPixels,
+    configureNotPixel,
+  } = useNotPixelData();
   const diff = useNotPixelDiff(pixels, worldPixels);
 
   /** Initiate socket */
@@ -48,7 +54,7 @@ export default function NotPixelFarmer({ sandboxRef }) {
   return (
     <>
       {connected ? (
-        <NotPixelApp diff={diff} updateWorldPixels={updateWorldPixels} />
+        <NotPixelApp diff={diff} updatedAt={updatedAt} />
       ) : (
         <div className="flex items-center justify-center grow">
           <CgSpinner className="w-5 h-5 mx-auto animate-spin" />

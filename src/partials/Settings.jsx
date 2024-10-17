@@ -6,7 +6,12 @@ import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { CgSpinner } from "react-icons/cg";
 import { HiArrowPath, HiCheck } from "react-icons/hi2";
-import { cn } from "@/lib/utils";
+import {
+  cn,
+  delay,
+  maximizeFarmerWindow,
+  resizeFarmerWindow,
+} from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 import { useMemo } from "react";
 
@@ -53,12 +58,16 @@ export default function Settings() {
   }, [farmersPerWindow, dispatchAndConfigureSettings]);
 
   /** Set Farmer Position */
-  const handleSetFarmerPosition = useCallback(() => {
-    configureSettings(
+  const handleSetFarmerPosition = useCallback(async () => {
+    await configureSettings(
       "farmerPosition",
-      Math.max(1, Math.min(farmersPerWindow, Number(farmerPosition)))
+      Math.max(1, Math.min(farmersPerWindow, Number(farmerPosition) || 1))
     );
-  }, [farmersPerWindow, farmerPosition]);
+
+    await maximizeFarmerWindow();
+    await delay(300);
+    await resizeFarmerWindow();
+  }, [farmersPerWindow, farmerPosition, configureSettings]);
 
   /** Handlers */
   useSocketHandlers(
@@ -74,9 +83,18 @@ export default function Settings() {
 
   /** Update Settings */
   useEffect(() => {
-    setSyncServer(settings.syncServer);
-    setFarmersPerWindow(settings.farmersPerWindow);
-    setFarmerPosition(settings.farmerPosition);
+    /** Set Sync Server */
+    setSyncServer(settings.syncServer || defaultSettings.syncServer);
+
+    /** Set Farmers Per Window */
+    setFarmersPerWindow(
+      settings.farmersPerWindow || defaultSettings.farmersPerWindow
+    );
+
+    /** Set Farmer Position */
+    setFarmerPosition(
+      settings.farmerPosition || defaultSettings.farmerPosition
+    );
   }, [settings, setSyncServer, setFarmersPerWindow, setFarmerPosition]);
 
   return (

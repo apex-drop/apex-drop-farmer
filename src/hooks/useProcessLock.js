@@ -1,11 +1,11 @@
 import { useCallback } from "react";
+import { useEffect } from "react";
 import { useMemo } from "react";
+import { useRef } from "react";
 import { useState } from "react";
 
 export default function useProcessLock() {
-  const [controller, setController] = useState(null);
-  const [started, setStarted] = useState(false);
-  const [locked, setLocked] = useState(false);
+  const controllerRef = useRef();
   const [process, setProcess] = useState({
     started: false,
     locked: false,
@@ -22,7 +22,7 @@ export default function useProcessLock() {
   const start = useCallback(() => {
     setProcess((prev) => {
       prev?.controller?.abort();
-      const controller = new AbortController();
+      const controller = (controllerRef.current = new AbortController());
       return {
         started: true,
         locked: false,
@@ -36,6 +36,8 @@ export default function useProcessLock() {
   const stop = useCallback(() => {
     setProcess((prev) => {
       prev?.controller?.abort();
+      controllerRef.current = null;
+
       return {
         started: false,
         locked: false,
@@ -69,6 +71,13 @@ export default function useProcessLock() {
       locked: false,
     }));
   }, [setProcess]);
+
+  /** Terminate on Unmount */
+  useEffect(() => {
+    return () => {
+      controllerRef.current?.abort();
+    };
+  }, []);
 
   return useMemo(
     () => ({

@@ -11,13 +11,13 @@ export default function useSettings() {
 
   /** Configure Settings */
   const configureSettings = useCallback(
-    (k, v) => {
+    async (k, v) => {
       const newSettings = {
         ...settings,
         [k]: v,
       };
 
-      chrome?.storage?.local.set({
+      await chrome?.storage?.local.set({
         settings: newSettings,
       });
 

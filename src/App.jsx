@@ -5,9 +5,8 @@ import AppContext from "./contexts/AppContext";
 import SyncControl from "./partials/SyncControl";
 import TabButtonList from "./components/TabButtonList";
 import TabContent from "./components/TabContent";
-import defaultSettings from "./default-settings";
 import useApp from "./hooks/useApp";
-import { getSettings } from "./lib/utils";
+import { resizeFarmerWindow } from "./lib/utils";
 
 function App() {
   const app = useApp();
@@ -15,32 +14,7 @@ function App() {
   /** Resize window */
   useEffect(() => {
     (async function () {
-      const currentWindow = await chrome?.windows?.getCurrent();
-
-      if (
-        currentWindow &&
-        currentWindow.type === "popup" &&
-        currentWindow.state === "maximized"
-      ) {
-        const settings = await getSettings();
-        const position =
-          (settings.farmerPosition || defaultSettings.farmerPosition) - 1;
-        const width = Math.max(
-          300,
-          Math.floor(
-            currentWindow.width /
-              (settings.farmersPerWindow || defaultSettings.farmersPerWindow)
-          )
-        );
-
-        const left = Math.floor(position * width);
-
-        chrome?.windows?.update(currentWindow.id, {
-          state: "normal",
-          width,
-          left,
-        });
-      }
+      await resizeFarmerWindow();
     })();
   }, []);
 

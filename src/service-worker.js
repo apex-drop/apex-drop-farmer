@@ -54,8 +54,8 @@ chrome.storage.local.onChanged.addListener(({ settings }) => {
 
 /** Open Farmer on Install */
 chrome.runtime.onInstalled.addListener(async () => {
+  /** Open Farmer Window */
   const settings = await getSettings();
-
   if (settings.openFarmerInNewWindow) {
     await openFarmerWindow();
   }

@@ -20,7 +20,10 @@ export default defineConfig({
       input: {
         index: path.resolve(__dirname, "./index.html"),
         "notpixel-sandbox": path.resolve(__dirname, "./notpixel-sandbox.html"),
-        "service-worker": path.resolve(__dirname, "./src/service-worker.js"),
+        "chrome-service-worker": path.resolve(
+          __dirname,
+          "./src/chrome-service-worker.js"
+        ),
         "content-script-main": path.resolve(
           __dirname,
           "./src/content-script-main.js"

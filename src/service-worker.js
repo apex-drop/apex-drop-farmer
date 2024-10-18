@@ -57,7 +57,7 @@ chrome.runtime.onInstalled.addListener(async () => {
   const settings = await getSettings();
 
   if (settings.openFarmerInNewWindow) {
-    openFarmerWindow();
+    await openFarmerWindow();
   }
 });
 

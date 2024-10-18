@@ -21,27 +21,28 @@ const openFarmerWindow = async () => {
 };
 
 const configureExtension = async (settings) => {
-  /** Configure Side Panel */
-  await chrome.sidePanel
-    .setPanelBehavior({
-      openPanelOnActionClick: !settings.openFarmerInNewWindow,
-    })
-    .catch(() => {});
+  try {
+    /** Configure Side Panel */
+    await chrome.sidePanel
+      .setPanelBehavior({
+        openPanelOnActionClick: !settings.openFarmerInNewWindow,
+      })
+      .catch(() => {});
+  } catch {}
 
   /** Configure Action and Popup */
-  chrome.runtime.getPlatformInfo().then(async (platform) => {
-    if (platform.os === "android") return;
+  const platform = await chrome.runtime.getPlatformInfo();
+  if (platform.os === "android") return;
 
-    /** Remove Popup */
-    await chrome.action.setPopup({ popup: "" }).catch(() => {});
+  /** Remove Popup */
+  await chrome.action.setPopup({ popup: "" }).catch(() => {});
 
-    /** Configure Action */
-    if (settings.openFarmerInNewWindow) {
-      chrome.action.onClicked.addListener(openFarmerWindow);
-    } else {
-      chrome.action.onClicked.removeListener(openFarmerWindow);
-    }
-  });
+  /** Configure Action */
+  if (settings.openFarmerInNewWindow) {
+    chrome.action.onClicked.addListener(openFarmerWindow);
+  } else {
+    chrome.action.onClicked.removeListener(openFarmerWindow);
+  }
 };
 
 /** Watch Storage for Settings Change */
@@ -65,22 +66,35 @@ chrome.runtime.onStartup.addListener(async () => {
   const settings = await getSettings();
 
   if (settings.openFarmerOnStartup) {
-    /** Open Extensions Page */
-    try {
-      const platform = await chrome.runtime.getPlatformInfo();
-      if (platform.os !== "android") {
-        const tabs = await chrome.tabs.query({});
-
-        if (tabs[0]) {
-          await chrome.tabs.update(tabs[0].id, {
-            url: "chrome://extensions",
-          });
-        }
-      }
-    } catch {}
+    /** Main Window */
+    const mainWindow = await chrome.windows.getCurrent();
 
     /** Open Farmer Window */
     await openFarmerWindow();
+
+    /** Get Platform */
+    const platform = await chrome.runtime.getPlatformInfo();
+
+    /** When Not Android */
+    if (platform.os !== "android") {
+      try {
+        if (settings.closeMainWindowOnStartup) {
+          /** Close Main Window */
+          if (mainWindow) {
+            await chrome.windows.remove(mainWindow.id);
+          }
+        } else {
+          /** Go to extensions page */
+          const tabs = await chrome.tabs.query({});
+
+          if (tabs[0]) {
+            await chrome.tabs.update(tabs[0].id, {
+              url: "chrome://extensions",
+            });
+          }
+        }
+      } catch {}
+    }
   }
 });
 

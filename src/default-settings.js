@@ -5,6 +5,7 @@ const defaultSettings = {
   openTelegramWebWithinFarmer: true,
   openFarmerInNewWindow: true,
   openFarmerOnStartup: false,
+  closeMainWindowOnStartup: false,
   syncServer: "127.0.0.1:7777",
 };
 

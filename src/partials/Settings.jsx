@@ -5,27 +5,32 @@ import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { CgSpinner } from "react-icons/cg";
-import { HiArrowPath, HiCheck } from "react-icons/hi2";
-import {
-  cn,
-  delay,
-  maximizeFarmerWindow,
-  resizeFarmerWindow,
-} from "@/lib/utils";
+import { cn, maximizeFarmerWindow, resizeFarmerWindow } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 import { useMemo } from "react";
+import ConfirmButton from "@/components/ConfirmButton";
+import Input from "@/components/Input";
+import ResetButton from "@/components/ResetButton";
 
 export default function Settings() {
   const { settings, configureSettings } = useAppContext();
+
+  /** Sync Server */
   const [syncServer, setSyncServer] = useState(
     settings.syncServer || defaultSettings.syncServer
   );
+
+  /** Farmers Per Window */
   const [farmersPerWindow, setFarmersPerWindow] = useState(
     settings.farmersPerWindow || defaultSettings.farmersPerWindow
   );
+
+  /** Farmer Position */
   const [farmerPosition, setFarmerPosition] = useState(
     settings.farmerPosition || defaultSettings.farmerPosition
   );
+
+  /** Dispatcher */
   const [, dispatchAndConfigureSettings] = useSocketDispatchCallback(
     /** Configure Settings */
     configureSettings,
@@ -44,18 +49,31 @@ export default function Settings() {
     )
   );
 
+  /** Resize Page */
+  const resizeSettingsPage = useCallback(async () => {
+    const handleOnBoundsChanged = async () => {
+      chrome.windows.onBoundsChanged.removeListener(handleOnBoundsChanged);
+      await resizeFarmerWindow();
+    };
+
+    chrome.windows.onBoundsChanged.addListener(handleOnBoundsChanged);
+    await maximizeFarmerWindow();
+  }, []);
+
   /** Handle Set Sync Server */
   const handleSetSyncServer = useCallback(() => {
     dispatchAndConfigureSettings("syncServer", syncServer);
   }, [syncServer, dispatchAndConfigureSettings]);
 
   /** Set Farmers Per Window */
-  const handleSetFarmersPerWindow = useCallback(() => {
-    dispatchAndConfigureSettings(
+  const handleSetFarmersPerWindow = useCallback(async () => {
+    await dispatchAndConfigureSettings(
       "farmersPerWindow",
       Math.max(3, Number(farmersPerWindow))
     );
-  }, [farmersPerWindow, dispatchAndConfigureSettings]);
+
+    await resizeSettingsPage();
+  }, [resizeSettingsPage, farmersPerWindow, dispatchAndConfigureSettings]);
 
   /** Set Farmer Position */
   const handleSetFarmerPosition = useCallback(async () => {
@@ -64,10 +82,8 @@ export default function Settings() {
       Math.max(1, Math.min(farmersPerWindow, Number(farmerPosition) || 1))
     );
 
-    await maximizeFarmerWindow();
-    await delay(300);
-    await resizeFarmerWindow();
-  }, [farmersPerWindow, farmerPosition, configureSettings]);
+    await resizeSettingsPage();
+  }, [resizeSettingsPage, farmersPerWindow, farmerPosition, configureSettings]);
 
   /** Handlers */
   useSocketHandlers(
@@ -140,97 +156,6 @@ export default function Settings() {
                   placeholder="Farmer Title"
                 />
 
-                {/* Farmers Per Windows */}
-                <label className="text-neutral-500">
-                  Farmers Per Window (Min - 3)
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    className="p-2.5 rounded-lg bg-neutral-100 font-bold grow min-h-0 min-w-0"
-                    value={farmersPerWindow}
-                    type="number"
-                    onChange={(ev) => setFarmersPerWindow(ev.target.value)}
-                    placeholder="Farmers Per Window"
-                  />
-
-                  {/* Set Button */}
-                  <button
-                    type="button"
-                    onClick={handleSetFarmersPerWindow}
-                    className={cn(
-                      "inline-flex items-center justify-center",
-                      "px-4 rounded-lg shrink-0",
-                      "text-white bg-blue-500"
-                    )}
-                  >
-                    <HiCheck className="w-4 h-4 " />
-                  </button>
-                </div>
-
-                {/* Farmers Postion */}
-                <label className="text-neutral-500">Farmer Position</label>
-                <div className="flex gap-2">
-                  <input
-                    className="p-2.5 rounded-lg bg-neutral-100 font-bold grow min-h-0 min-w-0"
-                    value={farmerPosition}
-                    type="number"
-                    onChange={(ev) => setFarmerPosition(ev.target.value)}
-                    placeholder="Farmer Position"
-                  />
-
-                  {/* Set Button */}
-                  <button
-                    type="button"
-                    onClick={handleSetFarmerPosition}
-                    className={cn(
-                      "inline-flex items-center justify-center",
-                      "px-4 rounded-lg shrink-0",
-                      "text-white bg-blue-500"
-                    )}
-                  >
-                    <HiCheck className="w-4 h-4 " />
-                  </button>
-                </div>
-
-                {/* Sync Server */}
-                <label className="text-neutral-500">Sync Server</label>
-                <div className="flex gap-2">
-                  <input
-                    className="p-2.5 rounded-lg bg-neutral-100 font-bold grow min-h-0 min-w-0"
-                    value={syncServer}
-                    onChange={(ev) => setSyncServer(ev.target.value)}
-                    placeholder="Sync Server"
-                  />
-
-                  {/* Reset Button */}
-                  <button
-                    type="button"
-                    onClick={() => setSyncServer(defaultSettings.syncServer)}
-                    className={cn(
-                      "inline-flex items-center justify-center",
-                      "px-4 rounded-lg shrink-0",
-                      "bg-neutral-100"
-                    )}
-                  >
-                    <HiArrowPath className="w-4 h-4 " />
-                  </button>
-
-                  {/* Set Button */}
-                  <button
-                    type="button"
-                    onClick={handleSetSyncServer}
-                    className={cn(
-                      "inline-flex items-center justify-center",
-                      "px-4 rounded-lg shrink-0",
-                      "text-white bg-blue-500"
-                    )}
-                  >
-                    <HiCheck className="w-4 h-4 " />
-                  </button>
-                </div>
-
-                <h4 className="text-neutral-500">Options</h4>
-
                 {/* Open Telegram Web within the Farmer */}
                 <LabelToggle
                   onChange={(ev) =>
@@ -244,7 +169,41 @@ export default function Settings() {
                   Launch Telegram Web within the Farmer
                 </LabelToggle>
 
+                {/* Sync Server */}
+                <label className="text-neutral-500">Sync Server</label>
+                <div className="flex gap-2">
+                  <Input
+                    value={syncServer}
+                    onChange={(ev) => setSyncServer(ev.target.value)}
+                    placeholder="Sync Server"
+                  />
+
+                  {/* Reset Button */}
+                  <ResetButton
+                    onClick={() => setSyncServer(defaultSettings.syncServer)}
+                  />
+
+                  {/* Set Button */}
+                  <button onClick={handleSetSyncServer} />
+                </div>
+
+                {/* PC Options */}
+                <h4 className="mt-4 text-neutral-500">PC Options</h4>
+
                 {/* Open Farmer in new Window */}
+                <LabelToggle
+                  onChange={(ev) =>
+                    dispatchAndConfigureSettings(
+                      "openFarmerInNewWindow",
+                      ev.target.checked
+                    )
+                  }
+                  checked={settings?.openFarmerInNewWindow}
+                >
+                  Open Farmer in new Window
+                </LabelToggle>
+
+                {/* Open Farmer on StartUp */}
                 <LabelToggle
                   onChange={(ev) =>
                     dispatchAndConfigureSettings(
@@ -257,18 +216,48 @@ export default function Settings() {
                   Open Farmer on Startup
                 </LabelToggle>
 
-                {/* Open Farmer in new Window */}
+                {/* Close Main Window on Startup */}
                 <LabelToggle
                   onChange={(ev) =>
                     dispatchAndConfigureSettings(
-                      "openFarmerInNewWindow",
+                      "closeMainWindowOnStartup",
                       ev.target.checked
                     )
                   }
-                  checked={settings?.openFarmerInNewWindow}
+                  checked={settings?.closeMainWindowOnStartup}
                 >
-                  Open Farmer in new Window - (Desktop)
+                  Close Main Window on Startup
                 </LabelToggle>
+
+                {/* Farmers Per Windows */}
+                <label className="text-neutral-500">
+                  Farmers Per Window (Min - 3)
+                </label>
+                <div className="flex gap-2">
+                  <Input
+                    value={farmersPerWindow}
+                    type="number"
+                    onChange={(ev) => setFarmersPerWindow(ev.target.value)}
+                    placeholder="Farmers Per Window"
+                  />
+
+                  {/* Set Button */}
+                  <ConfirmButton onClick={handleSetFarmersPerWindow} />
+                </div>
+
+                {/* Farmer Postion */}
+                <label className="text-neutral-500">Farmer Position</label>
+                <div className="flex gap-2">
+                  <Input
+                    value={farmerPosition}
+                    type="number"
+                    onChange={(ev) => setFarmerPosition(ev.target.value)}
+                    placeholder="Farmer Position"
+                  />
+
+                  {/* Set Button */}
+                  <ConfirmButton onClick={handleSetFarmerPosition} />
+                </div>
               </form>
             </div>
             <div className="flex flex-col p-4 font-bold shrink-0">

@@ -11,9 +11,9 @@ import useSocketHandlers from "@/hooks/useSocketHandlers";
 import useSocketState from "@/hooks/useSocketState";
 import {
   HiOutlineArrowPath,
-  HiOutlineArrowTopRightOnSquare,
   HiOutlineCog6Tooth,
   HiOutlinePower,
+  HiOutlinePuzzlePiece,
 } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
 import { useCallback } from "react";
@@ -146,26 +146,23 @@ export default function Welcome() {
     [settings, dispatchThenFindAndPushTab, dispatchAndNavigateToTelegramWeb]
   );
 
-  /** Open Farmer in Separate Window */
-  const [openInSeparateWindow, dispatchAndOpenInSeparateWindow] =
+  /** Open Extensions Page */
+  const [openExtensionsPage, dispatchAndOpenExtensionsPage] =
     useSocketDispatchCallback(
       /** Main */
       useCallback(async () => {
         await chrome?.windows?.create({
-          url: "index.html",
-          type: "popup",
+          url: "chrome://extensions",
           state: "maximized",
           focused: true,
         });
-
-        window.close();
       }, []),
 
       /** Dispatch */
       useCallback(
         (socket) =>
           socket.dispatch({
-            action: "app.open-in-separate-window",
+            action: "app.open-extensions-page",
           }),
         []
       )
@@ -215,8 +212,8 @@ export default function Welcome() {
           navigateToTelegramWeb(command.data.version);
         },
 
-        "app.open-in-separate-window": () => {
-          openInSeparateWindow();
+        "app.open-extensions-page": () => {
+          openExtensionsPage();
         },
       }),
       [
@@ -225,7 +222,7 @@ export default function Welcome() {
         findAndPushTab,
         closeTab,
         navigateToTelegramWeb,
-        openInSeparateWindow,
+        openExtensionsPage,
       ]
     )
   );
@@ -267,13 +264,13 @@ export default function Welcome() {
           </div>
 
           <div className="flex gap-2">
-            {/* Open in Separate Window */}
+            {/* Open Extensions Page */}
             <button
-              title="Open in separate Window"
-              onClick={dispatchAndOpenInSeparateWindow}
+              title="Open Extensions Page"
+              onClick={dispatchAndOpenExtensionsPage}
               className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
             >
-              <HiOutlineArrowTopRightOnSquare className="w-5 h-5" />
+              <HiOutlinePuzzlePiece className="w-5 h-5" />
             </button>
 
             {/* Settings */}

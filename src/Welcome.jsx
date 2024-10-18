@@ -147,26 +147,13 @@ export default function Welcome() {
   );
 
   /** Open Extensions Page */
-  const [openExtensionsPage, dispatchAndOpenExtensionsPage] =
-    useSocketDispatchCallback(
-      /** Main */
-      useCallback(async () => {
-        await chrome?.windows?.create({
-          url: "chrome://extensions",
-          state: "maximized",
-          focused: true,
-        });
-      }, []),
-
-      /** Dispatch */
-      useCallback(
-        (socket) =>
-          socket.dispatch({
-            action: "app.open-extensions-page",
-          }),
-        []
-      )
-    );
+  const openExtensionsPage = useCallback(async () => {
+    await chrome?.windows?.create({
+      url: "chrome://extensions",
+      state: "maximized",
+      focused: true,
+    });
+  }, []);
 
   /** Open Farmer in Separate Window */
   const [reload, dispatchAndReload] = useSocketDispatchCallback(
@@ -211,19 +198,8 @@ export default function Welcome() {
         "app.navigate-to-telegram-web": (command) => {
           navigateToTelegramWeb(command.data.version);
         },
-
-        "app.open-extensions-page": () => {
-          openExtensionsPage();
-        },
       }),
-      [
-        reload,
-        showHiddenDrops,
-        findAndPushTab,
-        closeTab,
-        navigateToTelegramWeb,
-        openExtensionsPage,
-      ]
+      [reload, showHiddenDrops, findAndPushTab, closeTab, navigateToTelegramWeb]
     )
   );
 
@@ -267,7 +243,7 @@ export default function Welcome() {
             {/* Open Extensions Page */}
             <button
               title="Open Extensions Page"
-              onClick={dispatchAndOpenExtensionsPage}
+              onClick={openExtensionsPage}
               className="p-2.5 rounded-full bg-neutral-50 hover:bg-neutral-100 shrink-0"
             >
               <HiOutlinePuzzlePiece className="w-5 h-5" />

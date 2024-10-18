@@ -1,5 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
+import ConfirmButton from "@/components/ConfirmButton";
+import Input from "@/components/Input";
 import LabelToggle from "@/components/LabelToggle";
+import ResetButton from "@/components/ResetButton";
 import defaultSettings from "@/default-settings";
 import useAppContext from "@/hooks/useAppContext";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
@@ -8,9 +11,6 @@ import { CgSpinner } from "react-icons/cg";
 import { cn, maximizeFarmerWindow, resizeFarmerWindow } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 import { useMemo } from "react";
-import ConfirmButton from "@/components/ConfirmButton";
-import Input from "@/components/Input";
-import ResetButton from "@/components/ResetButton";
 
 export default function Settings() {
   const { settings, configureSettings } = useAppContext();
@@ -50,14 +50,14 @@ export default function Settings() {
   );
 
   /** Resize Page */
-  const resizeSettingsPage = useCallback(async () => {
-    const handleOnBoundsChanged = async () => {
+  const resizeSettingsPage = useCallback(() => {
+    const handleOnBoundsChanged = () => {
       chrome.windows.onBoundsChanged.removeListener(handleOnBoundsChanged);
-      await resizeFarmerWindow();
+      resizeFarmerWindow();
     };
 
     chrome.windows.onBoundsChanged.addListener(handleOnBoundsChanged);
-    await maximizeFarmerWindow();
+    maximizeFarmerWindow();
   }, []);
 
   /** Handle Set Sync Server */
@@ -66,23 +66,23 @@ export default function Settings() {
   }, [syncServer, dispatchAndConfigureSettings]);
 
   /** Set Farmers Per Window */
-  const handleSetFarmersPerWindow = useCallback(async () => {
-    await dispatchAndConfigureSettings(
+  const handleSetFarmersPerWindow = useCallback(() => {
+    dispatchAndConfigureSettings(
       "farmersPerWindow",
       Math.max(3, Number(farmersPerWindow))
     );
 
-    await resizeSettingsPage();
+    resizeSettingsPage();
   }, [resizeSettingsPage, farmersPerWindow, dispatchAndConfigureSettings]);
 
   /** Set Farmer Position */
-  const handleSetFarmerPosition = useCallback(async () => {
-    await configureSettings(
+  const handleSetFarmerPosition = useCallback(() => {
+    configureSettings(
       "farmerPosition",
       Math.max(1, Math.min(farmersPerWindow, Number(farmerPosition) || 1))
     );
 
-    await resizeSettingsPage();
+    resizeSettingsPage();
   }, [resizeSettingsPage, farmersPerWindow, farmerPosition, configureSettings]);
 
   /** Handlers */

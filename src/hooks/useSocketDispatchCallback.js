@@ -8,8 +8,8 @@ export default function useSocketDispatchCallback(main, dispatch) {
 
   /** Callback that dispatch and calls main */
   const dispatchAndCallMain = useCallback(
-    async (...args) => {
-      await dispatch(socket, ...args);
+    (...args) => {
+      dispatch(socket, ...args);
       return main(...args);
     },
     [main, dispatch, socket]

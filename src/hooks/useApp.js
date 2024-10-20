@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 
+import useMessagePort from "./useMessagePort";
 import useSettings from "./useSettings";
 import useSocket from "./useSocket";
 
@@ -11,6 +12,7 @@ const defaultOpenedTabs = () => [{ ...farmerTabs[0], active: true }];
 export default function useApp() {
   const { settings, configureSettings } = useSettings();
   const socket = useSocket(settings.syncServer);
+  const messaging = useMessagePort();
 
   const [openedTabs, setOpenedTabs] = useState(defaultOpenedTabs);
 
@@ -77,6 +79,7 @@ export default function useApp() {
       settings,
       configureSettings,
       socket,
+      messaging,
       openedTabs,
       setActiveTab,
       closeTab,
@@ -87,6 +90,7 @@ export default function useApp() {
       settings,
       configureSettings,
       socket,
+      messaging,
       openedTabs,
       setActiveTab,
       closeTab,

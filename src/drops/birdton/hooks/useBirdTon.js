@@ -65,7 +65,7 @@ export default function useBirdTon(farmer) {
         setEventData((prev) => {
           const newMap = new Map(prev);
 
-          newMap.set(data["event_type"], data["data"]);
+          newMap.set(data["event_type"], JSON.parse(data["data"]));
 
           return newMap;
         });

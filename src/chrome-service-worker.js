@@ -10,6 +10,13 @@ const getSettings = () => {
   });
 };
 
+const removeActionPopup = async () => {
+  const platform = await chrome.runtime.getPlatformInfo();
+  if (platform.os !== "android") {
+    await chrome.action.setPopup({ popup: "" }).catch(() => {});
+  }
+};
+
 /** Open Farmer */
 const openFarmerWindow = async () => {
   chrome.windows.create({
@@ -21,6 +28,13 @@ const openFarmerWindow = async () => {
 };
 
 const configureExtension = async (settings) => {
+  /** Configure Action */
+  if (settings.openFarmerInNewWindow) {
+    chrome.action.onClicked.addListener(openFarmerWindow);
+  } else {
+    chrome.action.onClicked.removeListener(openFarmerWindow);
+  }
+
   try {
     /** Configure Side Panel */
     await chrome.sidePanel
@@ -29,20 +43,6 @@ const configureExtension = async (settings) => {
       })
       .catch(() => {});
   } catch {}
-
-  /** Configure Action and Popup */
-  const platform = await chrome.runtime.getPlatformInfo();
-  if (platform.os === "android") return;
-
-  /** Remove Popup */
-  await chrome.action.setPopup({ popup: "" }).catch(() => {});
-
-  /** Configure Action */
-  if (settings.openFarmerInNewWindow) {
-    chrome.action.onClicked.addListener(openFarmerWindow);
-  } else {
-    chrome.action.onClicked.removeListener(openFarmerWindow);
-  }
 };
 
 /** Watch Storage for Settings Change */
@@ -97,6 +97,9 @@ chrome.runtime.onStartup.addListener(async () => {
     }
   }
 });
+
+/** Remove Action Popup */
+removeActionPopup();
 
 /** Configure Extension */
 getSettings().then((settings) => {

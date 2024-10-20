@@ -8,13 +8,30 @@ import BirdTonIcon from "../assets/images/icon.png?format=webp&w=80";
 import CoinIcon from "../assets/images/coin.png?format=webp&w=80";
 import EnergyIcon from "../assets/images/energy.png?format=webp&w=80";
 import useBirdTonFarmerContext from "../hooks/useBirdTonFarmerContext";
+import { useEffect } from "react";
+import useBirdTonClaimDailyRewardMutation from "../hooks/useBirdTonClaimDailyRewardMutation";
+import toast from "react-hot-toast";
+import BirdTonTasks from "./BirdTonTasks";
 
 export default function BirdTonFarmer() {
   const { connected, authQuery } = useBirdTonFarmerContext();
   const user = authQuery.data;
   const energy = user?.["energy"] || 0;
   const maxEnergy = user?.["energy_capacity"] || 0;
-  const tabs = useSocketTabs("birdton.farmer-tabs", "game");
+  const tabs = useSocketTabs("birdton.farmer-tabs", "tasks");
+
+  const claimDailyRewardMutation = useBirdTonClaimDailyRewardMutation();
+
+  /** Claim Daily Reward */
+  useEffect(() => {
+    (async function () {
+      if (user?.["can_claim_daily"]) {
+        await claimDailyRewardMutation.mutateAsync();
+
+        toast.success("BirdTon - Daily Reward");
+      }
+    })();
+  }, [user]);
 
   return user && connected ? (
     <div className="flex flex-col gap-2 p-4">
@@ -41,8 +58,8 @@ export default function BirdTonFarmer() {
       </h4>
 
       <Tabs.Root {...tabs} className="flex flex-col gap-4">
-        <Tabs.List className="grid grid-cols-1">
-          {["game"].map((value, index) => (
+        <Tabs.List className="grid grid-cols-2">
+          {["game", "tasks"].map((value, index) => (
             <Tabs.Trigger
               key={index}
               value={value}
@@ -56,9 +73,14 @@ export default function BirdTonFarmer() {
             </Tabs.Trigger>
           ))}
         </Tabs.List>
+        {/* Game */}
         <Tabs.Content value="game">
-          {/* Gamer */}
           <BirdTonGamer />
+        </Tabs.Content>
+
+        {/* Tasks */}
+        <Tabs.Content value="tasks">
+          <BirdTonTasks />
         </Tabs.Content>
       </Tabs.Root>
     </div>

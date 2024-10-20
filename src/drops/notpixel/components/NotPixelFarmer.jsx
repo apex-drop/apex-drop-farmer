@@ -1,11 +1,14 @@
 import { CgSpinner } from "react-icons/cg";
 import { useEffect } from "react";
 
+import NotPixelIcon from "../assets/images/icon.png?format=webp&w=128";
+import NotPixelTemplate from "../assets/images/notpixel-template.png?format=webp";
 import NotPixelApp from "./NotPixelApp";
 import useNotPixelApi from "../hooks/useNotPixelApi";
 import useNotPixelData from "../hooks/useNotPixelData";
 import useNotPixelDiff from "../hooks/useNotPixelDiff";
 import useNotPixelSocket from "../hooks/useNotPixelSocket";
+import { useState } from "react";
 
 export default function NotPixelFarmer({ sandboxRef }) {
   const api = useNotPixelApi();
@@ -18,6 +21,7 @@ export default function NotPixelFarmer({ sandboxRef }) {
     configureNotPixel,
   } = useNotPixelData();
   const diff = useNotPixelDiff(pixels, worldPixels);
+  const [showNoTemplateError, setShowNoTemplateError] = useState(false);
 
   /** Initiate socket */
   const { connected } = useNotPixelSocket(
@@ -46,18 +50,32 @@ export default function NotPixelFarmer({ sandboxRef }) {
         ];
       } catch {}
 
-      /** Configure the App */
-      configureNotPixel(items);
+      if (items.length) {
+        /** Configure the App */
+        configureNotPixel(items);
+      } else {
+        setShowNoTemplateError(true);
+      }
     })();
-  }, [configureNotPixel]);
+  }, [configureNotPixel, setShowNoTemplateError]);
 
   return (
     <>
       {connected ? (
         <NotPixelApp diff={diff} updatedAt={updatedAt} />
       ) : (
-        <div className="flex items-center justify-center grow">
-          <CgSpinner className="w-5 h-5 mx-auto animate-spin" />
+        <div className="flex flex-col items-center justify-center gap-4 p-4 grow">
+          {showNoTemplateError ? (
+            <>
+              <img src={NotPixelIcon} className="w-16 h-16 rounded-full" />
+              <p className="p-4 text-center text-white bg-red-500 rounded-lg">
+                Oops! Please select a template in Not Pixel before proceeding.
+              </p>
+              <img src={NotPixelTemplate} className="rounded-lg" />
+            </>
+          ) : (
+            <CgSpinner className="w-5 h-5 mx-auto animate-spin" />
+          )}
         </div>
       )}
     </>

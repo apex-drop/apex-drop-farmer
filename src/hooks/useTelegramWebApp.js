@@ -2,6 +2,8 @@ import { useCallback, useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 
+import useMessageHandlers from "./useMessageHandlers";
+
 export default function useTelegramWebApp(host, cache = true) {
   const [telegramWebApp, setTelegramWebApp] = useState(null);
   const storageKey = useMemo(() => `telegram-web-app:${host}`, [host]);
@@ -26,33 +28,27 @@ export default function useTelegramWebApp(host, cache = true) {
 
   /** Get TelegramWebApp from Message */
   const getTelegramWebApp = useCallback(
-    (message, sender, sendResponse) => {
-      if (
-        message.action === "set-telegram-web-app" &&
-        message.data.host === host
-      ) {
-        /** Return a Response */
-        sendResponse({
-          status: true,
-        });
+    (message, port) => {
+      /** Configure the App */
+      configureTelegramWebApp(message.data.telegramWebApp, cache);
 
-        /** Configure the App */
-        configureTelegramWebApp(message.data.telegramWebApp, cache);
-      }
+      /** Disconnect the Port */
+      port.disconnect();
     },
     [host, cache, configureTelegramWebApp]
   );
 
-  /** Listen for Message */
-  useEffect(() => {
-    /** Add Listener */
-    chrome?.runtime?.onMessage.addListener(getTelegramWebApp);
-
-    return () => {
-      /** Remove Listener */
-      chrome?.runtime?.onMessage.removeListener(getTelegramWebApp);
-    };
-  }, [host, getTelegramWebApp]);
+  /** Handle Message */
+  useMessageHandlers(
+    useMemo(
+      () => ({
+        [`set-telegram-web-app:${host}`]: (message, port) => {
+          getTelegramWebApp(message, port);
+        },
+      }),
+      [host, getTelegramWebApp]
+    )
+  );
 
   /** Set from Cache */
   useEffect(() => {

@@ -3,27 +3,19 @@ if (location.hash.includes("tgWebAppData")) {
     return JSON.parse(document.documentElement.dataset.telegramWebApp || null);
   }
 
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (
-      message.action === "get-telegram-web-app" &&
-      message.data.host === location.host
-    ) {
-      sendResponse({
-        telegramWebApp: getTelegramWebApp(),
-      });
-    }
-  });
-
   document.addEventListener("readystatechange", () => {
     if (document.readyState === "complete") {
+      let timeout;
+      const port = chrome.runtime.connect();
+
       /** Beam the TelegramWebApp */
       const beamTelegramWebApp = async () => {
-        let response;
         const telegramWebApp = getTelegramWebApp();
+
         try {
           if (telegramWebApp) {
-            response = await chrome.runtime.sendMessage({
-              action: "set-telegram-web-app",
+            port.postMessage({
+              action: `set-telegram-web-app:${location.host}`,
               data: {
                 host: location.host,
                 telegramWebApp,
@@ -32,12 +24,17 @@ if (location.hash.includes("tgWebAppData")) {
           }
         } catch {}
 
-        if (response?.status) {
-          clearInterval(interval);
-        }
+        /** Beam again... */
+        timeout = setTimeout(beamTelegramWebApp, 500);
       };
 
-      let interval = setInterval(beamTelegramWebApp, 1000);
+      /** Send the WebApp Data */
+      beamTelegramWebApp();
+
+      /** Clear Timeout on Disconnect */
+      port.onDisconnect.addListener(() => {
+        clearTimeout(timeout);
+      });
     }
   });
 }

@@ -4,7 +4,8 @@ import { useState } from "react";
 
 import useMessageHandlers from "./useMessageHandlers";
 
-export default function useTelegramWebApp(host, cache = true) {
+export default function useTelegramWebApp(host) {
+  const cache = false;
   const [telegramWebApp, setTelegramWebApp] = useState(null);
   const storageKey = useMemo(() => `telegram-web-app:${host}`, [host]);
 
@@ -15,8 +16,8 @@ export default function useTelegramWebApp(host, cache = true) {
 
   /** Configure TelegramWebApp */
   const configureTelegramWebApp = useCallback(
-    (data, store = true) => {
-      if (store) {
+    (data, cache = true) => {
+      if (cache) {
         chrome?.storage?.local.set({
           [storageKey]: data,
         });

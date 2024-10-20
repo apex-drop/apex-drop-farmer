@@ -4,8 +4,7 @@ import { useState } from "react";
 
 import useMessageHandlers from "./useMessageHandlers";
 
-export default function useTelegramWebApp(host) {
-  const cache = false;
+export default function useTelegramWebApp(host, cache = true) {
   const [telegramWebApp, setTelegramWebApp] = useState(null);
   const storageKey = useMemo(() => `telegram-web-app:${host}`, [host]);
 
@@ -19,7 +18,10 @@ export default function useTelegramWebApp(host) {
     (data, cache = true) => {
       if (cache) {
         chrome?.storage?.local.set({
-          [storageKey]: data,
+          [storageKey]: {
+            data,
+            updatedAt: Date.now(),
+          },
         });
       }
       setTelegramWebApp(data);
@@ -55,11 +57,13 @@ export default function useTelegramWebApp(host) {
   useEffect(() => {
     if (cache) {
       /** Get and Store Data */
-      chrome?.storage?.local.get(storageKey).then(({ [storageKey]: data }) => {
-        if (data) {
-          configureTelegramWebApp(data, false);
-        }
-      });
+      chrome?.storage?.local
+        .get(storageKey)
+        .then(({ [storageKey]: result }) => {
+          if (result && result.updatedAt >= Date.now() - 60_000 * 10) {
+            configureTelegramWebApp(result.data, false);
+          }
+        });
     }
   }, [cache, storageKey, configureTelegramWebApp]);
 

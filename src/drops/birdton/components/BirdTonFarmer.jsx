@@ -18,7 +18,7 @@ export default function BirdTonFarmer() {
   const user = authQuery.data;
   const energy = user?.["energy"] || 0;
   const maxEnergy = user?.["energy_capacity"] || 0;
-  const tabs = useSocketTabs("birdton.farmer-tabs", "tasks");
+  const tabs = useSocketTabs("birdton.farmer-tabs", "game");
 
   const claimDailyRewardMutation = useBirdTonClaimDailyRewardMutation();
 

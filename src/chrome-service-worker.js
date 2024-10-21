@@ -63,38 +63,36 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 /** Open Farmer on Startup */
 chrome.runtime.onStartup.addListener(async () => {
+  /** Get Platform */
+  const platform = await chrome.runtime.getPlatformInfo();
+
+  /** Get Settings */
   const settings = await getSettings();
 
-  if (settings.openFarmerOnStartup) {
+  if (platform.os !== "android" && settings.openFarmerOnStartup) {
     /** Main Window */
     const mainWindow = await chrome.windows.getCurrent();
 
     /** Open Farmer Window */
     await openFarmerWindow();
 
-    /** Get Platform */
-    const platform = await chrome.runtime.getPlatformInfo();
-
-    /** When Not Android */
-    if (platform.os !== "android") {
-      try {
-        if (settings.closeMainWindowOnStartup) {
-          /** Close Main Window */
-          if (mainWindow) {
-            await chrome.windows.remove(mainWindow.id);
-          }
-        } else {
-          /** Go to extensions page */
-          const tabs = await chrome.tabs.query({});
-
-          if (tabs[0]) {
-            await chrome.tabs.update(tabs[0].id, {
-              url: "chrome://extensions",
-            });
-          }
+    try {
+      if (settings.closeMainWindowOnStartup) {
+        /** Close Main Window */
+        if (mainWindow) {
+          await chrome.windows.remove(mainWindow.id);
         }
-      } catch {}
-    }
+      } else {
+        /** Go to extensions page */
+        const tabs = await chrome.tabs.query({});
+
+        if (tabs[0]) {
+          await chrome.tabs.update(tabs[0].id, {
+            url: "chrome://extensions",
+          });
+        }
+      }
+    } catch {}
   }
 });
 

@@ -65,10 +65,10 @@ export default function useMessagePort() {
       addPort(port);
     };
 
-    chrome.runtime.onConnect.addListener(portConnectHandler);
+    chrome?.runtime?.onConnect.addListener(portConnectHandler);
 
     return () => {
-      chrome.runtime.onConnect.removeListener(portConnectHandler);
+      chrome?.runtime?.onConnect.removeListener(portConnectHandler);
     };
   }, [addPort, removePort]);
 

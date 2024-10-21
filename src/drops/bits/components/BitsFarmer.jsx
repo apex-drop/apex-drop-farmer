@@ -40,6 +40,9 @@ export default function BitsFarmer() {
       const passiveIncome = userQuery.data.passiveIncome;
 
       if (!passiveIncome.isStarted) {
+        /** Delay */
+        await delay(2000);
+
         /** Start Farming */
         await startPassiveFarmingMutation.mutateAsync();
         toast.success("Bits - Started Farming");
@@ -48,7 +51,8 @@ export default function BitsFarmer() {
         await collectPassiveFarmingMutation.mutateAsync();
         toast.success("Bits - Collected Farming");
 
-        await delay(5000);
+        /** Delay */
+        await delay(2000);
 
         /** Start Farming */
         await startPassiveFarmingMutation.mutateAsync();
@@ -65,6 +69,7 @@ export default function BitsFarmer() {
       const data = freeSpinQuery.data;
 
       if (isAfter(new Date(), new Date(data.nextFreeSpinsAt))) {
+        await delay(2000);
         await claimFreeSpinMutation.mutateAsync();
         toast.success("Bits - Claimed Free Spin");
       }
@@ -79,6 +84,7 @@ export default function BitsFarmer() {
       const data = freeTicketQuery.data;
 
       if (isAfter(new Date(), new Date(data.nextFreeTicketsAt))) {
+        await delay(2000);
         await claimFreeTicketMutation.mutateAsync();
         toast.success("Bits - Claimed Free Ticket");
       }
@@ -94,6 +100,7 @@ export default function BitsFarmer() {
       const day = data.dailyRewards.find((item) => item.status === "Waiting");
 
       if (day) {
+        await delay(2000);
         await collectDailyRewardMutation.mutateAsync(day.position);
         toast.success("Bits - Collected Daily Reward");
       }

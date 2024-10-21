@@ -271,10 +271,12 @@ export default function Welcome() {
         <div className="flex flex-col w-full gap-2 mx-auto my-auto max-w-96">
           <img
             src={AppIcon}
-            className="mx-auto w-28 h-28"
+            className="w-20 h-20 mx-auto"
             onDoubleClick={dispatchAndShowHiddenDrops}
           />
-          <h3 className="text-lg font-bold text-center">Apex Drop Farmer</h3>
+          <h3 className="text-xl font-bold text-center font-turret-road">
+            Apex Drop Farmer
+          </h3>
           <p className="text-lg text-center">
             <span
               className={cn(
@@ -299,6 +301,9 @@ export default function Welcome() {
             )}
           >
             {socket.connected ? "Connected" : "Disconnected"}
+          </p>
+          <p className="p-2 text-center text-red-700 bg-red-100 rounded-lg">
+            By using the farmer you acknowledge that your account is at risk.
           </p>
 
           <div className="flex justify-center gap-1">
@@ -347,7 +352,7 @@ export default function Welcome() {
             </a>
             &bull;
             <a
-              href="https://t.me/Apex_Drop"
+              href="https://t.me/apex_drop"
               target="_blank"
               className="text-blue-500 hover:underline"
             >

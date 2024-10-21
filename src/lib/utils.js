@@ -18,6 +18,14 @@ export function delay(length, value) {
   });
 }
 
+export function delayForSeconds(length, value) {
+  return delay(length * 1000, value);
+}
+
+export function delayForMinutes(length, value) {
+  return delay(length * 60 * 1000, value);
+}
+
 export function getSettings() {
   return new Promise((res, rej) => {
     chrome?.storage?.local

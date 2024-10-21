@@ -8,6 +8,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Product Sans", ...defaultTheme.fontFamily.sans],
+        "turret-road": "Turret Road",
       },
       colors: {
         "birdton-blue": {

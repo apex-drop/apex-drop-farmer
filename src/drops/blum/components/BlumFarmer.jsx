@@ -1,7 +1,7 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import toast from "react-hot-toast";
 import useSocketTabs from "@/hooks/useSocketTabs";
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 
 import BlumAutoTasks from "./BlumAutoTasks";
@@ -31,6 +31,7 @@ export default function BlumFarmer() {
     if (!dailyRewardQuery.data) return;
     (async function () {
       try {
+        await delay(2000);
         await claimDailyRewardMutation.mutateAsync();
         toast.success("Blum Daily Check-In");
       } catch {}
@@ -48,11 +49,17 @@ export default function BlumFarmer() {
       const farming = balance.farming;
 
       if (!balance.isFastFarmingEnabled) {
+        /** Delay */
+        await delay(2000);
+
         await startFarmingMutation.mutateAsync();
         toast.success("Blum Started Farming");
       } else if (farming && balance.timestamp >= farming.endTime) {
         await claimFarmingMutation.mutateAsync();
         toast.success("Blum Claimed Previous Farming");
+
+        /** Delay */
+        await delay(2000);
 
         await startFarmingMutation.mutateAsync();
         toast.success("Blum Started Farming");

@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
@@ -50,7 +51,7 @@ export default function useDropFarmer({
       (response) => Promise.resolve(response),
       (error) => {
         if ([401, 403, 418].includes(error?.response?.status)) {
-          resetTelegramWebApp();
+          toast.error("Unauthenticated - Please reload the Farmer");
           resetAuth();
         }
         return Promise.reject(error);
@@ -60,7 +61,7 @@ export default function useDropFarmer({
     return () => {
       api.interceptors.response.eject(interceptor);
     };
-  }, [queryClient, api, resetTelegramWebApp]);
+  }, [queryClient, api, resetAuth]);
 
   /** Handle Web Request */
   useEffect(() => {

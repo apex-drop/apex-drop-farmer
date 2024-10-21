@@ -1,14 +1,4 @@
-import defaultSettings from "@/default-settings";
-
-/** Get Settings */
-const getSettings = () => {
-  return new Promise((res, rej) => {
-    chrome.storage.local
-      .get("settings")
-      .then(({ settings = defaultSettings }) => res(settings))
-      .catch(rej);
-  });
-};
+import { getSettings } from "./lib/utils";
 
 const removeActionPopup = async () => {
   const platform = await chrome.runtime.getPlatformInfo();

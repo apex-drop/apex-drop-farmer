@@ -33,7 +33,7 @@ export default function MajorHoldCoin() {
         .promise(
           delay(60_000),
           {
-            loading: "Delaying for 2 secs..",
+            loading: "Delaying for 60 secs..",
             success: "Done!",
             error: "Error!",
           },

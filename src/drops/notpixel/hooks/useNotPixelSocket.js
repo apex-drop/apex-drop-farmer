@@ -1,26 +1,22 @@
+import useFarmerContext from "@/hooks/useFarmerContext";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
-
-import useNotPixelUserQuery from "./useNotPixelUserQuery";
 
 export default function useNotPixelSocket(
   enabled,
   sandboxRef,
   updateWorldPixels
 ) {
+  const { user } = useFarmerContext();
   const [connected, setConnected] = useState(false);
-  const userQuery = useNotPixelUserQuery({
-    enabled,
-    refetchInterval: false,
-  });
   const [websocketToken, setWebsocketToken] = useState(null);
 
   useEffect(() => {
-    if (userQuery.status === "success" && !websocketToken) {
-      setWebsocketToken(userQuery.data.websocketToken);
+    if (user && !websocketToken) {
+      setWebsocketToken(user.websocketToken);
     }
-  }, [websocketToken, userQuery.status]);
+  }, [websocketToken, user]);
 
   useEffect(() => {
     const handleMessage = (ev) => {

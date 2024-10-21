@@ -2,7 +2,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import toast from "react-hot-toast";
 import useSocketTabs from "@/hooks/useSocketTabs";
 import { CgSpinner } from "react-icons/cg";
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { useEffect } from "react";
 
 import MajorBalanceDisplay from "./MajorBalanceDisplay";
@@ -16,18 +16,22 @@ import useMajorUserVisitMutation from "../hooks/useMajorUserVisitMutation";
 export default function MajorFarmer() {
   const tabs = useSocketTabs("major.farmer-tabs", "games");
 
+  const streakQuery = useMajorUserStreakQuery();
   const userQuery = useMajorUserQuery();
 
-  const streakQuery = useMajorUserStreakQuery();
   const visitMutation = useMajorUserVisitMutation();
 
   useEffect(() => {
     if (!streakQuery.data) return;
 
     (async function () {
+      /** Delay */
+      await delay(2000);
+
       const data = await visitMutation.mutateAsync();
 
       if (data["is_increased"]) {
+        await delay(2000);
         await streakQuery.refetch();
         toast.success("Major Daily Check-in Claimed");
       }

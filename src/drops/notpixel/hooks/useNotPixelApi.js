@@ -1,7 +1,5 @@
-import { useContext } from "react";
-
-import NotPixelFarmerContext from "../context/NotPixelFarmerContext";
+import useFarmerContext from "@/hooks/useFarmerContext";
 
 export default function useNotPixelApi() {
-  return useContext(NotPixelFarmerContext).api;
+  return useFarmerContext().api;
 }

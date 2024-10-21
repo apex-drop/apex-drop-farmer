@@ -1,9 +1,9 @@
+import FarmerContext from "@/contexts/FarmerContext";
 import { useMemo } from "react";
 import { useRef } from "react";
 
 import NotPixelAuthDetect from "./components/NotPixelAuthDetect";
 import NotPixelFarmer from "./components/NotPixelFarmer";
-import NotPixelFarmerContext from "./context/NotPixelFarmerContext";
 import useNotPixelFarmer from "./hooks/useNotPixelFarmer";
 
 function NotPixel() {
@@ -16,13 +16,13 @@ function NotPixel() {
 
   return (
     <>
-      <NotPixelFarmerContext.Provider value={farmer}>
+      <FarmerContext.Provider value={farmer}>
         {farmer.auth ? (
           <NotPixelFarmer sandboxRef={sandboxRef} />
         ) : (
           <NotPixelAuthDetect status={farmer.status} />
         )}
-      </NotPixelFarmerContext.Provider>
+      </FarmerContext.Provider>
       <iframe src={sandboxSrc} ref={sandboxRef} hidden />
     </>
   );

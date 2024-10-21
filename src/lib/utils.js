@@ -35,6 +35,33 @@ export function getSettings() {
   });
 }
 
+/**
+ *
+ * @param {chrome.runtime.Port} port
+ * @param {object} message
+ * @returns
+ */
+
+export function postPortMessage(port, data) {
+  return new Promise((resolve) => {
+    const id = uuid();
+    const respond = (message) => {
+      try {
+        if (message.id === id) {
+          port.onMessage.removeListener(respond);
+          resolve(message);
+        }
+      } catch {}
+    };
+
+    port.onMessage.addListener(respond);
+    port.postMessage({
+      id,
+      ...data,
+    });
+  });
+}
+
 export function fetchContent(url, ...options) {
   return axios.get(url, ...options).then((res) => res.data);
 }

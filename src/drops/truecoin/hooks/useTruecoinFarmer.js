@@ -10,24 +10,6 @@ export default function useTruecoinFarmer() {
       icon: TruecoinIcon,
       title: "Truecoin Farmer",
     },
-    fetchAuth: (api, telegramWebApp) =>
-      api
-        .post(
-          "https://api.true.world/api/auth/signIn",
-          {
-            tgWebAppStartParam: null,
-            tgPlatform: telegramWebApp.platform,
-            tgVersion: telegramWebApp.version,
-            lang: telegramWebApp.initDataUnsafe.user.language_code,
-            userId: telegramWebApp.initDataUnsafe.user.id,
-          },
-          {
-            headers: {
-              query: telegramWebApp.initData,
-            },
-          }
-        )
-        .then((res) => res.data),
-    extractAuth: (data) => `Bearer ${data?.["token"]}`,
+    domains: ["*.true.world"],
   });
 }

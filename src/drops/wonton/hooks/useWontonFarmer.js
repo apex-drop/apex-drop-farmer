@@ -10,14 +10,6 @@ export default function useWontonFarmer() {
       icon: WontonIcon,
       title: "Wonton Farmer",
     },
-    fetchAuth: (api, telegramWebApp) =>
-      api
-        .post("https://wonton.food/api/v1/user/auth", {
-          initData: telegramWebApp.initData,
-          inviteCode: "",
-          newUserPromoteCode: "",
-        })
-        .then((res) => res.data),
-    extractAuth: (data) => `bearer ${data?.tokens?.accessToken}`,
+    domains: ["wonton.food"],
   });
 }

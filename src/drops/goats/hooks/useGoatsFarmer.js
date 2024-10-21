@@ -10,18 +10,6 @@ export default function useGoatsFarmer() {
       icon: GoatsIcon,
       title: "Goats Farmer",
     },
-    fetchAuth: (api, telegramWebApp) =>
-      api
-        .post(
-          "https://dev-api.goatsbot.xyz/auth/login",
-          {},
-          {
-            headers: {
-              rawdata: telegramWebApp.initData,
-            },
-          }
-        )
-        .then((res) => res.data),
-    extractAuth: (data) => `Bearer ${data?.tokens?.access?.token}`,
+    domains: ["*.goatsbot.xyz"],
   });
 }

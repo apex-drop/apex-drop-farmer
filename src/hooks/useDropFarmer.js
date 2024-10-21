@@ -2,7 +2,7 @@ import axios from "axios";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import useTelegramWebApp from "./useTelegramWebApp";
@@ -10,29 +10,19 @@ import useTelegramWebApp from "./useTelegramWebApp";
 export default function useDropFarmer({
   id,
   host,
-  cache = true,
-  authHeader,
-  fetchAuth,
-  extractAuth,
+  domains = [],
+  authHeaders = ["Authorization"],
+  extractAuthHeaders,
   notification,
 }) {
   /** TelegramWebApp */
-  const { telegramWebApp, resetTelegramWebApp } = useTelegramWebApp(
-    host,
-    cache
-  );
+  const { port, telegramWebApp, resetTelegramWebApp } = useTelegramWebApp(host);
 
   /** Auth */
-  const [auth, setAuth] = useState(null);
+  const [auth, setAuth] = useState(false);
 
   /** QueryClient */
   const queryClient = useQueryClient();
-
-  /** Query Key */
-  const queryKey = useMemo(
-    () => [id, "auth", telegramWebApp?.initDataUnsafe?.["auth_date"]],
-    [id, telegramWebApp]
-  );
 
   /** Axios Instance */
   const api = useMemo(() => axios.create(), []);
@@ -43,26 +33,16 @@ export default function useDropFarmer({
     [telegramWebApp]
   );
 
-  /** QueryFn */
-  const queryFn = useCallback(
-    () => fetchAuth(api, telegramWebApp),
-    [api, telegramWebApp, fetchAuth]
+  /** Domain Matches */
+  const domainMatches = useMemo(
+    () => domains.map((domain) => `*://${domain}/*`),
+    [domains]
   );
-
-  /** Auth */
-  const authQuery = useQuery({
-    enabled: Boolean(telegramWebApp),
-    queryKey,
-    queryFn,
-  });
 
   /** Reset Auth */
   const resetAuth = useCallback(() => {
-    queryClient.resetQueries({
-      queryKey,
-    });
-    setAuth(null);
-  }, [queryClient, queryKey, setAuth]);
+    setAuth(false);
+  }, [setAuth]);
 
   /** Response Interceptor */
   useEffect(() => {
@@ -71,6 +51,7 @@ export default function useDropFarmer({
       (error) => {
         if ([401, 403, 418].includes(error?.response?.status)) {
           resetTelegramWebApp();
+          resetAuth();
         }
         return Promise.reject(error);
       }
@@ -81,29 +62,43 @@ export default function useDropFarmer({
     };
   }, [queryClient, api, resetTelegramWebApp]);
 
-  /** Request Header */
+  /** Handle Web Request */
   useEffect(() => {
-    if (authQuery.data) {
-      /** Extract and Set Authorization Header */
-      let Authorization = extractAuth(authQuery.data);
-      if (Authorization) {
-        api.defaults.headers.common[authHeader || "Authorization"] =
-          Authorization;
-      }
-      /** Set Auth */
-      setAuth(authQuery.data);
-    } else {
-      /** Remove Authorization Header */
-      delete api.defaults.headers.common[authHeader || "Authorization"];
+    const handleWebRequest = (details) => {
+      const headers = extractAuthHeaders
+        ? extractAuthHeaders(details.requestHeaders)
+        : details.requestHeaders.filter((header) =>
+            authHeaders.includes(header.name)
+          );
 
-      /** Remove Auth */
-      setAuth(null);
+      headers.forEach((header) => {
+        if (header.value !== api.defaults.headers.common[header.name]) {
+          api.defaults.headers.common[header.name] = header.value;
+
+          if (header.value) {
+            setAuth(true);
+          }
+        }
+      });
+    };
+
+    if (domainMatches.length) {
+      chrome.webRequest.onSendHeaders.addListener(
+        handleWebRequest,
+        {
+          urls: domainMatches,
+        },
+        ["requestHeaders"]
+      );
     }
-  }, [api, authQuery.data, setAuth, extractAuth, authHeader]);
+
+    return () =>
+      chrome.webRequest.onSendHeaders.removeListener(handleWebRequest);
+  }, [domainMatches, authHeaders, extractAuthHeaders, api, setAuth]);
 
   /** Create Notification */
   useEffect(() => {
-    if (authQuery.status === "success") {
+    if (auth) {
       chrome?.notifications?.create(`${id}-farmer`, {
         iconUrl: notification.icon,
         title: notification.title,
@@ -115,7 +110,7 @@ export default function useDropFarmer({
     return () => {
       chrome?.notifications?.clear(`${id}-farmer`);
     };
-  }, [id, authQuery.status]);
+  }, [id, auth]);
 
   /** Remove Queries */
   useEffect(() => {
@@ -129,9 +124,8 @@ export default function useDropFarmer({
     () => ({
       api,
       auth,
-      authQuery,
       queryClient,
-      queryKey,
+      port,
       telegramWebApp,
       resetAuth,
       resetTelegramWebApp,
@@ -140,9 +134,8 @@ export default function useDropFarmer({
     [
       api,
       auth,
-      authQuery,
       queryClient,
-      queryKey,
+      port,
       telegramWebApp,
       resetAuth,
       resetTelegramWebApp,

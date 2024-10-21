@@ -1,36 +1,24 @@
 import { useCallback } from "react";
 import { useMemo } from "react";
-import { useState } from "react";
 
 export default function useMapState() {
-  const [map, setMap] = useState(new Map());
+  /** Map */
+  const map = useMemo(() => new Map(), []);
 
   /** Set map items */
   const addMapItems = useCallback(
-    (handlersToAdd) => {
-      setMap((prev) => {
-        const newMap = new Map(prev);
-
-        Object.entries(handlersToAdd).forEach(([k, v]) => newMap.set(k, v));
-
-        return newMap;
-      });
+    (items) => {
+      Object.entries(items).forEach(([k, v]) => map.set(k, v));
     },
-    [setMap]
+    [map]
   );
 
   /** Remove map items */
   const removeMapItems = useCallback(
-    (handlersToRemove) => {
-      setMap((prev) => {
-        const newMap = new Map(prev);
-
-        Object.keys(handlersToRemove).forEach((k) => newMap.delete(k));
-
-        return newMap;
-      });
+    (items) => {
+      Object.keys(items).forEach((k) => map.delete(k));
     },
-    [setMap]
+    [map]
   );
 
   return useMemo(

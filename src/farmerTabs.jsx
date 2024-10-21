@@ -45,6 +45,7 @@ const farmerTabs = [
     title: "Not Pixel",
     icon: NotPixelIcon,
     component: <Farmer farmer="NotPixel" />,
+    telegramLink: "https://t.me/notpixel/app?startapp=f1147265290_s664035",
   },
 
   {

@@ -10,12 +10,6 @@ export default function useMajorFarmer() {
       icon: MajorIcon,
       title: "Major Farmer",
     },
-    fetchAuth: (api, telegramWebApp) =>
-      api
-        .post("https://major.bot/api/auth/tg/", {
-          init_data: telegramWebApp.initData,
-        })
-        .then((res) => res.data),
-    extractAuth: (data) => `Bearer ${data?.["access_token"]}`,
+    domains: ["major.bot"],
   });
 }

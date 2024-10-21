@@ -10,8 +10,6 @@ export default function useAgent301Farmer() {
       icon: Agent301Icon,
       title: "Agent301 Farmer",
     },
-    fetchAuth: (api, telegramWebApp) =>
-      Promise.resolve({ auth: telegramWebApp.initData }),
-    extractAuth: (data) => data.auth,
+    domains: ["*.agent301.org"],
   });
 }

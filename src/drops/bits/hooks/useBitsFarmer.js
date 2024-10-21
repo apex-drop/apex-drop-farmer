@@ -10,13 +10,7 @@ export default function useBitsFarmer() {
       icon: BitsIcon,
       title: "Bits Farmer",
     },
-    fetchAuth: (api, telegramWebApp) =>
-      api
-        .post("https://api-bits.apps-tonbox.me/api/v1/auth", {
-          data: telegramWebApp.initData,
-          device: "Android",
-        })
-        .then((res) => res.data),
-    extractAuth: (data) => null,
+    domains: ["api-bits.apps-tonbox.me"],
+    skipAuth: true,
   });
 }

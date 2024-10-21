@@ -1,14 +1,14 @@
 import { CgSpinner } from "react-icons/cg";
 import { useEffect } from "react";
+import { useState } from "react";
 
+import NotPixelApp from "./NotPixelApp";
 import NotPixelIcon from "../assets/images/icon.png?format=webp&w=128";
 import NotPixelTemplate from "../assets/images/notpixel-template.png?format=webp";
-import NotPixelApp from "./NotPixelApp";
 import useNotPixelApi from "../hooks/useNotPixelApi";
 import useNotPixelData from "../hooks/useNotPixelData";
 import useNotPixelDiff from "../hooks/useNotPixelDiff";
 import useNotPixelSocket from "../hooks/useNotPixelSocket";
-import { useState } from "react";
 
 export default function NotPixelFarmer({ sandboxRef }) {
   const api = useNotPixelApi();
@@ -40,14 +40,12 @@ export default function NotPixelFarmer({ sandboxRef }) {
           .get("https://notpx.app/api/v1/image/template/my")
           .then((res) => res.data);
 
-        items = [
-          {
-            x: myTemplate.x,
-            y: myTemplate.y,
-            size: myTemplate.imageSize,
-            url: myTemplate.url,
-          },
-        ];
+        items.unshift({
+          x: myTemplate.x,
+          y: myTemplate.y,
+          size: myTemplate.imageSize,
+          url: myTemplate.url,
+        });
       } catch {}
 
       if (items.length) {

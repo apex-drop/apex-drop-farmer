@@ -10,13 +10,7 @@ export default function useYescoinFarmer() {
       icon: YescoinIcon,
       title: "Yescoin Farmer",
     },
-    authHeader: "Token",
-    fetchAuth: (api, telegramWebApp) =>
-      api
-        .post("https://api-backend.yescoin.gold/user/login", {
-          code: decodeURIComponent(telegramWebApp.initData),
-        })
-        .then((res) => res.data.data),
-    extractAuth: (data) => `${data?.["token"]}`,
+    domains: ["*.yescoin.gold"],
+    authHeaders: ["Token"],
   });
 }

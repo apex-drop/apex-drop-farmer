@@ -47,6 +47,20 @@
       "run_at": "document_start",
       "world": "ISOLATED",
       "all_frames": true
+    },
+    {
+      "matches": ["*://web.telegram.org/*"],
+      "js": ["telegram-web-isolated.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["connect.html"],
+      "matches": ["https://web.telegram.org/*"],
+      "use_dynamic_url": true
     }
   ],
   "declarative_net_request": {
@@ -68,6 +82,6 @@
     "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals;"
   },
   "sandbox": {
-    "pages": ["notpixel-sandbox.html"]
+    "pages": ["connect.html", "notpixel-sandbox.html"]
   }
 }

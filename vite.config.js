@@ -8,41 +8,52 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "~@fontsource": "@fontsource",
+export default defineConfig(() => {
+  let input;
+
+  switch (process.env.VITE_ENTRY) {
+    case "index":
+      input = Object.fromEntries(
+        ["index", "notpixel-sandbox", "connect"].map((item) => [
+          item,
+          path.resolve(__dirname, `./${item}.html`),
+        ])
+      );
+      break;
+    default:
+      input = {
+        [process.env.VITE_ENTRY]: path.resolve(
+          __dirname,
+          `./src/${process.env.VITE_ENTRY}.js`
+        ),
+      };
+      break;
+  }
+
+  return {
+    define: {
+      __ENCRYPTION_KEY__: `"${new Date().toISOString().split("T")[0]}"`,
     },
-  },
-  build: {
-    chunkSizeWarningLimit: 1024,
-    rollupOptions: {
-      input: {
-        index: path.resolve(__dirname, "./index.html"),
-        "notpixel-sandbox": path.resolve(__dirname, "./notpixel-sandbox.html"),
-        "chrome-service-worker": path.resolve(
-          __dirname,
-          "./src/chrome-service-worker.js"
-        ),
-        "content-script-main": path.resolve(
-          __dirname,
-          "./src/content-script-main.js"
-        ),
-        "content-script-isolated": path.resolve(
-          __dirname,
-          "./src/content-script-isolated.js"
-        ),
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+        "~@fontsource": "@fontsource",
       },
-      output: {
-        entryFileNames: "[name].js",
+    },
+    build: {
+      emptyOutDir: process.env.VITE_ENTRY === "index",
+      rollupOptions: {
+        input,
+        output: {
+          entryFileNames: "[name].js",
+        },
       },
     },
-  },
-  plugins: [react(), imagetools()],
-  esbuild: {
-    supported: {
-      "top-level-await": true,
+    plugins: [react(), imagetools()],
+    esbuild: {
+      supported: {
+        "top-level-await": true,
+      },
     },
-  },
+  };
 });

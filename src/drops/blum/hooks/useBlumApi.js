@@ -1,7 +1,5 @@
-import { useContext } from "react";
-
-import BlumFarmerContext from "../context/BlumFarmerContext";
+import useFarmerContext from "@/hooks/useFarmerContext";
 
 export default function useBlumApi() {
-  return useContext(BlumFarmerContext).api;
+  return useFarmerContext().api;
 }

@@ -1,7 +1,27 @@
-/** Should Inject Telegram Web? */
-const INJECT_TG_SCRIPT = true;
+import { decryptData, encryptData } from "./content-script-utils";
 
 if (location.hash.includes("tgWebAppData")) {
+  const watchURLs = new Map();
+
+  const dispatchResponse = async (url, response) => {
+    const data = await response;
+    const id = watchURLs.get(url);
+
+    /** Return Data */
+    window.postMessage(
+      {
+        id,
+        type: "response",
+        payload: encryptData(data),
+      },
+      "*"
+    );
+
+    /** Stop Watching */
+    watchURLs.delete(url);
+  };
+
+  /** Replace Platform */
   ["webk", "weba", "web"].forEach((platform) => {
     location.hash = location.hash.replace(
       `&tgWebAppPlatform=${platform}`,
@@ -16,25 +36,86 @@ if (location.hash.includes("tgWebAppData")) {
     configurable: true,
   });
 
+  /** Override fetch and XMLHttpRequest */
+  const core = {
+    fetch: window.fetch.bind(window),
+    XMLHttpRequest: window.XMLHttpRequest.bind(window),
+    postMessage: window.postMessage.bind(window),
+  };
+
+  /** Override XMLHttpRequest */
+  window.XMLHttpRequest = class extends XMLHttpRequest {
+    open(...args) {
+      const [, url] = args;
+
+      if (watchURLs.has(url)) {
+        super.addEventListener("load", () => {
+          dispatchResponse(url, JSON.parse(this.responseText));
+        });
+      }
+
+      return super.open(...args);
+    }
+  };
+
+  /** Override fetch */
+  window.fetch = function (...args) {
+    return core.fetch(...args).then(
+      /**
+       * @param {Response} response
+       */
+      (response) => {
+        const url = typeof args[0] === "string" ? args[0] : args[0].url;
+
+        if (watchURLs.has(url)) {
+          dispatchResponse(url, response.json());
+        }
+
+        return response.clone();
+      }
+    );
+  };
+
+  /** Handle Messages */
+  window.addEventListener("message", (ev) => {
+    if (ev.source === window) {
+      const { id, payload } = ev.data;
+      const { action, data } = decryptData(payload);
+
+      switch (action) {
+        case "get-telegram-web-app":
+          window.postMessage(
+            {
+              id,
+              type: "response",
+              payload: encryptData(window.Telegram?.WebApp),
+            },
+            "*"
+          );
+          break;
+        case "get-request-data":
+          watchURLs.set(data.url, id);
+          break;
+      }
+    }
+  });
+
+  /** Add Telegram Web Script */
   document.addEventListener("readystatechange", (ev) => {
     if (document.readyState === "interactive") {
-      const tgWebSrc = "https://telegram.org/js/telegram-web-app.js";
-      let tgWeb = Array.prototype.find.call(
+      const tgWebScriptSrc = "https://telegram.org/js/telegram-web-app.js";
+      let tgWebScript = Array.prototype.find.call(
         document.scripts,
-        (script) => script.src === tgWebSrc
+        (script) => script.src === tgWebScriptSrc
       );
 
       /** Add Telegram Web */
-      if (!tgWeb && INJECT_TG_SCRIPT) {
-        tgWeb = document.createElement("script");
-        tgWeb.src = tgWebSrc;
+      if (!tgWebScript) {
+        tgWebScript = document.createElement("script");
+        tgWebScript.src = tgWebScriptSrc;
 
-        document.head.appendChild(tgWeb);
+        document.head.appendChild(tgWebScript);
       }
-    } else if (document.readyState === "complete") {
-      document.documentElement.dataset.telegramWebApp = JSON.stringify(
-        window.Telegram?.WebApp
-      );
     }
   });
 }

@@ -10,15 +10,6 @@ export default function useTomarketFarmer() {
       icon: TomarketIcon,
       title: "Tomarket Farmer",
     },
-    fetchAuth: (api, telegramWebApp) =>
-      api
-        .post("https://api-web.tomarket.ai/tomarket-game/v1/user/login", {
-          init_data: telegramWebApp.initData,
-          invite_code: "00003s0r", //DEV Invite Code
-          from: "",
-          is_bot: false,
-        })
-        .then((res) => res.data.data),
-    extractAuth: (data) => `${data?.["access_token"]}`,
+    domains: ["*.tomarket.ai"],
   });
 }

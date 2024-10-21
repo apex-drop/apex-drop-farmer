@@ -10,8 +10,6 @@ export default function usePumpadFarmer() {
       icon: PumpadIcon,
       title: "Pumpad Farmer",
     },
-    fetchAuth: (api, telegramWebApp) =>
-      Promise.resolve({ auth: telegramWebApp.initData }),
-    extractAuth: (data) => `tma ${data.auth}`,
+    domains: ["tg.pumpad.io"],
   });
 }

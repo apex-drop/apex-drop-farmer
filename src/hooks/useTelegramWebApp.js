@@ -1,71 +1,49 @@
 import { useCallback, useMemo } from "react";
-import { useEffect } from "react";
 import { useState } from "react";
 
 import useMessageHandlers from "./useMessageHandlers";
 
-export default function useTelegramWebApp(host, cache = true) {
+export default function useTelegramWebApp(host) {
   const [telegramWebApp, setTelegramWebApp] = useState(null);
-  const storageKey = useMemo(() => `telegram-web-app:${host}`, [host]);
+  const [port, setPort] = useState(null);
 
   /** Reset TelegramWebApp */
   const resetTelegramWebApp = useCallback(() => {
     setTelegramWebApp(null);
-  }, [setTelegramWebApp]);
-
-  /** Configure TelegramWebApp */
-  const configureTelegramWebApp = useCallback(
-    (data, cache = true) => {
-      if (cache) {
-        chrome?.storage?.local.set({
-          [storageKey]: {
-            data,
-            updatedAt: Date.now(),
-          },
-        });
-      }
-      setTelegramWebApp(data);
-    },
-    [storageKey, setTelegramWebApp]
-  );
+    setPort(null);
+  }, [setTelegramWebApp, setPort]);
 
   /** Get TelegramWebApp from Message */
   const getTelegramWebApp = useCallback(
     (message, port) => {
       /** Configure the App */
-      configureTelegramWebApp(message.data.telegramWebApp, cache);
+      setTelegramWebApp(message.data.telegramWebApp);
 
-      /** Disconnect the Port */
-      port.disconnect();
+      /** Terminate Web App Dispatch */
+      port.postMessage({
+        action: "terminate-web-app-dispatch",
+      });
     },
-    [host, cache, configureTelegramWebApp]
+    [setTelegramWebApp]
   );
 
   /** Handle Message */
   useMessageHandlers(
     useMemo(
       () => ({
+        [`set-port:${host}`]: (message, port) => {
+          setPort(port);
+        },
         [`set-telegram-web-app:${host}`]: (message, port) => {
           getTelegramWebApp(message, port);
         },
       }),
-      [host, getTelegramWebApp]
+      [host, getTelegramWebApp, setPort]
     )
   );
 
-  /** Set from Cache */
-  useEffect(() => {
-    if (cache) {
-      /** Get and Store Data */
-      chrome?.storage?.local
-        .get(storageKey)
-        .then(({ [storageKey]: result }) => {
-          if (result && result.updatedAt >= Date.now() - 60_000 * 10) {
-            configureTelegramWebApp(result.data, false);
-          }
-        });
-    }
-  }, [cache, storageKey, configureTelegramWebApp]);
-
-  return { telegramWebApp, resetTelegramWebApp };
+  return useMemo(
+    () => ({ port, telegramWebApp, resetTelegramWebApp }),
+    [port, telegramWebApp, resetTelegramWebApp]
+  );
 }

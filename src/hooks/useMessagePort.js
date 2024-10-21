@@ -1,12 +1,11 @@
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
-import { useState } from "react";
 
 import useMapState from "./useMapState";
 
 export default function useMessagePort() {
-  const [ports, setPorts] = useState(() => new Set());
+  const ports = useMemo(() => new Set(), []);
   const {
     map: messageHandlers,
     addMapItems: addMessageHandlers,
@@ -26,15 +25,9 @@ export default function useMessagePort() {
   /** Add a Port */
   const addPort = useCallback(
     (port) => {
-      setPorts((oldPorts) => {
-        const newPorts = new Set(oldPorts);
-
-        newPorts.add(port);
-
-        return newPorts;
-      });
+      ports.add(port);
     },
-    [setPorts]
+    [ports]
   );
 
   /** Remove a Port */
@@ -43,26 +36,40 @@ export default function useMessagePort() {
       /** Remove Listener */
       port.onDisconnect.removeListener(removePort);
 
-      /** Set Ports */
-      setPorts((oldPorts) => {
-        const newPorts = new Set(oldPorts);
-
-        newPorts.delete(port);
-
-        return newPorts;
-      });
+      /** Remove Port */
+      ports.delete(port);
     },
-    [setPorts]
+    [ports]
+  );
+
+  /** Handle Port Message */
+  const portMessageHandler = useCallback(
+    (message, port) => {
+      const callback = messageHandlers.get(message.action);
+
+      if (callback) {
+        callback(message, port);
+      }
+    },
+    [messageHandlers]
   );
 
   /** Instantiate Port Listener */
   useEffect(() => {
+    /**
+     * @param {chrome.runtime.Port} port
+     */
     const portConnectHandler = (port) => {
-      /** Register Disconnect */
-      port.onDisconnect.addListener(removePort);
-
       /** Add Port */
       addPort(port);
+
+      /** Message Handler */
+      if (port.name !== "telegram-web") {
+        port.onMessage.addListener(portMessageHandler);
+      }
+
+      /** Register Disconnect */
+      port.onDisconnect.addListener(removePort);
     };
 
     chrome?.runtime?.onConnect.addListener(portConnectHandler);
@@ -70,7 +77,7 @@ export default function useMessagePort() {
     return () => {
       chrome?.runtime?.onConnect.removeListener(portConnectHandler);
     };
-  }, [addPort, removePort]);
+  }, [portMessageHandler, addPort, removePort]);
 
   /** Handle Messages */
   useEffect(() => {

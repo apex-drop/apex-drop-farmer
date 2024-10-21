@@ -69,7 +69,7 @@ export default function SlotcoinLottery() {
       } catch {}
 
       /** Delay */
-      await delay(2_000);
+      await delay(10_000);
 
       // Release Lock
       process.unlock();

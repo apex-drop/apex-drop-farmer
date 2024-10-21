@@ -36,11 +36,11 @@ export default function YescoinDailyMission() {
         (async function () {
           /** Click */
           await clickMissionMutation.mutateAsync(id);
-          await delay(1000);
+          await delay(5000);
 
           /** Check */
           const result = await checkMissionMutation.mutateAsync(id);
-          await delay(1000);
+          await delay(5000);
 
           if (!result) {
             throw "Not Completed!";

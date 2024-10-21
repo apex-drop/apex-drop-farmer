@@ -113,7 +113,7 @@ export default function NotPixelApp({ diff, updatedAt }) {
       } catch {}
 
       /** Delay */
-      await delay(5_000);
+      await delay(10_000);
 
       /** Reset Color */
       setPixel(null);

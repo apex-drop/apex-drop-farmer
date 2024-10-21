@@ -147,7 +147,7 @@ export default function BirdTonTasks() {
           });
 
           /** Delay */
-          await delay(1_000);
+          await delay(5_000);
         }
       }
 
@@ -167,7 +167,7 @@ export default function BirdTonTasks() {
           });
 
           /** Delay */
-          await delay(1000);
+          await delay(5000);
         }
 
         /** Collect Task */
@@ -177,7 +177,7 @@ export default function BirdTonTasks() {
         });
 
         /** Delay */
-        await delay(1_000);
+        await delay(5_000);
       }
 
       /** Refetch */

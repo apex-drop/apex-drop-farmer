@@ -89,7 +89,7 @@ export default function GoatsMissions() {
         } catch {}
 
         /** Delay */
-        await delay(2_000);
+        await delay(5_000);
       }
 
       try {

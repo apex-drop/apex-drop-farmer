@@ -91,7 +91,7 @@ export default function YescoinGamer() {
           }
         }
 
-        await delay(10000);
+        await delay(10_000);
       }
 
       /** Unlock */

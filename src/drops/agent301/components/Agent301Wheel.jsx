@@ -105,7 +105,7 @@ export default function Agent301Wheel() {
         } catch {}
 
         /** Delay */
-        await delay(2_000);
+        await delay(5_000);
 
         reset();
       }
@@ -120,7 +120,7 @@ export default function Agent301Wheel() {
         } catch {}
 
         /** Delay */
-        await delay(2_000);
+        await delay(5_000);
       }
 
       reset();

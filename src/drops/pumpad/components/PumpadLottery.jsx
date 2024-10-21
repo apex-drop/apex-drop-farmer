@@ -70,7 +70,7 @@ export default function PumpadLottery() {
       } catch {}
 
       /** Delay */
-      await delay(1_000);
+      await delay(10_000);
 
       // Release Lock
       process.unlock();

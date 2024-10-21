@@ -69,7 +69,7 @@ export default function Agent301Lottery() {
       } catch {}
 
       /** Delay */
-      await delay(10_000);
+      await delay(15_000);
 
       // Release Lock
       process.unlock();

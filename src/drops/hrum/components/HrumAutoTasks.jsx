@@ -106,7 +106,7 @@ export default function HrumAutoTasks({ queries }) {
         } catch {}
 
         /** Delay */
-        await delay(2_000);
+        await delay(5_000);
       }
 
       /** Refetch Balance */

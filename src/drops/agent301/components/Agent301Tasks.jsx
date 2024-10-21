@@ -121,7 +121,7 @@ export default function Agent301Tasks() {
         } catch {}
 
         /** Delay */
-        await delay(10_000);
+        await delay(15_000);
       }
 
       // Refetch Tasks List
@@ -145,7 +145,7 @@ export default function Agent301Tasks() {
         } catch {}
 
         /** Delay */
-        await delay(2_000);
+        await delay(5_000);
       }
 
       // Refetch Tasks List
@@ -169,7 +169,7 @@ export default function Agent301Tasks() {
         } catch {}
 
         /** Delay */
-        await delay(2_000);
+        await delay(5_000);
       }
 
       try {

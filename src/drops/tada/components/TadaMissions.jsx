@@ -89,7 +89,7 @@ export default function TadaMissions() {
         try {
           for (let activity of mission.activityTypes || []) {
             await startActivityMutation.mutateAsync(activity);
-            delay(1000);
+            delay(5000);
           }
           await completeMissionMutation.mutateAsync(mission.id);
         } catch {}

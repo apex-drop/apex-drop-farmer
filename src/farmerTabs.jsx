@@ -46,12 +46,7 @@ const farmerTabs = [
     icon: NotPixelIcon,
     component: <Farmer farmer="NotPixel" />,
   },
-  {
-    id: "major",
-    title: "Major",
-    icon: MajorIcon,
-    component: <Farmer farmer="Major" />,
-  },
+
   {
     id: "blum",
     title: "Blum",
@@ -131,6 +126,12 @@ const farmerTabs = [
     title: "Bits",
     icon: BitsIcon,
     component: <Farmer farmer="Bits" />,
+  },
+  {
+    id: "major",
+    title: "Major",
+    icon: MajorIcon,
+    component: <Farmer farmer="Major" />,
   },
 ];
 

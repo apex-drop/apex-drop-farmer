@@ -215,7 +215,7 @@ export default function BlumAutoTasks() {
             } catch {}
 
             /** Delay */
-            await delay(2_000);
+            await delay(5_000);
           }
 
           // Set Next Action
@@ -250,7 +250,7 @@ export default function BlumAutoTasks() {
             } catch {}
 
             /** Delay */
-            await delay(2_000);
+            await delay(5_000);
           }
 
           // Set Next Action
@@ -272,7 +272,7 @@ export default function BlumAutoTasks() {
             } catch {}
 
             /** Delay */
-            await delay(2_000);
+            await delay(5_000);
           }
           break;
       }

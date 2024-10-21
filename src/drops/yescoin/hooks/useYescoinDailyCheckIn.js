@@ -44,10 +44,11 @@ export default function useYescoinDailyCheckIn() {
         const completeDailyCheckInMission = async function () {
           /** Check */
           await checkDailyMissionMutation.mutateAsync(checkIn.missionId);
-          await delay(1000);
+          await delay(3_000);
 
           /** Claim */
           await claimMissionMutation.mutateAsync(checkIn.missionId);
+          await delay(3_000);
 
           /** Refetch Balance */
           await accountInfoQuery.refetch();
@@ -64,7 +65,7 @@ export default function useYescoinDailyCheckIn() {
 
           /** Click Daily Mission */
           await clickDailyMissionMutation.mutateAsync(checkIn.missionId);
-          await delay(1000);
+          await delay(3000);
 
           if (day) {
             /** Set SignInType */
@@ -88,7 +89,7 @@ export default function useYescoinDailyCheckIn() {
 
             /** Sign in */
             await claimSignInMutation.mutateAsync({ headers, body });
-            await delay(1000);
+            await delay(3000);
 
             /** Complete the Mission */
             await completeDailyCheckInMission();

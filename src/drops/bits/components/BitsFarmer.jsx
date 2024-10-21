@@ -48,7 +48,7 @@ export default function BitsFarmer() {
         await collectPassiveFarmingMutation.mutateAsync();
         toast.success("Bits - Collected Farming");
 
-        await delay(500);
+        await delay(5000);
 
         /** Start Farming */
         await startPassiveFarmingMutation.mutateAsync();

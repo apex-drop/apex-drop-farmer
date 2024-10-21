@@ -198,8 +198,8 @@ export default function BirdTonGamer() {
         }
       }
 
-      /** Delay for 1 Sec */
-      await delay(1000);
+      /** Delay for 2 Sec */
+      await delay(2000);
 
       /** Stop */
       process.stop();

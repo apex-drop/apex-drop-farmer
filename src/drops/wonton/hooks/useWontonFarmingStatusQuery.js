@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
 
-import useWontonApi from "./useWontonApi";
-
 export default function useWontonFarmingStatusQuery() {
-  const api = useWontonApi();
+  const api = useFarmerApi();
   return useQuery({
     queryKey: ["wonton", "farming", "status"],
     queryFn: ({ signal }) =>

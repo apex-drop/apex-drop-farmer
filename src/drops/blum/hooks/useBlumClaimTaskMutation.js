@@ -1,8 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
-import useBlumApi from "./useBlumApi";
 
 export default function useBlumClaimTaskMutation() {
-  const api = useBlumApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["blum", "task", "claim"],
     mutationFn: ({ id }) =>

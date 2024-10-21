@@ -1,24 +1,22 @@
 import toast from "react-hot-toast";
+import useFarmerContext from "@/hooks/useFarmerContext";
 import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { HiOutlineArrowPath } from "react-icons/hi2";
 import { cn, delay } from "@/lib/utils";
 import { useCallback } from "react";
-import { useContext } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
 
-import TruecoinFarmerContext from "../context/TruecoinFarmerContext";
 import useTruecoin50SpinsBoost from "../hooks/useTruecoin50SpinsBoostMutation";
 import useTruecoinLotteryMutation from "../hooks/useTruecoinLotteryMutation";
 
 export default function TruecoinLottery() {
-  const { queryClient, queryKey, authQuery } = useContext(
-    TruecoinFarmerContext
-  );
-
-  const user = authQuery.data.user;
+  const {
+    user: { user },
+    setUser,
+  } = useFarmerContext();
 
   const spinMutation = useTruecoinLotteryMutation();
   const boostMutation = useTruecoin50SpinsBoost();
@@ -95,7 +93,7 @@ export default function TruecoinLottery() {
             process.stop();
           }
 
-          queryClient.setQueryData(queryKey, (prev) => {
+          setUser((prev) => {
             return {
               ...prev,
               user: {
@@ -117,7 +115,7 @@ export default function TruecoinLottery() {
       // Release Lock
       process.unlock();
     })();
-  }, [process, user]);
+  }, [process, user, setUser]);
 
   return (
     <div className="flex flex-col gap-2 p-4">

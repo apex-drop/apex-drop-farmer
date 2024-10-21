@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
 
-import useMajorApi from "./useMajorApi";
-
 export default function useMajorTasksQuery(daily = false) {
-  const api = useMajorApi();
+  const api = useFarmerApi();
 
   return useQuery({
     queryKey: ["major", "tasks", daily],

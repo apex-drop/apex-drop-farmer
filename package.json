@@ -1,7 +1,7 @@
 {
   "name": "apex-drop-farmer",
   "private": true,
-  "version": "0.6.1",
+  "version": "0.6.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,6 @@
     "build:chrome-service-worker": "VITE_ENTRY=chrome-service-worker vite build",
     "build:content-script-main": "VITE_ENTRY=content-script-main vite build",
     "build:content-script-isolated": "VITE_ENTRY=content-script-isolated vite build",
-    "build:telegram-web-isolated": "VITE_ENTRY=telegram-web-isolated vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

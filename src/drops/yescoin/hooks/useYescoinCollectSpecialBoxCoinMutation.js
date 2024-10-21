@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
 
-import useYescoinApi from "./useYescoinApi";
-
 export default function useYescoinCollectSpecialBoxCoinMutation() {
-  const api = useYescoinApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["yescoin", "special-box", "collect"],
     mutationFn: ({ boxType, coinCount }) =>

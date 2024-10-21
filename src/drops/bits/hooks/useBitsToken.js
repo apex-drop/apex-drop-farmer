@@ -1,7 +1,5 @@
-import { useContext } from "react";
-
-import BitsFarmerContext from "../context/BitsFarmerContext";
+import useFarmerContext from "@/hooks/useFarmerContext";
 
 export default function useBitsToken() {
-  return useContext(BitsFarmerContext).authQuery?.data?.token;
+  return useFarmerContext().user?.token;
 }

@@ -1,18 +1,18 @@
+import FarmerContext from "@/contexts/FarmerContext";
 import YescoinAuthDetect from "./components/YescoinAuthDetect";
 import YescoinFarmer from "./components/YescoinFarmer";
-import YescoinFarmerContext from "./context/YescoinFarmerContext";
 import useYescoinFarmer from "./hooks/useYescoinFarmer";
 
 function Yescoin() {
   const farmer = useYescoinFarmer();
   return (
-    <YescoinFarmerContext.Provider value={farmer}>
+    <FarmerContext.Provider value={farmer}>
       {farmer.auth ? (
         <YescoinFarmer />
       ) : (
         <YescoinAuthDetect status={farmer.status} />
       )}
-    </YescoinFarmerContext.Provider>
+    </FarmerContext.Provider>
   );
 }
 

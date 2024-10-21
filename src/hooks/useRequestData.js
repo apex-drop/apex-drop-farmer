@@ -1,5 +1,6 @@
 import { postPortMessage } from "@/lib/utils";
 import { useEffect } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 
 export default function useRequestData(url, port) {
@@ -18,5 +19,5 @@ export default function useRequestData(url, port) {
     }
   }, [url, port]);
 
-  return data;
+  return useMemo(() => [data, setData], [data, setData]);
 }

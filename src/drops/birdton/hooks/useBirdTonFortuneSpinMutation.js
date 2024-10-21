@@ -1,8 +1,8 @@
+import useFarmerContext from "@/hooks/useFarmerContext";
 import { useMutation } from "@tanstack/react-query";
-import useBirdTonFarmerContext from "./useBirdTonFarmerContext";
 
 export default function useBirdTonFortuneSpinMutation() {
-  const { api, telegramWebApp } = useBirdTonFarmerContext();
+  const { api, telegramWebApp } = useFarmerContext();
   return useMutation({
     mutationKey: ["birdton", "fortune", "spin"],
     mutationFn: () =>

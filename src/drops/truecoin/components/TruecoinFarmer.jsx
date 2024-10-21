@@ -1,15 +1,14 @@
-import { useContext } from "react";
+import useFarmerContext from "@/hooks/useFarmerContext";
 
 import CoinIcon from "../assets/images/coin.png?format=webp&w=80";
 import EnergyIcon from "../assets/images/energy.png?format=webp&w=80";
-import TruecoinFarmerContext from "../context/TruecoinFarmerContext";
 import TruecoinIcon from "../assets/images/icon.png?format=webp&w=80";
 import TruecoinLottery from "./TruecoinLottery";
 
 export default function TruecoinFarmer() {
-  const { authQuery } = useContext(TruecoinFarmerContext);
-
-  const user = authQuery.data.user;
+  const {
+    user: { user },
+  } = useFarmerContext();
 
   const coins = user?.coins || 0;
   const energy = user?.currentSpins || 0;

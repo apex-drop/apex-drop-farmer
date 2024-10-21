@@ -1,21 +1,18 @@
 import toast from "react-hot-toast";
-import useAppContext from "@/hooks/useAppContext";
+import useFarmerApi from "@/hooks/useFarmerApi";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { delay } from "@/lib/utils";
 import { useCallback, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
-
 import HoldCoinIcon from "../assets/images/hold-coin.svg";
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
 import MajorGameButton from "./MajorGameButton";
-import useMajorApi from "../hooks/useMajorApi";
 import useMajorGame from "../hooks/useMajorGame";
 
 export default function MajorHoldCoin() {
-  const { socket } = useAppContext();
   const game = useMajorGame();
-  const api = useMajorApi();
+  const api = useFarmerApi();
 
   const startMutation = useMutation({
     retry(failureCount, e) {

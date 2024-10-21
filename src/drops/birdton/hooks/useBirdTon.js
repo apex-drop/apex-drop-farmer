@@ -89,12 +89,12 @@ export default function useBirdTon(farmer) {
 
   /** Instantiate the Socket */
   useEffect(() => {
-    if (farmer.authQuery.status !== "success") return;
+    if (!farmer.user) return;
 
     /** Create Socker */
     const socket = (socketRef.current = new WebSocket(
       `wss://birdton.site/ws?auth=${encodeURIComponent(
-        farmer.authQuery.data["auth_key"]
+        farmer.user["auth_key"]
       )}`
     ));
 
@@ -118,7 +118,7 @@ export default function useBirdTon(farmer) {
       socketRef.current = null;
       setConnected(false);
     };
-  }, [farmer.authQuery.status]);
+  }, [farmer.user]);
 
   return useMemo(
     () => ({

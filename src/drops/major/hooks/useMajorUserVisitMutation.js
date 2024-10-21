@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
 
-import useMajorApi from "./useMajorApi";
-
 export default function useMajorUserVisitMutation() {
-  const api = useMajorApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["major", "user-visits", "visit"],
     mutationFn: () =>

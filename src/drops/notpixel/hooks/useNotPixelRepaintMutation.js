@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
 
-import useNotPixelApi from "./useNotPixelApi";
-
 export default function useNotPixelRepaintMutation() {
-  const api = useNotPixelApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["notpixel", "repaint"],
     mutationFn: (data = { newColor: null, pixelId: null }) =>

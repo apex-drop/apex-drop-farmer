@@ -1,19 +1,16 @@
-import useAppContext from "@/hooks/useAppContext";
+import useFarmerApi from "@/hooks/useFarmerApi";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { useCallback, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
-
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
 import MajorGameButton from "./MajorGameButton";
 import RouletteIcon from "../assets/images/roulette.svg";
-import useMajorApi from "../hooks/useMajorApi";
 import useMajorGame from "../hooks/useMajorGame";
 
 export default function MajorRoulette() {
-  const { socket } = useAppContext();
   const game = useMajorGame();
-  const api = useMajorApi();
+  const api = useFarmerApi();
   const startMutation = useMutation({
     retry(failureCount, e) {
       return !e.response?.data?.detail?.["blocked_until"];

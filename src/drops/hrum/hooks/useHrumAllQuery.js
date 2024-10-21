@@ -1,10 +1,9 @@
+import useFarmerContext from "@/hooks/useFarmerContext";
 import { useQuery } from "@tanstack/react-query";
-
-import useHrumFarmerContext from "./useHrumFarmerContext";
 import { getHrumHeaders } from "../lib/utils";
 
 export default function useHrumAllQuery() {
-  const { api, telegramWebApp } = useHrumFarmerContext();
+  const { api, telegramWebApp } = useFarmerContext();
 
   return useQuery({
     queryKey: ["hrum", "all"],

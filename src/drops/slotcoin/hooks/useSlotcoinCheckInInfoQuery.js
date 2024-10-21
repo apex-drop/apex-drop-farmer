@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
 
-import useSlotcoinApi from "./useSlotcoinApi";
-
 export default function useSlotcoinCheckInInfoQuery() {
-  const api = useSlotcoinApi();
+  const api = useFarmerApi();
   return useQuery({
     queryKey: ["slotcoin", "check-in", "info"],
     queryFn: ({ signal }) =>

@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
 
-import useSlotcoinApi from "./useSlotcoinApi";
-
 export default function useSlotcoinInfoQuery() {
-  const api = useSlotcoinApi();
+  const api = useFarmerApi();
   const isMutating = useIsMutating({ mutationKey: ["slotcoin"] });
 
   return useQuery({

@@ -11,6 +11,11 @@ export default function useHrumFarmer() {
       title: "Hrum Farmer",
     },
     domains: ["*.hrum.me"],
-    authHeaders: ["Api-Key"],
+    extractAuthHeaders(headers) {
+      return headers.filter(
+        (header) =>
+          header.name.toLowerCase() === "api-key" && header.value !== "empty"
+      );
+    },
   });
 }

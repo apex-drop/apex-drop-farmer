@@ -1,18 +1,17 @@
-import { useMemo } from "react";
-
-import useBirdTonFarmerContext from "../hooks/useBirdTonFarmerContext";
+import useFarmerContext from "@/hooks/useFarmerContext";
 import useProcessLock from "@/hooks/useProcessLock";
-import { useState } from "react";
-import { useCallback } from "react";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
-import { useEffect } from "react";
 import { cn, delay } from "@/lib/utils";
+import { useCallback } from "react";
+import { useEffect } from "react";
+import { useMemo } from "react";
+import { useState } from "react";
+
 import useBirdTonHandlers from "../hooks/useBirdTonHandlers";
 
 export default function BirdTonTasks() {
-  const { authQuery, eventData, sendAuth, sendMessage } =
-    useBirdTonFarmerContext();
+  const { eventData, sendAuth, sendMessage } = useFarmerContext();
 
   const taskProgress = useMemo(
     () => eventData.get("user_task_progress") || [],
@@ -179,9 +178,6 @@ export default function BirdTonTasks() {
         /** Delay */
         await delay(5_000);
       }
-
-      /** Refetch */
-      await authQuery.refetch();
 
       reset();
       sendAuth();

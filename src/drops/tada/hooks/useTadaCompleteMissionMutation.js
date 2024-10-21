@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
 
-import useTadaApi from "./useTadaApi";
-
 export default function useTadaCompleteMissionMutation() {
-  const api = useTadaApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["tada", "mission", "complete"],
     mutationFn: (id) =>

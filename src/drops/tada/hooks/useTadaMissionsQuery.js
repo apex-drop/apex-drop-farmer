@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
 
-import useTadaApi from "./useTadaApi";
-
 export default function useTadaMissionsQuery() {
-  const api = useTadaApi();
+  const api = useFarmerApi();
   return useQuery({
     queryKey: ["tada", "missions"],
     queryFn: ({ signal }) =>

@@ -62,6 +62,7 @@ export default function PumpadLottery() {
       /** Spin */
       try {
         await spinMutation.mutateAsync();
+        await delay(2000);
       } catch {}
 
       /** Refetch Balance */

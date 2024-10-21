@@ -1,10 +1,11 @@
+import useFarmerContext from "@/hooks/useFarmerContext";
 import { useCallback } from "react";
 import { useIsMutating, useQueries } from "@tanstack/react-query";
-import useHrumFarmerContext from "./useHrumFarmerContext";
+
 import { getHrumHeaders } from "../lib/utils";
 
 export default function useHrumDataQueries() {
-  const { api, telegramWebApp } = useHrumFarmerContext();
+  const { api, telegramWebApp } = useFarmerContext();
   const isMutating = useIsMutating({ mutationKey: ["hrum"] });
 
   const combine = useCallback((results) => {

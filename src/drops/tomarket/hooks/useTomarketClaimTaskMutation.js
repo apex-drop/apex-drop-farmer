@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
 
-import useTomarketApi from "./useTomarketApi";
-
 export default function useTomarketClaimTaskMutation() {
-  const api = useTomarketApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["tomarket", "task", "claim"],
     mutationFn: (id) =>

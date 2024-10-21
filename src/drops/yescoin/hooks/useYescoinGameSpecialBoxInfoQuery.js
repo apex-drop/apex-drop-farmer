@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
 
-import useYescoinApi from "./useYescoinApi";
-
 export default function useYescoinGameSpecialBoxInfoQuery(options) {
-  const api = useYescoinApi();
+  const api = useFarmerApi();
   const isMutating = useIsMutating({ mutationKey: ["yescoin"] });
 
   return useQuery({

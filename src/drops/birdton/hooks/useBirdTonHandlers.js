@@ -1,10 +1,8 @@
+import useFarmerContext from "@/hooks/useFarmerContext";
 import { useEffect } from "react";
 
-import useBirdTonFarmerContext from "./useBirdTonFarmerContext";
-
 export default function useBirdTonHandlers(handlers) {
-  const { addMessageHandlers, removeMessageHandlers } =
-    useBirdTonFarmerContext();
+  const { addMessageHandlers, removeMessageHandlers } = useFarmerContext();
 
   return useEffect(() => {
     /** Add Handlers */

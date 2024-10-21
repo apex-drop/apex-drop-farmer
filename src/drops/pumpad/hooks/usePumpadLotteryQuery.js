@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
 
-import usePumpadApi from "./usePumpadApi";
-
 export default function usePumpadLotteryQuery() {
-  const api = usePumpadApi();
+  const api = useFarmerApi();
   return useQuery({
     queryKey: ["pumpad", "lottery"],
     queryFn: ({ signal }) =>

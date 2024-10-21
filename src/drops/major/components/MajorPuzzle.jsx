@@ -1,16 +1,15 @@
 import toast from "react-hot-toast";
+import useFarmerApi from "@/hooks/useFarmerApi";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import useSocketState from "@/hooks/useSocketState";
 import { useCallback } from "react";
 import { useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
-
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
 import MajorGameButton from "./MajorGameButton";
 import MajorPuzzleDialog from "./MajorPuzzleDialog";
 import PuzzleDurovIcon from "../assets/images/puzzle-durov.svg";
-import useMajorApi from "../hooks/useMajorApi";
 import useMajorGameErrorHandler from "../hooks/useMajorGameErrorHandler";
 import useMajorUserQuery from "../hooks/useMajorUserQuery";
 
@@ -21,7 +20,7 @@ export default function MajorPuzzle() {
   );
 
   const userQuery = useMajorUserQuery();
-  const api = useMajorApi();
+  const api = useFarmerApi();
   const handleError = useMajorGameErrorHandler();
 
   const startMutation = useMutation({

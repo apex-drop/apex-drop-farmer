@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
 
-import useGoatsApi from "./useGoatsApi";
-
 export default function useGoatsCheckInMutation() {
-  const api = useGoatsApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["goats", "check-in", "complete"],
     mutationFn: (id) =>

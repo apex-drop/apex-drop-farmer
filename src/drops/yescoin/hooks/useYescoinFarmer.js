@@ -11,6 +11,6 @@ export default function useYescoinFarmer() {
       title: "Yescoin Farmer",
     },
     domains: ["*.yescoin.gold"],
-    authHeaders: ["Token"],
+    authHeaders: ["token"],
   });
 }

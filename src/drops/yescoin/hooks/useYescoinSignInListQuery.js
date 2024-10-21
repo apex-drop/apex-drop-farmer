@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
 
-import useYescoinApi from "./useYescoinApi";
-
 export default function useYescoinSignInListQuery() {
-  const api = useYescoinApi();
+  const api = useFarmerApi();
   return useQuery({
     queryKey: ["yescoin", "sign-in", "list"],
     queryFn: ({ signal }) =>

@@ -1,8 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
-import useMajorApi from "./useMajorApi";
 
 export default function useMajorClaimTaskMutation() {
-  const api = useMajorApi();
+  const api = useFarmerApi();
 
   return useMutation({
     mutationKey: ["major", "task", "claim"],

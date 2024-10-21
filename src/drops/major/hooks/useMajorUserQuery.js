@@ -1,10 +1,9 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
-
-import useMajorApi from "./useMajorApi";
 import useMajorUserStreakQuery from "./useMajorUserStreakQuery";
 
 export default function useMajorUserQuery() {
-  const api = useMajorApi();
+  const api = useFarmerApi();
 
   const streakQuery = useMajorUserStreakQuery();
 

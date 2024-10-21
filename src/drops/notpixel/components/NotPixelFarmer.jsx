@@ -1,3 +1,4 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { CgSpinner } from "react-icons/cg";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -5,13 +6,12 @@ import { useState } from "react";
 import NotPixelApp from "./NotPixelApp";
 import NotPixelIcon from "../assets/images/icon.png?format=webp&w=128";
 import NotPixelTemplate from "../assets/images/notpixel-template.png?format=webp";
-import useNotPixelApi from "../hooks/useNotPixelApi";
 import useNotPixelData from "../hooks/useNotPixelData";
 import useNotPixelDiff from "../hooks/useNotPixelDiff";
 import useNotPixelSocket from "../hooks/useNotPixelSocket";
 
 export default function NotPixelFarmer({ sandboxRef }) {
-  const api = useNotPixelApi();
+  const api = useFarmerApi();
   const {
     started,
     pixels,

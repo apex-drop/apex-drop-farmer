@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apex Drop Farmer",
   "description": "Apex Drop Farmer",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",
@@ -47,22 +47,9 @@
       "run_at": "document_start",
       "world": "ISOLATED",
       "all_frames": true
-    },
-    {
-      "matches": ["*://web.telegram.org/*"],
-      "js": ["telegram-web-isolated.js"],
-      "run_at": "document_start",
-      "world": "ISOLATED",
-      "all_frames": true
     }
   ],
-  "web_accessible_resources": [
-    {
-      "resources": ["connect.html"],
-      "matches": ["https://web.telegram.org/*"],
-      "use_dynamic_url": true
-    }
-  ],
+
   "declarative_net_request": {
     "rule_resources": [
       {
@@ -82,6 +69,6 @@
     "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals;"
   },
   "sandbox": {
-    "pages": ["connect.html", "notpixel-sandbox.html"]
+    "pages": ["notpixel-sandbox.html"]
   }
 }

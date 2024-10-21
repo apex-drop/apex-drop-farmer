@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
 
-import useWontonApi from "./useWontonApi";
-
 export default function useWontonUserQuery() {
-  const api = useWontonApi();
+  const api = useFarmerApi();
   const isMutating = useIsMutating({ mutationKey: ["wonton"] });
 
   return useQuery({

@@ -1,8 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
-import useBlumApi from "./useBlumApi";
 
 export default function useBlumNowQuery() {
-  const api = useBlumApi();
+  const api = useFarmerApi();
   const isMutating = useIsMutating({ mutationKey: ["yescoin"] });
 
   return useQuery({

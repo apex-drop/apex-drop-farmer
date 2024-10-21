@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import useFarmerContext from "@/hooks/useFarmerContext";
 import useProcessLock from "@/hooks/useProcessLock";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
@@ -9,7 +10,6 @@ import { useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 
-import useBirdTonFarmerContext from "../hooks/useBirdTonFarmerContext";
 import useBirdTonHandlers from "../hooks/useBirdTonHandlers";
 
 const MIN_POINT = 1;
@@ -18,8 +18,7 @@ const MAX_POINT = 280;
 
 export default function BirdTonGamer() {
   const process = useProcessLock();
-  const { queryClient, queryKey, sendMessage, authQuery } =
-    useBirdTonFarmerContext();
+  const { sendMessage, user, setUser } = useFarmerContext();
   const [startGameCallback, setStartGameCallback] = useState(null);
 
   /** Game Points */
@@ -35,7 +34,6 @@ export default function BirdTonGamer() {
     [desiredPoint]
   );
 
-  const user = authQuery.data;
   const energy = user?.["energy"] || 0;
 
   /** Reset Game */
@@ -122,7 +120,7 @@ export default function BirdTonGamer() {
     ({ data }) => {
       const result = JSON.parse(data);
 
-      queryClient.setQueryData(queryKey, (prev) => {
+      setUser((prev) => {
         return {
           ...prev,
           balance: result.balance,
@@ -130,7 +128,7 @@ export default function BirdTonGamer() {
         };
       });
     },
-    [queryClient, queryKey]
+    [setUser]
   );
 
   /** Handlers */

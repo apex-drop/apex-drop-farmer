@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
 
-import useTomarketApi from "./useTomarketApi";
-
 export default function useTomarketClaimGameMutation(id, points) {
-  const api = useTomarketApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["tomarket", "game", "claim", id, points],
     mutationFn: () =>

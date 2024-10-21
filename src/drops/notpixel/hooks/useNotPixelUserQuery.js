@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
 
-import useNotPixelApi from "./useNotPixelApi";
-
 export default function useNotPixelUserQuery(options) {
-  const api = useNotPixelApi();
+  const api = useFarmerApi();
   const isMutating = useIsMutating({ mutationKey: ["notpixel"] });
 
   return useQuery({

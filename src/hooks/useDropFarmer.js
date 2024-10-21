@@ -11,7 +11,7 @@ export default function useDropFarmer({
   id,
   host,
   domains = [],
-  authHeaders = ["Authorization"],
+  authHeaders = ["authorization"],
   extractAuthHeaders,
   notification,
 }) {
@@ -66,10 +66,10 @@ export default function useDropFarmer({
   useEffect(() => {
     const handleWebRequest = (details) => {
       const headers = extractAuthHeaders
-        ? extractAuthHeaders(details.requestHeaders)
-        : details.requestHeaders.filter((header) =>
-            authHeaders.includes(header.name)
-          );
+        ? extractAuthHeaders(details.requestHeaders, telegramWebApp)
+        : details.requestHeaders.filter((header) => {
+            return authHeaders.includes(header.name.toLowerCase());
+          });
 
       headers.forEach((header) => {
         if (header.value !== api.defaults.headers.common[header.name]) {
@@ -94,7 +94,14 @@ export default function useDropFarmer({
 
     return () =>
       chrome.webRequest.onSendHeaders.removeListener(handleWebRequest);
-  }, [domainMatches, authHeaders, extractAuthHeaders, api, setAuth]);
+  }, [
+    domainMatches,
+    authHeaders,
+    extractAuthHeaders,
+    telegramWebApp,
+    api,
+    setAuth,
+  ]);
 
   /** Create Notification */
   useEffect(() => {
@@ -122,6 +129,7 @@ export default function useDropFarmer({
   /** Return API and Auth */
   return useMemo(
     () => ({
+      id,
       api,
       auth,
       queryClient,
@@ -132,6 +140,7 @@ export default function useDropFarmer({
       status,
     }),
     [
+      id,
       api,
       auth,
       queryClient,

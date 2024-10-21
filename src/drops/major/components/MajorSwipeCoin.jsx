@@ -1,19 +1,18 @@
 import toast from "react-hot-toast";
+import useFarmerApi from "@/hooks/useFarmerApi";
 import useSocketDispatchCallback from "@/hooks/useSocketDispatchCallback";
 import useSocketHandlers from "@/hooks/useSocketHandlers";
 import { delay } from "@/lib/utils";
 import { useCallback, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
-
 import MajorFullscreenSpinner from "./MajorFullscreenSpinner";
 import MajorGameButton from "./MajorGameButton";
 import SwipeCoinIcon from "../assets/images/swipe-coin.svg";
-import useMajorApi from "../hooks/useMajorApi";
 import useMajorGame from "../hooks/useMajorGame";
 
 export default function MajorSwipeCoin() {
   const game = useMajorGame();
-  const api = useMajorApi();
+  const api = useFarmerApi();
   const startMutation = useMutation({
     retry(failureCount, e) {
       return !e.response?.data?.detail?.["blocked_until"];

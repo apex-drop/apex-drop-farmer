@@ -1,10 +1,9 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useCallback } from "react";
 import { useIsMutating, useQueries } from "@tanstack/react-query";
 
-import useTadaApi from "./useTadaApi";
-
 export default function useTadaBalanceQueries() {
-  const api = useTadaApi();
+  const api = useFarmerApi();
   const isMutating = useIsMutating({ mutationKey: ["tada"] });
 
   const combine = useCallback((results) => {

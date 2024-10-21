@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
 
-import useBlumApi from "./useBlumApi";
-
 export default function useBlumDailyRewardQuery() {
-  const api = useBlumApi();
+  const api = useFarmerApi();
 
   return useQuery({
     queryKey: ["blum", "daily-reward", "get"],

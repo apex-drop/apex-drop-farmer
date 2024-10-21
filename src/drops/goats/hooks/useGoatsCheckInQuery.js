@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
 
-import useGoatsApi from "./useGoatsApi";
-
 export default function useGoatsCheckInQuery() {
-  const api = useGoatsApi();
+  const api = useFarmerApi();
   return useQuery({
     queryKey: ["goats", "check-in"],
     queryFn: ({ signal }) =>

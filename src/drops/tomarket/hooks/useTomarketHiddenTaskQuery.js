@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useQuery } from "@tanstack/react-query";
 
-import useTomarketApi from "./useTomarketApi";
-
 export default function useTomarketHiddenTaskQuery() {
-  const api = useTomarketApi();
+  const api = useFarmerApi();
   return useQuery({
     queryKey: ["tomarket", "hidden-task"],
     queryFn: ({ signal }) =>

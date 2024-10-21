@@ -1,9 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
 
-import useTruecoinApi from "./useTruecoinApi";
-
 export default function useTruecoin50SpinsBoost() {
-  const api = useTruecoinApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["truecoin", "boost", 50, "spins"],
     mutationFn: () =>

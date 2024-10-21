@@ -15,13 +15,17 @@ export default function useNotPixelFarmer() {
     domains: ["notpx.app"],
   });
 
-  const user = useRequestData("https://notpx.app/api/v1/users/me", farmer.port);
+  const [user, setUser] = useRequestData(
+    "https://notpx.app/api/v1/users/me",
+    farmer.port
+  );
 
   return useMemo(
     () => ({
       ...farmer,
       user,
+      setUser,
     }),
-    [farmer, user]
+    [farmer, user, setUser]
   );
 }

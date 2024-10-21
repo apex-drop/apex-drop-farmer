@@ -1,21 +1,20 @@
 import * as Tabs from "@radix-ui/react-tabs";
+import FullSpinner from "@/components/FullSpinner";
+import toast from "react-hot-toast";
+import useFarmerContext from "@/hooks/useFarmerContext";
 import useSocketTabs from "@/hooks/useSocketTabs";
-import { CgSpinner } from "react-icons/cg";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 import BirdTonGamer from "./BirdTonGamer";
 import BirdTonIcon from "../assets/images/icon.png?format=webp&w=80";
+import BirdTonTasks from "./BirdTonTasks";
 import CoinIcon from "../assets/images/coin.png?format=webp&w=80";
 import EnergyIcon from "../assets/images/energy.png?format=webp&w=80";
-import useBirdTonFarmerContext from "../hooks/useBirdTonFarmerContext";
-import { useEffect } from "react";
 import useBirdTonClaimDailyRewardMutation from "../hooks/useBirdTonClaimDailyRewardMutation";
-import toast from "react-hot-toast";
-import BirdTonTasks from "./BirdTonTasks";
 
 export default function BirdTonFarmer() {
-  const { connected, authQuery } = useBirdTonFarmerContext();
-  const user = authQuery.data;
+  const { connected, user } = useFarmerContext();
   const energy = user?.["energy"] || 0;
   const maxEnergy = user?.["energy_capacity"] || 0;
   const tabs = useSocketTabs("birdton.farmer-tabs", "game");
@@ -85,8 +84,6 @@ export default function BirdTonFarmer() {
       </Tabs.Root>
     </div>
   ) : (
-    <div className="flex items-center justify-center grow">
-      <CgSpinner className="w-5 h-5 mx-auto animate-spin" />
-    </div>
+    <FullSpinner />
   );
 }

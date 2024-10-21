@@ -1,8 +1,8 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
-import usePumpadApi from "./usePumpadApi";
 
 export default function usePumpadLotteryMutation() {
-  const api = usePumpadApi();
+  const api = useFarmerApi();
   return useMutation({
     mutationKey: ["pumpad", "lottery", "spin"],
     mutationFn: () =>

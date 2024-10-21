@@ -10,6 +10,6 @@ export default function useWontonFarmer() {
       icon: WontonIcon,
       title: "Wonton Farmer",
     },
-    domains: ["wonton.food"],
+    domains: ["*.wonton.food"],
   });
 }

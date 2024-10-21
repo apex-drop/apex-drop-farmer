@@ -1,10 +1,9 @@
+import useFarmerContext from "@/hooks/useFarmerContext";
 import { useMutation } from "@tanstack/react-query";
-
-import useHrumFarmerContext from "./useHrumFarmerContext";
 import { getHrumHeaders } from "../lib/utils";
 
 export default function useHrumDailyClaimMutation() {
-  const { api, telegramWebApp } = useHrumFarmerContext();
+  const { api, telegramWebApp } = useFarmerContext();
 
   return useMutation({
     mutationKey: ["hrum", "quests", "daily", "claim"],

@@ -1,10 +1,10 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
 
-import useBitsApi from "./useBitsApi";
 import useBitsToken from "./useBitsToken";
 
 export default function useBitsFreeTicketQuery() {
-  const api = useBitsApi();
+  const api = useFarmerApi();
   const token = useBitsToken();
   const isMutating = useIsMutating({ mutationKey: ["bits"] });
 

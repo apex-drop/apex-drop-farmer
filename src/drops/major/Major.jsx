@@ -1,18 +1,18 @@
+import FarmerContext from "@/contexts/FarmerContext";
 import MajorAuthDetect from "./components/MajorAuthDetect";
 import MajorFarmer from "./components/MajorFarmer";
-import MajorFarmerContext from "./context/MajorFarmerContext";
 import useMajorFarmer from "./hooks/useMajorFarmer";
 
 function Major() {
   const farmer = useMajorFarmer();
   return (
-    <MajorFarmerContext.Provider value={farmer}>
+    <FarmerContext.Provider value={farmer}>
       {farmer.auth ? (
         <MajorFarmer />
       ) : (
         <MajorAuthDetect status={farmer.status} />
       )}
-    </MajorFarmerContext.Provider>
+    </FarmerContext.Provider>
   );
 }
 

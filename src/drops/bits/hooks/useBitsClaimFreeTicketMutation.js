@@ -1,10 +1,10 @@
+import useFarmerApi from "@/hooks/useFarmerApi";
 import { useMutation } from "@tanstack/react-query";
 
-import useBitsApi from "./useBitsApi";
 import useBitsToken from "./useBitsToken";
 
 export default function useBitsClaimFreeTicketMutation() {
-  const api = useBitsApi();
+  const api = useFarmerApi();
   const token = useBitsToken();
 
   return useMutation({

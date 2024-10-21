@@ -89,7 +89,7 @@ export default function useBirdTon(farmer) {
 
   /** Instantiate the Socket */
   useEffect(() => {
-    if (!farmer.user) return;
+    if (!farmer.user?.["auth_key"]) return;
 
     /** Create Socker */
     const socket = (socketRef.current = new WebSocket(
@@ -118,7 +118,7 @@ export default function useBirdTon(farmer) {
       socketRef.current = null;
       setConnected(false);
     };
-  }, [farmer.user]);
+  }, [farmer.user?.["auth_key"]]);
 
   return useMemo(
     () => ({

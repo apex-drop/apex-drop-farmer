@@ -78,26 +78,39 @@ if (location.hash.includes("tgWebAppData")) {
 
   /** Handle Messages */
   window.addEventListener("message", (ev) => {
-    if (ev.source === window) {
-      const { id, payload } = ev.data;
-      const { action, data } = decryptData(payload);
+    try {
+      if (ev.source === window && ev.data?.payload) {
+        const { id, payload } = ev.data;
+        const { action, data } = decryptData(payload);
 
-      switch (action) {
-        case "get-telegram-web-app":
-          window.postMessage(
-            {
-              id,
-              type: "response",
-              payload: encryptData(window.Telegram?.WebApp),
-            },
-            "*"
-          );
-          break;
-        case "get-request-data":
-          watchURLs.set(data.url, id);
-          break;
+        switch (action) {
+          case "get-telegram-web-app":
+            window.postMessage(
+              {
+                id,
+                type: "response",
+                payload: encryptData(window.Telegram?.WebApp),
+              },
+              "*"
+            );
+            break;
+          case "get-request-data":
+            watchURLs.set(data.url, id);
+            break;
+          case "open-telegram-link":
+            window.Telegram?.WebApp?.openTelegramLink(data.url);
+            window.postMessage(
+              {
+                id,
+                type: "response",
+                payload: encryptData(true),
+              },
+              "*"
+            );
+            break;
+        }
       }
-    }
+    } catch {}
   });
 
   /** Add Telegram Web Script */

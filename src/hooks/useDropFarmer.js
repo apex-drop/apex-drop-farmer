@@ -51,6 +51,7 @@ export default function useDropFarmer({
       (response) => Promise.resolve(response),
       (error) => {
         if ([401, 403, 418].includes(error?.response?.status)) {
+          toast.dismiss();
           toast.error("Unauthenticated - Please reload the Farmer");
           resetAuth();
         }

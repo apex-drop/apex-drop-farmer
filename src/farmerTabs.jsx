@@ -1,25 +1,28 @@
-import Agent301Icon from "@/drops/agent301/assets/images/icon.png?format=webp&w=80";
 import AppIcon from "@/assets/images/icon-wrapped.png?format=webp&w=80";
-import BirdTonIcon from "@/drops/birdton/assets/images/icon.png?format=webp&w=80";
-import BitsIcon from "@/drops/bits/assets/images/icon.png?format=webp&w=80";
-import BlumIcon from "@/drops/blum/assets/images/icon.png?format=webp&w=80";
-import GoatsIcon from "@/drops/goats/assets/images/icon.png?format=webp&w=80";
-import HrumIcon from "@/drops/hrum/assets/images/icon.png?format=webp&w=80";
-import MajorIcon from "@/drops/major/assets/images/icon.png?format=webp&w=80";
-import NotPixelIcon from "@/drops/notpixel/assets/images/icon.png?format=webp&w=80";
-import PumpadIcon from "@/drops/pumpad/assets/images/icon.png?format=webp&w=80";
-import SlotcoinIcon from "@/drops/slotcoin/assets/images/icon.png?format=webp&w=80";
-import TadaIcon from "@/drops/tada/assets/images/icon.png?format=webp&w=80";
-import TelegramWeb from "@/TelegramWeb";
 import TelegramWebAIcon from "@/assets/images/telegram-web-a.png?format=webp&w=80";
 import TelegramWebKIcon from "@/assets/images/telegram-web-k.png?format=webp&w=80";
-import TomarketIcon from "@/drops/tomarket/assets/images/icon.png?format=webp&w=80";
-import TruecoinIcon from "@/drops/truecoin/assets/images/icon.png?format=webp&w=80";
-import Welcome from "@/Welcome";
-import WontonIcon from "@/drops/wonton/assets/images/icon.png?format=webp&w=80";
-import YescoinIcon from "@/drops/yescoin/assets/images/icon.png?format=webp&w=80";
+import path from "path-browserify";
+import { lazy } from "react";
 
 import Farmer from "./Farmer";
+
+const Welcome = lazy(() => import("@/Welcome"));
+const TelegramWeb = lazy(() => import("@/TelegramWeb"));
+
+const farmerIconsGlob = import.meta.glob("@/drops/*/assets/images/icon.png", {
+  eager: true,
+  import: "default",
+  query: {
+    format: "webp",
+    w: "80",
+    h: "80",
+  },
+});
+const farmerIcons = Object.fromEntries(
+  Object.entries(farmerIconsGlob).map(([k, v]) => {
+    return [path.basename(k.replace("/assets/images/icon.png", "")), v];
+  })
+);
 
 const farmerTabs = [
   {
@@ -43,7 +46,7 @@ const farmerTabs = [
   {
     id: "notpixel",
     title: "Not Pixel",
-    icon: NotPixelIcon,
+    icon: farmerIcons["notpixel"],
     component: <Farmer farmer="NotPixel" />,
     telegramLink: "https://t.me/notpixel/app?startapp=f1147265290_s664035",
   },
@@ -51,88 +54,106 @@ const farmerTabs = [
   {
     id: "blum",
     title: "Blum",
-    icon: BlumIcon,
+    icon: farmerIcons["blum"],
     component: <Farmer farmer="Blum" />,
+    telegramLink: "https://t.me/blum/app?startapp=ref_3AIqvLlFFK",
   },
   {
     id: "hrum",
     title: "Hrum",
-    icon: HrumIcon,
+    icon: farmerIcons["hrum"],
     component: <Farmer farmer="Hrum" />,
+    telegramLink: "http://t.me/hrummebot/game?startapp=ref1147265290",
   },
   {
     id: "yescoin",
     title: "Yescoin",
-    icon: YescoinIcon,
+    icon: farmerIcons["yescoin"],
     component: <Farmer farmer="Yescoin" />,
+    telegramLink: "https://t.me/theYescoin_bot/Yescoin?startapp=bH7bto",
   },
   {
     id: "tada",
     title: "Tada",
-    icon: TadaIcon,
+    icon: farmerIcons["tada"],
     component: <Farmer farmer="Tada" />,
+    telegramLink: "https://t.me/TADA_Ride_Bot/join?startapp=ref_lUIJ4eM-AV",
   },
   {
     id: "wonton",
     title: "Wonton",
-    icon: WontonIcon,
+    icon: farmerIcons["wonton"],
     component: <Farmer farmer="Wonton" />,
+    telegramLink:
+      "https://t.me/WontonOrgBot/gameapp?startapp=referralCode=K45JQRG7",
   },
 
   {
     id: "tomarket",
     title: "Tomarket",
-    icon: TomarketIcon,
+    icon: farmerIcons["tomarket"],
     component: <Farmer farmer="Tomarket" />,
+    telegramLink: "https://t.me/Tomarket_ai_bot/app?startapp=00003s0r",
   },
   {
     id: "pumpad",
     title: "Pumpad",
-    icon: PumpadIcon,
+    icon: farmerIcons["pumpad"],
     component: <Farmer farmer="Pumpad" />,
+    telegramLink: "https://t.me/Pumpad_Bot/Lucky?startapp=52458255372295027",
   },
   {
     id: "slotcoin",
     title: "Slotcoin",
-    icon: SlotcoinIcon,
+    icon: farmerIcons["slotcoin"],
     component: <Farmer farmer="Slotcoin" />,
+    telegramLink:
+      "https://t.me/SlotCoinApp_bot/app?startapp=eyJyZWZfY29kZSI6ImEyZGQtNjBmNyIsInV0bV9pZCI6InJlZmZlcmFsX2xpbmtfc2hhcmUifQ==",
   },
   {
     id: "agent301",
     title: "Agent 301",
-    icon: Agent301Icon,
+    icon: farmerIcons["agent301"],
     component: <Farmer farmer="Agent301" />,
+    telegramLink: "https://t.me/Agent301Bot/app?startapp=onetime1147265290",
   },
 
   {
     id: "goats",
     title: "Goats",
-    icon: GoatsIcon,
+    icon: farmerIcons["goats"],
     component: <Farmer farmer="Goats" />,
+    telegramLink:
+      "https://t.me/realgoats_bot/run?startapp=f0a65866-9ab8-4f40-af15-7dcd196d3af7",
   },
   {
     id: "truecoin",
     title: "Truecoin",
-    icon: TruecoinIcon,
+    icon: farmerIcons["truecoin"],
     component: <Farmer farmer="Truecoin" />,
+    telegramLink: "https://t.me/true_coin_bot?start=1147265290",
   },
   {
     id: "birdton",
     title: "BirdTON",
-    icon: BirdTonIcon,
+    icon: farmerIcons["birdton"],
     component: <Farmer farmer="BirdTon" />,
+    telegramLink: "https://t.me/BIRDTonBot/app?startapp=1147265290",
   },
   {
     id: "bits",
     title: "Bits",
-    icon: BitsIcon,
+    icon: farmerIcons["bits"],
     component: <Farmer farmer="Bits" />,
+    telegramLink:
+      "https://t.me/BitsTonboxBot/BitsAirdrops?startapp=6nZB3W2eKhH118UoencBFE",
   },
   {
     id: "major",
     title: "Major",
-    icon: MajorIcon,
+    icon: farmerIcons["major"],
     component: <Farmer farmer="Major" />,
+    telegramLink: "https://t.me/major/start?startapp=1147265290",
   },
 ];
 

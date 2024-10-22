@@ -302,7 +302,7 @@ export default function Welcome() {
           >
             {socket.connected ? "Connected" : "Disconnected"}
           </p>
-          <p className="p-2 text-center text-red-700 bg-red-100 rounded-lg">
+          <p className="p-2 text-center text-yellow-700 bg-yellow-100 rounded-lg">
             By using the farmer you acknowledge that your account is at risk.
           </p>
 

@@ -43,6 +43,15 @@ if (location.hash.includes("tgWebAppData")) {
     });
   };
 
+  const openTelegramLink = async (url) => {
+    return await postWindowMessage({
+      action: "open-telegram-link",
+      data: {
+        url,
+      },
+    });
+  };
+
   /** Connect to Messaging */
   const port = chrome.runtime.connect(chrome.runtime.id, {
     name: `mini-app:${location.host}`,
@@ -60,9 +69,18 @@ if (location.hash.includes("tgWebAppData")) {
           data: response,
         });
         break;
+
+      case "open-telegram-link":
+        await openTelegramLink(data.url);
+
+        port.postMessage({
+          id,
+          data: true,
+        });
     }
   });
 
+  /** Set Port */
   port.postMessage({
     action: `set-port:${location.host}`,
   });

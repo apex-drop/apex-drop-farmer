@@ -45,6 +45,53 @@ export default function useDropFarmer({
     setAuth(false);
   }, [setAuth]);
 
+  /** Enforce only one request */
+
+  useEffect(() => {
+    let isRequestInProgress = false;
+    let requestQueue = [];
+
+    const processNextRequest = () => {
+      if (requestQueue.length === 0) {
+        isRequestInProgress = false;
+        return;
+      }
+
+      const { config, resolve } = requestQueue.shift();
+
+      isRequestInProgress = true;
+
+      resolve(config);
+    };
+
+    api.interceptors.request.use(
+      (config) => {
+        if (isRequestInProgress) {
+          return new Promise((resolve, reject) => {
+            requestQueue.push({ config, resolve, reject });
+          });
+        }
+
+        isRequestInProgress = true;
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+    api.interceptors.response.use(
+      (response) => {
+        processNextRequest();
+        return response;
+      },
+      (error) => {
+        processNextRequest();
+        return Promise.reject(error);
+      }
+    );
+  }, [api]);
+
   /** Response Interceptor */
   useEffect(() => {
     const interceptor = api.interceptors.response.use(

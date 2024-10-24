@@ -68,10 +68,10 @@ if (location.hash.includes("tgWebAppData")) {
         const url = typeof args[0] === "string" ? args[0] : args[0].url;
 
         if (watchURLs.has(url)) {
-          dispatchResponse(url, response.json());
+          dispatchResponse(url, response.clone().json());
         }
 
-        return response.clone();
+        return response;
       }
     );
   };

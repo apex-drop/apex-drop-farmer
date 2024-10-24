@@ -71,7 +71,7 @@ if (location.hash.includes("tgWebAppData")) {
           dispatchResponse(url, response.clone().json());
         }
 
-        return response;
+        return Promise.resolve(response);
       }
     );
   };
